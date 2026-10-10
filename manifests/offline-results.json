@@ -1,0 +1,53 @@
+{
+  "recorded_on": "2026-10-10",
+  "device_contacted": false,
+  "edl_patch_replay": {
+    "base_commit": "4a658eee465a84b13c53b338edfd22bd08e4b211",
+    "git_apply_check_passed": true,
+    "replayed_source_files": 7,
+    "new_files_included": 3,
+    "matches_preserved_tested_sources_after_line_ending_normalization": true
+  },
+  "edl_dotnet_tests": {
+    "location": "Preserved patched working tree; source matched patch replay",
+    "passed": 88,
+    "failed": 0,
+    "skipped": 0
+  },
+  "powershell_failure_guards": {
+    "host": "Windows PowerShell 5.1",
+    "passed": 25,
+    "failed": 0
+  },
+  "bios_profile_guards": {
+    "backup_before_spi_write": true,
+    "ufs_write_stages_rejected": true,
+    "existing_run_id_rejected": true,
+    "different_profile_record_rejected": true,
+    "boot_checks_current_full_spi": true,
+    "device_contacted": false
+  },
+  "xbl_rebuild": {
+    "matches_tested_xbl_sha256": true,
+    "matches_tested_full_spi_sha256": true,
+    "changed_xbl_bytes": 49,
+    "populated_sha384_segment_hashes_checked": 10
+  },
+  "prepare_bundle": {
+    "existing_folder_mode_verified": true,
+    "frozen_payload_files_checked": 119,
+    "new_zip_extraction_mode_executed": false
+  },
+  "direct_documentation": {
+    "powershell_blocks_parsed": 20,
+    "windows_powershell_version": "5.1",
+    "local_bundle_files_verified": 119,
+    "linux_bios_archive_files_verified": 23,
+    "linux_readback_payloads_matched": 18,
+    "ufs_candidate_matches_actual_hardware_readback_sha256": true,
+    "local_android_spi_hash_verified": true,
+    "usb_commands_executed_during_check": false
+  },
+  "github_actions_executed": false,
+  "new_installer_full_hardware_replay": false
+}

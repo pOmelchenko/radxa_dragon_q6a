@@ -1,0 +1,11 @@
+{
+  "recipe_version": 1,
+  "folder": "Q6A-Android15-UFS-Toshiba-512",
+  "archive": "Q6A-Android15-UFS-Toshiba-512.zip",
+  "archive_bytes": 1697316624,
+  "archive_sha256": "94cf5947c6d6af85ea499108d8b74d6e4c3d6c86abf1521b75ca05bf2970008a",
+  "manifest_sha256": "1308f2f6841bda6f557f563cfb56d0b81837376f7a81b5a925a1686be3ac9d2d",
+  "uncompressed_bytes": 4098784937,
+  "frozen_files": 119,
+  "public_download_url": null
+}

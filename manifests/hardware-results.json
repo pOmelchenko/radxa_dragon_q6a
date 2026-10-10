@@ -1,0 +1,59 @@
+{
+  "recorded_on": "2026-10-10",
+  "original_device_operations_verified": true,
+  "new_wrapper_hardware_replay": false,
+  "interface_confirmed_by_user": true,
+  "cold_start_confirmed": false,
+  "readback_hashes": {
+    "spi-candidate-readback.bin": {
+      "bytes": 33554432,
+      "sha256": "d0e41c7d20efa0fffa7bf567a337b330038fb17c5d6f4c5502412a711921873c"
+    },
+    "xbl_a-candidate-readback.bin": {
+      "bytes": 3690496,
+      "sha256": "90d6635a0b66e6ad070d0c23e08dc550775ff3c4c68434bba7eb5b1bea4be5d0"
+    }
+  },
+  "board": {
+    "model": "Radxa Dragon Q6A",
+    "ram_gb": 12,
+    "edl_serial": "7B57A3EB"
+  },
+  "ufs": {
+    "vendor": "TOSHIBA",
+    "model": "THGJFCT2T84BAKCB",
+    "revision": "0100",
+    "version": "0x0300",
+    "advertised_capacity_gb": 512
+  },
+  "android_release": "Q6A-Android15-spi-ufs-boot-20260630-b1",
+  "boot_kind": "Software reset; physical cold start unconfirmed",
+  "android_properties": {
+    "ro.build.version.release": "15",
+    "ro.build.version.sdk": "35",
+    "sys.boot_completed": "1",
+    "dev.bootcomplete": "1",
+    "init.svc.bootanim": "stopped"
+  },
+  "display": {
+    "connected": true,
+    "width": 3840,
+    "height": 2160,
+    "hz": 30
+  },
+  "ufs_read_test": {
+    "bytes": 268435456,
+    "offset_bytes": 1073741824,
+    "seconds": 0.202,
+    "errors_found_in_captured_kernel_log": false
+  },
+  "userdata": {
+    "filesystem": "F2FS",
+    "filesystem_gib": 45,
+    "partition_kib": 465942348,
+    "expanded": false
+  },
+  "long_term_stability_confirmed": false,
+  "new_repository_installer_hardware_replay": false,
+  "scope": "One tested board and UFS module; no general compatibility claim"
+}

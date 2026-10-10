@@ -1,0 +1,21 @@
+name: Offline checks
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  sources:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python scripts/check_repository.py
+      - run: python -m py_compile scripts/prepare_xbl.py scripts/check_repository.py
+  guards:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: PowerShell 5.1 failure guards
+        shell: powershell
+        run: .\scripts\Test-Q6A-Offline.ps1

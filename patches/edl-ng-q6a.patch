@@ -1,0 +1,301 @@
+diff --git a/QCEDL.CLI/Commands/ProvisionCommand.cs b/QCEDL.CLI/Commands/ProvisionCommand.cs
+index 54b6d72..7ba3079 100644
+--- a/QCEDL.CLI/Commands/ProvisionCommand.cs
++++ b/QCEDL.CLI/Commands/ProvisionCommand.cs
+@@ -41,7 +41,7 @@ internal sealed class ProvisionCommand
+ 
+             Logging.Log("Sending initial Firehose configure command (Memory: UFS, SkipStorageInit: true)...");
+             // Explicitly use UFS and skipStorageInit=true for this specific configure call.
+-            var configureSuccess = await Task.Run(() => manager.Firehose.Configure(effectiveStorageType, skipStorageInit: true));
++            var configureSuccess = await Task.Run(() => manager.Firehose.Configure(effectiveStorageType, skipStorageInit: true, maxPayloadSize: globalOptions.MaxPayloadSize ?? 1048576));
+             if (!configureSuccess)
+             {
+                 Logging.Log("Failed to send initial Firehose configure command for provisioning.", LogLevel.Error);
+diff --git a/QCEDL.CLI/Core/EdlManager.cs b/QCEDL.CLI/Core/EdlManager.cs
+index 8c29212..4143016 100644
+--- a/QCEDL.CLI/Core/EdlManager.cs
++++ b/QCEDL.CLI/Core/EdlManager.cs
+@@ -987,13 +987,13 @@ internal sealed class EdlManager(GlobalOptionsBinder globalOptions) : IDisposabl
+             var storage = globalOptions.MemoryType ?? StorageType.Ufs;
+             var maxPayload = globalOptions.MaxPayloadSize ?? 1048576;
+ 
+-            var success = await Task.Run(() => _firehoseClient.Configure(storage));
++            var success = await Task.Run(() => _firehoseClient.Configure(storage, maxPayloadSize: maxPayload));
+ 
+             if (!success)
+             {
+                 // The Configure method in the provided QCEDL.NET doesn't seem to return false,
+                 // it relies on exceptions or log parsing. We might need to adjust it or add checks here.
+-                Logging.Log("Firehose configuration might have failed (check logs).", LogLevel.Warning);
++                throw new InvalidOperationException("Firehose configuration was rejected by the device.");
+             }
+             Logging.Log($"Firehose configured for Memory: {storage}, MaxPayload: {maxPayload}\n");
+             _firehoseConfigured = true;
+diff --git a/QCEDL.NET/Layers/APSS/Firehose/QualcommFirehose.cs b/QCEDL.NET/Layers/APSS/Firehose/QualcommFirehose.cs
+index 8c963b8..7daec4e 100644
+--- a/QCEDL.NET/Layers/APSS/Firehose/QualcommFirehose.cs
++++ b/QCEDL.NET/Layers/APSS/Firehose/QualcommFirehose.cs
+@@ -1,4 +1,4 @@
+-﻿// Copyright (c) 2018, Rene Lergner - @Heathcliff74xda
++// Copyright (c) 2018, Rene Lergner - @Heathcliff74xda
+ //
+ // Permission is hereby granted, free of charge, to any person obtaining a
+ // copy of this software and associated documentation files (the "Software"),
+@@ -29,79 +29,46 @@ namespace Qualcomm.EmergencyDownload.Layers.APSS.Firehose;
+ 
+ public class QualcommFirehose(IQualcommTransport transport)
+ {
+-    public IQualcommTransport Transport { get; } = transport;
++    public IQualcommTransport Transport { get; } = new BufferedFirehoseTransport(transport);
++    public ulong MaxPayloadSize { get; internal set; } = 1048576;
+ 
+     public byte[] GetFirehoseXmlResponseBuffer(bool waitTilFooter = false, int? timeoutMilliseconds = null)
+     {
+-        if (!waitTilFooter)
+-        {
+-            return Transport.GetResponse(null);
+-        }
+-
+-        // Optimized for WaitTilFooter = true
+-        var bufferList = new List<byte>(1024); // Pre-allocate a reasonable starting size
+-        const int readChunkSize = 256; // Read in chunks of this size
+-        var footerPattern = " /></data>"u8;
+-        // int patternMatchIndex = 0; // unused
+-        var safetyReadLimit = 8192; // Max 8KB for an XML ACK, to prevent infinite loop
++        _ = waitTilFooter; // All replies must be framed, including replies followed by binary data.
++        var bytes = new List<byte>();
+         var originalTimeout = Transport.TimeoutMilliseconds;
++        var timer = Stopwatch.StartNew();
+         try
+         {
+-            var timer = Stopwatch.StartNew();
+-            while (bufferList.Count < safetyReadLimit)
++            while (bytes.Count < 65536)
+             {
+                 if (timeoutMilliseconds.HasValue)
+                 {
+                     var remaining = timeoutMilliseconds.Value - (int)timer.ElapsedMilliseconds;
+                     if (remaining <= 0)
+                     {
+-                        throw new TimeoutException("Timed out waiting for Firehose XML footer.");
++                        throw new TimeoutException("Timed out waiting for Firehose XML.");
+                     }
++
+                     Transport.TimeoutMilliseconds = remaining;
+                 }
+-                var chunk = Transport.GetResponse(null, length: readChunkSize);
+-                if (chunk == null || chunk.Length == 0)
++                bytes.AddRange(Transport.GetResponse(null));
++                var received = bytes.ToArray();
++                var footer = received.AsSpan().IndexOf("</data>"u8);
++                if (footer >= 0)
+                 {
+-                    // Timeout or no data from device
+-                    LibraryLogger.Warning("Timeout or no data received while waiting for XML footer.");
+-                    break;
+-                }
+-                bufferList.AddRange(chunk);
+-                // Efficiently check for footerPattern in the newly added chunk or at the end of bufferList
+-                // This is a simplified check; more robust would be a sliding window search
+-                // For performance, avoid converting bufferList to string repeatedly in the loop.
+-                // Check if the end of bufferList now contains the footer.
+-                if (bufferList.Count >= footerPattern.Length)
+-                {
+-                    var found = true;
+-                    for (var i = 0; i < footerPattern.Length; i++)
+-                    {
+-                        if (bufferList[bufferList.Count - footerPattern.Length + i] != footerPattern[i])
+-                        {
+-                            found = false;
+-                            break;
+-                        }
+-                    }
+-                    if (found)
+-                    {
+-                        return [.. bufferList];
+-                    }
++                    var end = footer + "</data>"u8.Length;
++                    ((BufferedFirehoseTransport)Transport).Prepend(received.AsSpan(end));
++                    return received.AsSpan(0, end).ToArray();
+                 }
+             }
+-
+-            LibraryLogger.Error($"XML response footer not found or exceeded safety limit ({safetyReadLimit} bytes). Buffer size: {bufferList.Count}");
+-            // Return what we have, or throw, depending on how GetFirehoseResponseDataPayloads handles partial XML
+-            return [.. bufferList];
++            throw new InvalidDataException("Firehose XML exceeded 64 KiB without a closing data tag.");
+         }
+         finally
+         {
+-            if (timeoutMilliseconds.HasValue)
+-            {
+-                Transport.TimeoutMilliseconds = originalTimeout;
+-            }
++            Transport.TimeoutMilliseconds = originalTimeout;
+         }
+     }
+-
+     public Data[] GetFirehoseResponseDataPayloads(bool waitTilFooter = false, int? timeoutMilliseconds = null)
+     {
+         var responseBuffer = GetFirehoseXmlResponseBuffer(waitTilFooter, timeoutMilliseconds);
+@@ -127,3 +94,5 @@ public class QualcommFirehose(IQualcommTransport transport)
+         }
+     }
+ }
++
++
+diff --git a/QCEDL.NET/Layers/APSS/Firehose/QualcommFirehoseCommands.cs b/QCEDL.NET/Layers/APSS/Firehose/QualcommFirehoseCommands.cs
+index c82e669..4b8d7b6 100644
+--- a/QCEDL.NET/Layers/APSS/Firehose/QualcommFirehoseCommands.cs
++++ b/QCEDL.NET/Layers/APSS/Firehose/QualcommFirehoseCommands.cs
+@@ -14,12 +14,12 @@ namespace Qualcomm.EmergencyDownload.Layers.APSS.Firehose;
+ public static class QualcommFirehoseCommands
+ {
+     private const int MaxPhysicalPartitionsToProbe = 8;
+-    public static bool Configure(this QualcommFirehose firehose, StorageType storageType, bool skipStorageInit = false)
++    public static bool Configure(this QualcommFirehose firehose, StorageType storageType, bool skipStorageInit = false, ulong maxPayloadSize = 1048576)
+     {
+         LibraryLogger.Debug($"Configuring (Memory: {storageType}, SkipStorageInit: {skipStorageInit})");
+ 
+         var command03 = QualcommFirehoseXml.BuildCommandPacket([
+-            QualcommFirehoseXmlPackets.GetConfigurePacket(storageType, true, 1048576, false, 8192, true, false,
++            QualcommFirehoseXmlPackets.GetConfigurePacket(storageType, true, maxPayloadSize, false, 8192, true, false,
+                 skipStorageInit)
+         ]);
+ 
+@@ -41,6 +41,7 @@ public static class QualcommFirehoseCommands
+                 {
+                     if (data.Response.Value == "ACK")
+                     {
++                        firehose.MaxPayloadSize = maxPayloadSize;
+                         LibraryLogger.Debug("Configure command ACKed.");
+                     }
+                     else if (data.Response.Value == "NAK")
+@@ -773,7 +774,7 @@ public static class QualcommFirehoseCommands
+         long totalBytesSent = 0;
+ 
+         var streamChunkSize =
+-            (int)Math.Min(1024 * 1024, totalBytesToStreamIncludingPadding); // 1MB or total, whichever is smaller
++            (int)Math.Min((long)firehose.MaxPayloadSize, totalBytesToStreamIncludingPadding);
+ 
+         var chunkBuffer = new byte[streamChunkSize];
+ 
+diff --git a/QCEDL.NET.Tests/QualcommFirehoseConfigureTests.cs b/QCEDL.NET.Tests/QualcommFirehoseConfigureTests.cs
+new file mode 100644
+--- /dev/null
++++ b/QCEDL.NET.Tests/QualcommFirehoseConfigureTests.cs
+@@ -0,0 +1,32 @@
++using System.Text;
++using System.Xml.Linq;
++using Qualcomm.EmergencyDownload.Layers.APSS.Firehose;
++using Qualcomm.EmergencyDownload.Layers.APSS.Firehose.Xml.Elements;
++
++namespace QCEDL.NET.Tests;
++
++public sealed class QualcommFirehoseConfigureTests
++{
++    [Theory]
++    [InlineData(false)]
++    [InlineData(true)]
++    public void LitePayloadIsSentAndRemembered(bool skipStorageInit)
++    {
++        using var transport = new FirehoseEraseRecordingTransport("<data><response value=\"ACK\" /></data>"u8.ToArray());
++        var firehose = new QualcommFirehose(transport);
++        Assert.True(firehose.Configure(StorageType.Ufs, skipStorageInit, 16384));
++        var xml = XDocument.Parse(Encoding.UTF8.GetString(Assert.Single(transport.Commands))).Root!.Element("configure")!;
++        Assert.Equal("16384", xml.Attribute("MaxPayloadSizeToTargetInBytes")!.Value);
++        Assert.Equal(skipStorageInit ? "1" : "0", xml.Attribute("SkipStorageInit")!.Value);
++        Assert.Equal(16384UL, firehose.MaxPayloadSize);
++    }
++
++    [Fact]
++    public void RejectedConfigurationDoesNotChangeTransferLimit()
++    {
++        using var transport = new FirehoseEraseRecordingTransport("<data><response value=\"NAK\" /></data>"u8.ToArray());
++        var firehose = new QualcommFirehose(transport);
++        Assert.False(firehose.Configure(StorageType.Ufs, true, 16384));
++        Assert.Equal(1048576UL, firehose.MaxPayloadSize);
++    }
++}
+diff --git a/QCEDL.NET.Tests/QualcommFirehoseFramingTests.cs b/QCEDL.NET.Tests/QualcommFirehoseFramingTests.cs
+new file mode 100644
+--- /dev/null
++++ b/QCEDL.NET.Tests/QualcommFirehoseFramingTests.cs
+@@ -0,0 +1,28 @@
++using System.Text;
++using Qualcomm.EmergencyDownload.Layers.APSS.Firehose;
++
++namespace QCEDL.NET.Tests;
++
++public sealed class QualcommFirehoseFramingTests
++{
++    [Fact]
++    public void CoalescedAckAndBinaryRetainEveryByte()
++    {
++        byte[] binary = [0, 0, 255, 13, 10, 60, 62, 128];
++        var ack = "<data><response value=\"ACK\" rawmode=\"true\" /></data>"u8.ToArray();
++        using var transport = new FirehoseEraseRecordingTransport([.. ack, .. binary]);
++        var firehose = new QualcommFirehose(transport);
++        _ = Assert.Single(firehose.GetFirehoseResponseDataPayloads());
++        Assert.Equal(binary, firehose.GetExpectedBufferLength(binary.Length));
++    }
++    [Fact]
++    public void SplitFooterAndNextResponseArePreserved()
++    {
++        using var transport = new FirehoseEraseRecordingTransport(
++            "<data><response value=\"ACK\" /></da"u8.ToArray(),
++            "ta><data><response value=\"NAK\" /></data>"u8.ToArray());
++        var firehose = new QualcommFirehose(transport);
++        Assert.Contains("ACK", Encoding.UTF8.GetString(firehose.GetFirehoseXmlResponseBuffer()));
++        Assert.Contains("NAK", Encoding.UTF8.GetString(firehose.GetFirehoseXmlResponseBuffer()));
++    }
++}
+diff --git a/QCEDL.NET/Layers/APSS/Firehose/BufferedFirehoseTransport.cs b/QCEDL.NET/Layers/APSS/Firehose/BufferedFirehoseTransport.cs
+new file mode 100644
+--- /dev/null
++++ b/QCEDL.NET/Layers/APSS/Firehose/BufferedFirehoseTransport.cs
+@@ -0,0 +1,44 @@
++using Qualcomm.EmergencyDownload.Transport;
++
++namespace Qualcomm.EmergencyDownload.Layers.APSS.Firehose;
++
++internal sealed class BufferedFirehoseTransport(IQualcommTransport inner) : IQualcommTransport
++{
++    private byte[] _pending = [];
++    public TransportBackend Backend => inner.Backend;
++    public int TimeoutMilliseconds { get => inner.TimeoutMilliseconds; set => inner.TimeoutMilliseconds = value; }
++    internal void Prepend(ReadOnlySpan<byte> bytes)
++    {
++        if (!bytes.IsEmpty)
++        {
++            _pending = [.. bytes.ToArray(), .. _pending];
++        }
++    }
++    public int Read(byte[] buffer, int offset, int count)
++    {
++        if (_pending.Length == 0)
++        {
++            return inner.Read(buffer, offset, count);
++        }
++
++        var length = Math.Min(count, _pending.Length);
++        _pending.AsSpan(0, length).CopyTo(buffer.AsSpan(offset, length));
++        _pending = _pending.AsSpan(length).ToArray();
++        return length;
++    }
++    public int Write(byte[] buffer, int offset, int count)
++    {
++        return inner.Write(buffer, offset, count);
++    }
++
++    public void SendZeroLengthPacket()
++    {
++        inner.SendZeroLengthPacket();
++    }
++
++    public void Dispose()
++    {
++        inner.Dispose();
++    }
++}
++

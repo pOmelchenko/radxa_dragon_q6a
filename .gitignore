@@ -5,3 +5,16 @@ __pycache__/
 *.py[cod]
 build/
 var/
+
+# Firmware recipes: local images, build outputs, logs and device backups
+artifacts/
+.work/
+runs/
+*.pyc
+*.bin
+*.elf
+*.img
+*.7z
+*.zip
+*.log
+Thumbs.db

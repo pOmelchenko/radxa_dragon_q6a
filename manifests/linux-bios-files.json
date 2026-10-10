@@ -1,0 +1,154 @@
+{
+  "schema_version": 1,
+  "recorded_on": "2026-10-10",
+  "source_folder": "flat_build/spinor/dragon-q6a",
+  "files": [
+    {
+      "path": "Fat12.bin",
+      "bytes": 1048576,
+      "sha256": "c34b4b5fb0ce7a89c3de023eacdf7b13318cf3cad0ce5f4f7c2a836b5ee3c949"
+    },
+    {
+      "path": "PILFV.Fv",
+      "bytes": 3342336,
+      "sha256": "9da3dd092ccbd49d7a9abe9f2081867c955a78e6c3ee4a0f3c0a428eb93705bf"
+    },
+    {
+      "path": "SYSFW_VERSION.bin",
+      "bytes": 28,
+      "sha256": "6de5bcafd38b4ee951ca33d92e3873c45fca07ac0d9fdafcc0be28e7443ba134"
+    },
+    {
+      "path": "aop.mbn",
+      "bytes": 208788,
+      "sha256": "dba839ee6638767c26588f8c2da22a5e45ade80cd221845fc8bbd6b399042ce2"
+    },
+    {
+      "path": "cdt_rs701_wp.bin",
+      "bytes": 24,
+      "sha256": "b527d25d122d9e6cb6147e182810e44afe738e6ea21cabf483d7eaa0d30bf77f"
+    },
+    {
+      "path": "cpucp.elf",
+      "bytes": 186628,
+      "sha256": "2e9e47491de28fe989adfdb100b2145dab726e013918ba9ede4bb186515253f4"
+    },
+    {
+      "path": "devcfg_windows_hyp_rfcomm.mbn",
+      "bytes": 47904,
+      "sha256": "d4d84d3e72c717517f248564fa1c960f13f18fbcc2bc0322478677563b76e503"
+    },
+    {
+      "path": "gpt_backup0.bin",
+      "bytes": 20480,
+      "sha256": "40a79d51db0c621770b860b8c4e0f1483b4990022be9923d5f1328b47a994cc0"
+    },
+    {
+      "path": "gpt_main0.bin",
+      "bytes": 24576,
+      "sha256": "bc0a89dcb9952ec3511b84b2265ee47afee750a552f8f11c1bcd66301f042379"
+    },
+    {
+      "path": "hyp.mbn",
+      "bytes": 436888,
+      "sha256": "9008951e9858aba1765bc10e104ae4bb0bb6cddc84c252d0d094dc53e55fc514"
+    },
+    {
+      "path": "imagefv.elf",
+      "bytes": 2076672,
+      "sha256": "6de3b614e67855c7dde1950d1ae76d01d691d2cb9441a9a77ee63862d0f15ca9"
+    },
+    {
+      "path": "multi_image.mbn",
+      "bytes": 13176,
+      "sha256": "070a3fa6709399d1c286d0e4e1e4474f317d4b20ccea75ff7ede3c79ab181a8b"
+    },
+    {
+      "path": "patch0.xml",
+      "bytes": 5243,
+      "sha256": "e5b444932b4f6b2877cc48506bee054e6dc9650cd5eee3c4622c68bd16a3c191"
+    },
+    {
+      "path": "prog_firehose_ddr.elf",
+      "bytes": 979136,
+      "sha256": "eca4440984da4025048b8589e35373c073ce8b640fa9ccd92323f55c9bbe1a8b"
+    },
+    {
+      "path": "qupv3fw.elf",
+      "bytes": 57269,
+      "sha256": "9cc5df3d926701936001c3c108b091f0a77ddca1385e0e7da372c8191d8f815c"
+    },
+    {
+      "path": "rawprogram0.xml",
+      "bytes": 7851,
+      "sha256": "3def036cca91772bf4c2b89cdc744e80cb55298da43b2f33a56c085314573cd9"
+    },
+    {
+      "path": "shrm.elf",
+      "bytes": 45616,
+      "sha256": "2709b3fa5944aadd9df715a34d9d20eaabae2c814de1ffd571a2247c0151d4ad"
+    },
+    {
+      "path": "smbios.bin",
+      "bytes": 151552,
+      "sha256": "bcad1ee96068c2dbe5236116efe2233448a2475edde25793b232a2d069678327"
+    },
+    {
+      "path": "tz.mbn",
+      "bytes": 3818983,
+      "sha256": "91b04ecf3d2573b14ef2a89c6b30056f6d0b454fe01f303384f3aaa54f7dd711"
+    },
+    {
+      "path": "tzapps.bin",
+      "bytes": 786432,
+      "sha256": "97bce26ed8c44bd53fc393cf1528ff807c51d5f3080919bbc78641af96685644"
+    },
+    {
+      "path": "xbl.elf",
+      "bytes": 4796976,
+      "sha256": "1ad6fe53a1a75cd85a9271099dc54a667114b5e37ad8f7a5ebf2661f03a87a1f"
+    },
+    {
+      "path": "xbl_config.elf",
+      "bytes": 225472,
+      "sha256": "df1dd0f6bba1ae8e0471404165a0e8c79b27b165c71c4bfe309aa32c542b6286"
+    },
+    {
+      "path": "zeros_5sectors.bin",
+      "bytes": 20480,
+      "sha256": "cc61635da46b2c9974335ea37e0b5fd660a5c8a42a89b271fa7ec2ac4b8b26f6"
+    }
+  ],
+  "hardware_record": {
+    "rawprogram_completed": true,
+    "spi_payloads_match_saved_readback": [
+      "cdt",
+      "ddr",
+      "SYSFW_VERSION",
+      "SMBIOS",
+      "PLAT",
+      "XBL",
+      "XBL_CONFIG",
+      "AOP",
+      "TZ",
+      "DEVCFG",
+      "HYP",
+      "QUP",
+      "TZAPPS",
+      "MULTIIMGOEM",
+      "CPUCP",
+      "SHRM",
+      "ImageFv",
+      "PILFv"
+    ],
+    "saved_spi_sha256": "5d2f841bebe96f06d933d634bc0addfba2b681b602a93798b1e5013608824e57",
+    "linux_boot": "Ubuntu on existing NVMe; kernel 7.0.11-7-qcom; module_blacklist=i2c_qcom_geni",
+    "automatic_default_boot_verified": false,
+    "repeat_cold_start_verified": false
+  },
+  "archive": {
+    "name": "Q6A-Linux-BIOS-tested-files.zip",
+    "bytes": 11067838,
+    "sha256": "49a615adbad48c6af558825bc1d72e3ee1be62ec2a49f8480e11552a04507497"
+  }
+}

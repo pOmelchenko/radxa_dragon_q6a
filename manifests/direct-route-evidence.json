@@ -1,0 +1,35 @@
+{
+  "recorded_on": "2026-10-10",
+  "new_hardware_operations_this_revision": false,
+  "direct_routes": {
+    "linux": {
+      "programming": "rawprogram rawprogram0.xml patch0.xml",
+      "outcome": "Ubuntu booted with I2C blacklist",
+      "program_log": {
+        "local_name": "linux-spi-restore.txt",
+        "sha256": "4ebb100b50628f62ccf8b3a2a0c986890481a375aebd8ab7d149d013b2be1a09"
+      },
+      "readback": {
+        "local_name": "spi-after-linux-restore.bin",
+        "sha256": "5d2f841bebe96f06d933d634bc0addfba2b681b602a93798b1e5013608824e57"
+      },
+      "full_snapshot_write_tested": false
+    },
+    "android": {
+      "outcome": "Android 15 UI, sys.boot_completed=1, software reset",
+      "provision_log": {
+        "local_name": "ufs-lite-provision-patched.txt",
+        "sha256": "578e1257dccf37acad265342c648bb58e900d3864381eb517ebb78d470f134ff"
+      },
+      "ufs_rawprogram_log": {
+        "local_name": "android-ufs-flash.txt",
+        "sha256": "12bf177bba117eaee99d79e07eb8012b144d68c0a7bb02ac71aae35c3279766e"
+      },
+      "xbl_write_log": "evidence/Ufs-edl.log",
+      "spi_write_log": "evidence/Spi-edl.log",
+      "boot_record": "evidence/run-status.json",
+      "cold_start_verified": false
+    }
+  },
+  "new_installer_and_switch_wrapper_hardware_verified": false
+}

@@ -1,0 +1,6 @@
+{
+  "upstream": "https://github.com/strongtz/edl-ng",
+  "base_commit": "4a658eee465a84b13c53b338edfd22bd08e4b211",
+  "untracked_files": "Included in edl-ng-patched-source.zip",
+  "executable_sha256": "2cfedece4030e3ba4e2742cc573b30e890d774504236a67f1b04131f22ab5646"
+}
