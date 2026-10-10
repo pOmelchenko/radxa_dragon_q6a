@@ -1,0 +1,17 @@
+{
+  "upstream": "https://github.com/strongtz/edl-ng",
+  "base_commit": "4a658eee465a84b13c53b338edfd22bd08e4b211",
+  "executable_sha256": "2cfedece4030e3ba4e2742cc573b30e890d774504236a67f1b04131f22ab5646",
+  "schema_version": 1,
+  "target_framework": "net9.0",
+  "runtimes": [
+    "win-x64",
+    "win-arm64",
+    "linux-x64",
+    "linux-arm64",
+    "osx-x64",
+    "osx-arm64"
+  ],
+  "patch_sha256": "1e480c58ee3427941542a9578c4b343a615c0d82c864f82a7bc2fd9e7b550ca4",
+  "license_sha256": "3457ee2dc5fdfe44bb81732e0660f2299baba2672664b7c9c537929e4c6c9084"
+}

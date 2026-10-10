@@ -1,21 +1,41 @@
-name: Offline checks
+name: Repository checks
 on: [push, pull_request, workflow_dispatch]
 permissions:
   contents: read
 jobs:
-  sources:
-    runs-on: ubuntu-latest
+  host-tools:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: python scripts/check_repository.py
-      - run: python -m py_compile scripts/prepare_xbl.py scripts/check_repository.py
+      - run: python tools/q6a.py check-repo
+      - run: python -m unittest discover -s tests -v
+      - name: Unix entry point
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          if [ "${{ runner.os }}" = "macOS" ]; then
+            sh tools/macos/q6a.sh build-edl --plan
+          else
+            sh tools/linux/q6a.sh build-edl --plan
+          fi
+      - name: Windows entry point
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: .\tools\windows\q6a.ps1 build-edl --plan
   guards:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
       - name: PowerShell 5.1 failure guards
         shell: powershell
-        run: .\scripts\Test-Q6A-Offline.ps1
+        run: .\tests\windows\Test-Q6A-Offline.ps1
+      - name: Documentation command syntax
+        shell: powershell
+        run: .\tests\windows\Test-Documentation.ps1
