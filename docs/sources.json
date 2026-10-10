@@ -1,0 +1,250 @@
+{
+  "device": "Radxa Dragon Q6A",
+  "retrieved_on": "2026-09-23",
+  "catalog_url": "https://docs.radxa.com/en/dragon/q6a/download",
+  "notes": [
+    "Manufacturer documents do not identify the revision of the owner's board.",
+    "Original local files are retained without modification. No OS image, firmware archive or vendor source checkout is vendored."
+  ],
+  "files": [
+    {
+      "file": "radxa-q6a-schematic-v1.21.pdf",
+      "source_url": "https://dl.radxa.com/dragon/q6a/hw/radxa_dragon_q6a_schematic_v1.21.pdf",
+      "resolved_url": "https://dl.radxa.com/dragon/q6a/hw/radxa_dragon_q6a_schematic_v1.21.pdf",
+      "retrieved_on": "2026-09-23",
+      "bytes": 1842474,
+      "sha256": "d6a28e654e107f3db4b308b92e701dd8dbf77798ba9b49588d4091979d476936",
+      "transformation": "none; original downloaded bytes",
+      "pages": 35,
+      "version": "V1.21",
+      "date_note": "Reviewed title blocks: 2025-09-12"
+    },
+    {
+      "file": "radxa-q6a-components-v1.21.pdf",
+      "source_url": "https://dl.radxa.com/dragon/q6a/hw/radxa_dragon_q6a_components_placement_map_v1.21.pdf",
+      "resolved_url": "https://dl.radxa.com/dragon/q6a/hw/radxa_dragon_q6a_components_placement_map_v1.21.pdf",
+      "retrieved_on": "2026-09-23",
+      "bytes": 394810,
+      "sha256": "3ab2b61476709ed05d702a0431b8a49d623450daae95c4575500666f89eb36a5",
+      "transformation": "none; original downloaded bytes",
+      "pages": 2,
+      "version": "V1.21 (resource catalog and filename)",
+      "date_note": "PDF creation/modification metadata: 2025-06-21"
+    },
+    {
+      "file": "radxa-q6a-dimensions-v1.21.pdf",
+      "source_url": "https://dl.radxa.com/dragon/q6a/hw/radxa_dragon_q6a_2d_dimensions_v1.21.pdf",
+      "resolved_url": "https://dl.radxa.com/dragon/q6a/hw/radxa_dragon_q6a_2d_dimensions_v1.21.pdf",
+      "retrieved_on": "2026-09-23",
+      "bytes": 269317,
+      "sha256": "ff56172f8e1855e40cabc8cb39f59acc56651decc2718929f04390d0787261c1",
+      "transformation": "none; original downloaded bytes",
+      "pages": 1,
+      "version": "V1.21 (resource catalog and filename)",
+      "date_note": "PDF creation/modification metadata: 2025-09-15"
+    },
+    {
+      "file": "interfaces.webp",
+      "source_url": "https://raw.githubusercontent.com/radxa-docs/docs/c44bfe6c70845dd265b50436a6b3a52f0d107377/static/img/dragon/q6a/q6a_interface.webp",
+      "bytes": 283348,
+      "sha256": "b35bfaff24c783a16a33812639fb891108b626901326f974bd75adafe055a25d",
+      "revision": "c44bfe6c70845dd265b50436a6b3a52f0d107377",
+      "resolved_url": "https://raw.githubusercontent.com/radxa-docs/docs/c44bfe6c70845dd265b50436a6b3a52f0d107377/static/img/dragon/q6a/q6a_interface.webp",
+      "retrieved_on": "2026-09-23",
+      "transformation": "none; original downloaded bytes",
+      "version": "Unversioned illustration at the recorded documentation commit"
+    }
+  ],
+  "source_repository": {
+    "url": "https://github.com/radxa-docs/docs",
+    "commit": "c44bfe6c70845dd265b50436a6b3a52f0d107377",
+    "committer_timestamp": "2026-09-22T03:42:06Z",
+    "files": [
+      {
+        "path": "i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/README.md",
+        "url": "https://raw.githubusercontent.com/radxa-docs/docs/c44bfe6c70845dd265b50436a6b3a52f0d107377/i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/README.md",
+        "bytes": 11575,
+        "sha256": "8bc1c7b5ecd043cde46460706b71404356c797bc50815852e788b08568318d79",
+        "retrieved_on": "2026-09-23",
+        "scope": "board documentation source; not a physical test"
+      },
+      {
+        "path": "i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/download.md",
+        "url": "https://raw.githubusercontent.com/radxa-docs/docs/c44bfe6c70845dd265b50436a6b3a52f0d107377/i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/download.md",
+        "bytes": 4746,
+        "sha256": "80a89ccd3b5599858dcab021b4c4b5479f5f497ad57667d18f9731c6fe0c13a8",
+        "retrieved_on": "2026-09-23",
+        "scope": "board documentation source; not a physical test"
+      },
+      {
+        "path": "i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/faq.md",
+        "url": "https://raw.githubusercontent.com/radxa-docs/docs/c44bfe6c70845dd265b50436a6b3a52f0d107377/i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/faq.md",
+        "bytes": 6894,
+        "sha256": "f9a8b1f291028bbda45c457ceed887cf89c366b4963aa4b0f55ff983198806db",
+        "retrieved_on": "2026-09-23",
+        "scope": "board documentation source; not a physical test"
+      },
+      {
+        "path": "i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/hardware-use/hardware-info.md",
+        "url": "https://raw.githubusercontent.com/radxa-docs/docs/c44bfe6c70845dd265b50436a6b3a52f0d107377/i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/hardware-use/hardware-info.md",
+        "bytes": 2755,
+        "sha256": "8120acd13472777d4f367e8d71c3174698c9947d855f48e4355584b7adf2d7cd",
+        "retrieved_on": "2026-09-23",
+        "scope": "board documentation source; not a physical test"
+      },
+      {
+        "path": "i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/hardware-use/pin-gpio.md",
+        "url": "https://raw.githubusercontent.com/radxa-docs/docs/c44bfe6c70845dd265b50436a6b3a52f0d107377/i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/hardware-use/pin-gpio.md",
+        "bytes": 10028,
+        "sha256": "418fbacb9e43e10e26b610dd4fd69710da3d688d79a594d8e2ae6c7c06542ebe",
+        "retrieved_on": "2026-09-23",
+        "scope": "board documentation source; not a physical test"
+      },
+      {
+        "path": "i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/hardware-use/mipi-csi.md",
+        "url": "https://raw.githubusercontent.com/radxa-docs/docs/c44bfe6c70845dd265b50436a6b3a52f0d107377/i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/hardware-use/mipi-csi.md",
+        "bytes": 1328,
+        "sha256": "bc41e46d479af130a0950a892d9648e02e4cd2e6897a222f0de5389f323934cc",
+        "retrieved_on": "2026-09-23",
+        "scope": "board documentation source; not a physical test"
+      },
+      {
+        "path": "i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/hardware-use/ufs-emmc-com.md",
+        "url": "https://raw.githubusercontent.com/radxa-docs/docs/c44bfe6c70845dd265b50436a6b3a52f0d107377/i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/hardware-use/ufs-emmc-com.md",
+        "bytes": 2533,
+        "sha256": "b1d941f88637f016c1dba8796b91cc4040fb2105106aa9c94021c4b87537ad61",
+        "retrieved_on": "2026-09-23",
+        "scope": "board documentation source; not a physical test"
+      },
+      {
+        "path": "i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/hardware-use/nvme.md",
+        "url": "https://raw.githubusercontent.com/radxa-docs/docs/c44bfe6c70845dd265b50436a6b3a52f0d107377/i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/hardware-use/nvme.md",
+        "bytes": 2167,
+        "sha256": "79c2ad1f22cddced2cf6c20bb05df84a202abde0653038f79949acbf287d17a1",
+        "retrieved_on": "2026-09-23",
+        "scope": "board documentation source; not a physical test"
+      },
+      {
+        "path": "i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/hardware-use/boot.md",
+        "url": "https://raw.githubusercontent.com/radxa-docs/docs/c44bfe6c70845dd265b50436a6b3a52f0d107377/i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/hardware-use/boot.md",
+        "bytes": 665,
+        "sha256": "84aefdcfefc50f887cacc3348db52177305ecfcd95680f9ad22e230c60eba6a6",
+        "retrieved_on": "2026-09-23",
+        "scope": "board documentation source; not a physical test"
+      },
+      {
+        "path": "i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/hardware-use/power-header.md",
+        "url": "https://raw.githubusercontent.com/radxa-docs/docs/c44bfe6c70845dd265b50436a6b3a52f0d107377/i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/hardware-use/power-header.md",
+        "bytes": 2173,
+        "sha256": "54bc44afb97fc1766674915f01fc08a1101763ab62d769443ad791f9273cae8e",
+        "retrieved_on": "2026-09-23",
+        "scope": "board documentation source; not a physical test"
+      },
+      {
+        "path": "i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/hardware-use/usb.md",
+        "url": "https://raw.githubusercontent.com/radxa-docs/docs/c44bfe6c70845dd265b50436a6b3a52f0d107377/i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/hardware-use/usb.md",
+        "bytes": 4845,
+        "sha256": "38d7b115586e19ff98103b5eb25b92c47408e788f4ab2364d8203c3d590ecfb0",
+        "retrieved_on": "2026-09-23",
+        "scope": "board documentation source; not a physical test"
+      },
+      {
+        "path": "i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/other-system/android.md",
+        "url": "https://raw.githubusercontent.com/radxa-docs/docs/c44bfe6c70845dd265b50436a6b3a52f0d107377/i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/other-system/android.md",
+        "bytes": 7639,
+        "sha256": "d10e6e51658234403a187b3530e6033683a74028725a12adaa44e9b23755d797",
+        "retrieved_on": "2026-09-23",
+        "scope": "board documentation source; not a physical test"
+      },
+      {
+        "path": "i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/other-system/armbian.md",
+        "url": "https://raw.githubusercontent.com/radxa-docs/docs/c44bfe6c70845dd265b50436a6b3a52f0d107377/i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/other-system/armbian.md",
+        "bytes": 2120,
+        "sha256": "36c4654c8eb84c3eb2a7327bcb0d3a1d3430bf6a731e1bb83452ffc64f8a87d7",
+        "retrieved_on": "2026-09-23",
+        "scope": "board documentation source; not a physical test"
+      },
+      {
+        "path": "i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/system-config/uart-debug.md",
+        "url": "https://raw.githubusercontent.com/radxa-docs/docs/c44bfe6c70845dd265b50436a6b3a52f0d107377/i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/system-config/uart-debug.md",
+        "bytes": 1605,
+        "sha256": "7caf9059b362529dd79d7345c5db01380bae4f433ded56142b9684c296bff83c",
+        "retrieved_on": "2026-09-23",
+        "scope": "board documentation source; not a physical test"
+      },
+      {
+        "path": "i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/system-config/ssh.md",
+        "url": "https://raw.githubusercontent.com/radxa-docs/docs/c44bfe6c70845dd265b50436a6b3a52f0d107377/i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/system-config/ssh.md",
+        "bytes": 319,
+        "sha256": "a8f5f1b3e4084f6a10ea550ce34362f68436c3ec7daa0d61dfcd923941b95841",
+        "retrieved_on": "2026-09-23",
+        "scope": "wrapper only; imported common guide not audited"
+      },
+      {
+        "path": "i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/low-level-dev/radxa-os-boot.md",
+        "url": "https://raw.githubusercontent.com/radxa-docs/docs/c44bfe6c70845dd265b50436a6b3a52f0d107377/i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/low-level-dev/radxa-os-boot.md",
+        "bytes": 7041,
+        "sha256": "0c00cc6f4662997cda4209a1fde13a4f80cce10a890035ecddeff833d33f743b",
+        "retrieved_on": "2026-09-23",
+        "scope": "board documentation source; not a physical test"
+      },
+      {
+        "path": "i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/low-level-dev/bios.md",
+        "url": "https://raw.githubusercontent.com/radxa-docs/docs/c44bfe6c70845dd265b50436a6b3a52f0d107377/i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/low-level-dev/bios.md",
+        "bytes": 333,
+        "sha256": "1f37b8cb59ea51d11988a7971fccd6fb1d684964ccb485ecb24367cdafd1c384",
+        "retrieved_on": "2026-09-23",
+        "scope": "wrapper only; imported common guide not audited"
+      },
+      {
+        "path": "i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/low-level-dev/build-system/kernel.md",
+        "url": "https://raw.githubusercontent.com/radxa-docs/docs/c44bfe6c70845dd265b50436a6b3a52f0d107377/i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/low-level-dev/build-system/kernel.md",
+        "bytes": 349,
+        "sha256": "c5420bf2bb361af09cd1dcae38eb145cd3b582d75a300e45aa8a6886905b4363",
+        "retrieved_on": "2026-09-23",
+        "scope": "wrapper only; imported common guide not audited"
+      },
+      {
+        "path": "i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/accessories/camera-4k.md",
+        "url": "https://raw.githubusercontent.com/radxa-docs/docs/c44bfe6c70845dd265b50436a6b3a52f0d107377/i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/accessories/camera-4k.md",
+        "bytes": 2482,
+        "sha256": "be8f03059b50de2350ca76de149df25b4953571fce07b500ab51cbc3751fb7b7",
+        "retrieved_on": "2026-09-23",
+        "scope": "board-specific content and import parameters; imported common guide not audited"
+      },
+      {
+        "path": "i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/getting-started/install-system/nvme-system/no-nvme-reader.md",
+        "url": "https://raw.githubusercontent.com/radxa-docs/docs/c44bfe6c70845dd265b50436a6b3a52f0d107377/i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/getting-started/install-system/nvme-system/no-nvme-reader.md",
+        "bytes": 1865,
+        "sha256": "1659d5805e0339f7021624fde1d2575eccc997b409f8a3b383406fbdc69b1c17",
+        "retrieved_on": "2026-09-23",
+        "scope": "board-specific content and import parameters; imported common guide not audited"
+      },
+      {
+        "path": "i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/getting-started/install-system/ufs-system/no-ufs-reader.md",
+        "url": "https://raw.githubusercontent.com/radxa-docs/docs/c44bfe6c70845dd265b50436a6b3a52f0d107377/i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/getting-started/install-system/ufs-system/no-ufs-reader.md",
+        "bytes": 1840,
+        "sha256": "98b967a9439248f6555a30674f491c1da42806003d3b6808a63fc8c38d55206a",
+        "retrieved_on": "2026-09-23",
+        "scope": "board-specific content and import parameters; imported common guide not audited"
+      },
+      {
+        "path": "i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/low-level-dev/spi-fw.md",
+        "url": "https://raw.githubusercontent.com/radxa-docs/docs/c44bfe6c70845dd265b50436a6b3a52f0d107377/i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a/low-level-dev/spi-fw.md",
+        "bytes": 6444,
+        "sha256": "beb76ccdc2e327eeb2b21d4abf3d5b19562310f643de59fea7b599572700f0b1",
+        "retrieved_on": "2026-09-23",
+        "scope": "board documentation source; not a physical test"
+      }
+    ]
+  },
+  "online_references": [
+    {
+      "url": "https://www.armbian.com/radxa-dragon-q6a/",
+      "resolved_url": "https://armbian.com/boards/radxa-dragon-q6a",
+      "accessed_on": "2026-09-23",
+      "scope": "Catalog lists Standard support, stable 26.8.1 Minimal/CLI Debian 13 and Ubuntu 26.04 images, kernel current 6.18.2; no image downloaded or verified."
+    }
+  ],
+  "review_scope": "Visual review of schematic PDF pages 2, 24, 32; both placement pages; dimensions page; interface illustration. Source notes preserve firmware/storage distinctions and unqualified camera support."
+}
