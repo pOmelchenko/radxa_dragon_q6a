@@ -99,8 +99,8 @@
     },
     {
       "path": "docs/SHA256SUMS",
-      "normalize_lf": false,
-      "sha256": "3397a8db41a0937f6c4ab83666d5a10f9dbe5efb4519ced90cf21735c4b82260"
+      "normalize_lf": true,
+      "sha256": "03e7258cdc36148e066cef82a2690ba9c1e6f904f8f1a1db492b21b2e88322a6"
     },
     {
       "path": "docs/sources.json",
