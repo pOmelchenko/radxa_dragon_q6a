@@ -1,73 +1,82 @@
-# Radxa Dragon Q6A Source Documents
+# Документы производителя Radxa Dragon Q6A
 
-Collected on **2026-09-23** from the
-[official resource catalog](https://docs.radxa.com/en/dragon/q6a/download)
-and Radxa's documentation repository. Original downloads are retained without
-conversion. Interpretation lives in the [hardware reference](../research/hardware-reference.md),
-[system/storage notes](../research/system-and-storage.md) and
-[camera investigation](../camera-research.md).
+Материалы получены **23 сентября 2026 года** из
+[официального каталога](https://docs.radxa.com/en/dragon/q6a/download)
+и репозитория документации Radxa. Оригинальные файлы сохранены без
+преобразований. Разбор приведён в [аппаратном справочнике](../research/hardware-reference.md),
+[заметках об ОС и накопителях](../research/system-and-storage.md)
+и [камерных экспериментах](../camera-research.md).
 
-## Retained Originals
+## Сохранённые оригиналы
 
-| File | Revision and scope |
+| Файл | Версия и содержание |
 | --- | --- |
-| [Schematic](radxa-q6a-schematic-v1.21.pdf) | **V1.21**, 35 PDF pages. Reviewed schematic title blocks carry **2025-09-12**; internal printed sheet numbers run within a 37-sheet scheme and differ from PDF page numbers. |
-| [Component placement](radxa-q6a-components-v1.21.pdf) | Published as **V1.21**, two pages: top and bottom. PDF creation/modification metadata date is **2025-06-21**. |
-| [2D dimensions](radxa-q6a-dimensions-v1.21.pdf) | Published as **V1.21**, one page with both board faces. PDF creation/modification metadata date is **2025-09-15**. |
-| [Interface illustration](interfaces.webp) | Numbered board interfaces from the pinned documentation repository. No explicit image revision; use as an orientation aid. |
+| [Принципиальная схема](radxa-q6a-schematic-v1.21.pdf) | **V1.21**, 35 страниц PDF. В изученных основных надписях указано **2025-09-12**; внутренняя нумерация листов относится к схеме из 37 листов и отличается от номеров страниц PDF. |
+| [Размещение компонентов](radxa-q6a-components-v1.21.pdf) | Опубликовано как **V1.21**, две страницы: верхняя и нижняя стороны. В метаданных создания и изменения PDF указано **2025-06-21**. |
+| [Механические размеры](radxa-q6a-dimensions-v1.21.pdf) | Опубликовано как **V1.21**, одна страница с обеими сторонами платы. В метаданных создания и изменения PDF указано **2025-09-15**. |
+| [Иллюстрация разъёмов](interfaces.webp) | Нумерованные интерфейсы платы из зафиксированной версии репозитория документации. Версия самого изображения не указана; оно служит для ориентации на плате. |
 
-The schematic review covered the block diagram, debug UART and camera
-circuits. Both placement pages, the dimensions and interface illustration
-were visually inspected. Retaining the entire schematic is not a complete
-electrical audit; the owner's PCB revision and fitted optional parts still
-need identification. Metadata dates are not inferred publication dates.
+При изучении схемы рассмотрены блок-схема, отладочный UART и камерные цепи.
+Визуально проверены обе страницы размещения компонентов, размеры
+и иллюстрация разъёмов. Сохранение всей схемы не означает полного
+электрического аудита. Ревизию имеющейся платы и установленные
+необязательные компоненты ещё нужно определить. Даты метаданных
+не считаются датами публикации.
 
-## Online And Pinned Sources
+## Источники и зафиксированная версия
 
-Radxa documentation was inspected at repository commit
+Документация Radxa изучалась на коммите
 [`c44bfe6c70845dd265b50436a6b3a52f0d107377`](https://github.com/radxa-docs/docs/tree/c44bfe6c70845dd265b50436a6b3a52f0d107377/i18n/en/docusaurus-plugin-content-docs/current/dragon/q6a)
-(committer timestamp **2026-09-22T03:42:06Z**). The manifest records raw-source
-paths, URLs, sizes and hashes. Upstream Markdown was read in a temporary
-checkout area and is not duplicated here with unresolved imports/asset paths.
-Wrapper pages are identified as such; their imported common guides were not
-audited as full procedures.
+с временем фиксации **2026-09-22T03:42:06Z**. Манифест содержит пути
+исходников, URL, размеры и хеши. Исходные Markdown-файлы читались
+во временной копии репозитория и здесь не дублируются с неразрешёнными
+импортами и путями к ресурсам. Для страниц, подключающих общие руководства,
+в манифесте отдельно отмечено, что импортированные инструкции полностью
+не проверялись.
 
-- [Board overview](https://docs.radxa.com/en/dragon/q6a),
-  [hardware interfaces](https://docs.radxa.com/en/dragon/q6a/hardware-use/hardware-info),
+- [Обзор платы](https://docs.radxa.com/en/dragon/q6a),
+  [аппаратные интерфейсы](https://docs.radxa.com/en/dragon/q6a/hardware-use/hardware-info),
   [CSI](https://docs.radxa.com/en/dragon/q6a/hardware-use/mipi-csi),
   [GPIO](https://docs.radxa.com/en/dragon/q6a/hardware-use/pin-gpio),
-  [power](https://docs.radxa.com/en/dragon/q6a/hardware-use/power-header) and
-  [debug UART](https://docs.radxa.com/en/dragon/q6a/system-config/uart-debug).
+  [питание](https://docs.radxa.com/en/dragon/q6a/hardware-use/power-header)
+  и [отладочный UART](https://docs.radxa.com/en/dragon/q6a/system-config/uart-debug).
 - [NVMe](https://docs.radxa.com/en/dragon/q6a/hardware-use/nvme),
   [eMMC/UFS](https://docs.radxa.com/en/dragon/q6a/hardware-use/ufs-emmc-com),
-  [boot options](https://docs.radxa.com/en/dragon/q6a/hardware-use/boot),
-  [BIOS recovery](https://docs.radxa.com/en/dragon/q6a/low-level-dev/spi-fw) and
-  [Radxa OS boot configuration](https://docs.radxa.com/en/dragon/q6a/low-level-dev/radxa-os-boot).
-- [Android installation](https://docs.radxa.com/en/dragon/q6a/other-system/android),
-  [Radxa's Armbian guide](https://docs.radxa.com/en/dragon/q6a/other-system/armbian),
-  [Armbian's current Q6A catalog](https://armbian.com/boards/radxa-dragon-q6a),
-  [Camera 4K example](https://docs.radxa.com/en/dragon/q6a/accessories/camera-4k)
-  and [FAQ](https://docs.radxa.com/en/dragon/q6a/faq).
+  [варианты загрузки](https://docs.radxa.com/en/dragon/q6a/hardware-use/boot),
+  [восстановление BIOS](https://docs.radxa.com/en/dragon/q6a/low-level-dev/spi-fw)
+  и [загрузка Radxa OS](https://docs.radxa.com/en/dragon/q6a/low-level-dev/radxa-os-boot).
+- [Установка Android](https://docs.radxa.com/en/dragon/q6a/other-system/android),
+  [руководство Radxa по Armbian](https://docs.radxa.com/en/dragon/q6a/other-system/armbian),
+  [каталог Q6A на Armbian](https://armbian.com/boards/radxa-dragon-q6a),
+  [пример Camera 4K](https://docs.radxa.com/en/dragon/q6a/accessories/camera-4k)
+  и [частые вопросы](https://docs.radxa.com/en/dragon/q6a/faq).
 
-Image and firmware archives are linked through the resource catalog, **not
-downloaded or inspected internally**. No image hash, flashing success or
-hardware support is inferred from a filename. Armbian's catalog was read
-online; OS-image checksum/signature validation remains an installation step.
+Образы ОС и архивы прошивок доступны по ссылкам из каталога, но
+**не скачивались и не изучались изнутри**. Имя файла не подтверждает его хеш,
+успех прошивки или поддержку оборудования. Каталог Armbian изучался онлайн;
+проверка контрольной суммы и подписи образа остаётся этапом установки.
 
-Additional mechanical resources, **not downloaded or reviewed**:
-[2D DXF archive](https://dl.radxa.com/dragon/q6a/hw/radxa_dragon_q6a_2d_dxf_v1.21.zip)
-and [3D STEP archive](https://dl.radxa.com/dragon/q6a/hw/radxa_dragon_q6a_3d_stp_v1.21.zip).
+Дополнительные механические материалы, **не скачанные и не изученные**:
+[архив 2D DXF](https://dl.radxa.com/dragon/q6a/hw/radxa_dragon_q6a_2d_dxf_v1.21.zip)
+и [архив 3D STEP](https://dl.radxa.com/dragon/q6a/hw/radxa_dragon_q6a_3d_stp_v1.21.zip).
 
-## Provenance And Verification
+## Происхождение и проверка целостности
 
-[sources.json](sources.json) records URLs, retrieval date, revisions, sizes,
-page counts and SHA-256 values. [SHA256SUMS](SHA256SUMS) covers the **four local
-originals**. From this directory:
+[sources.json](sources.json) содержит URL, даты получения, версии, размеры,
+число страниц и SHA-256. [SHA256SUMS](SHA256SUMS) покрывает
+**четыре сохранённых оригинала**. Проверка из этого каталога:
 
 ```sh
 sha256sum -c SHA256SUMS
 ```
 
-Hashes identify the retrieved bytes; they are not publisher signatures.
-Original documents retain their publishers' ownership and notices. Temporary
-PDF text/raster extractions are not included in this package.
+На macOS:
+
+```sh
+shasum -a 256 -c SHA256SUMS
+```
+
+Хеши определяют полученные байты, но не являются подписями издателя.
+Оригиналы сохраняют сведения о правообладателях и уведомления издателей.
+Временные извлечения текста и растровые изображения страниц PDF
+в репозиторий не включены.

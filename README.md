@@ -1,81 +1,66 @@
-# Radxa Dragon Q6A Bring-Up Workspace
+# Radxa Dragon Q6A
 
-Product-independent board references, OS preparation and peripheral experiments
-for the Radxa Dragon Q6A. This is an independent
-[Git repository](https://github.com/pOmelchenko/radxa_dragon_q6a), also pinned as
-a submodule at `hardware/board/radxa_dragon_q6a` in the LiDAR Viewer repository.
-Local documents and their provenance are included in this package; links to
-shared camera research point to the LiDAR Viewer repository.
+Репозиторий посвящён одноплатному компьютеру **Radxa Dragon Q6A**:
+аппаратной документации, подготовке ОС, настройке периферии, диагностике
+и восстановлению. Здесь собраны оригиналы документов производителя,
+справочные заметки и планы экспериментов с конкретной платой.
 
-## Checkout
-
-To work with this package independently:
+## Получение репозитория
 
 ```sh
 git clone git@github.com:pOmelchenko/radxa_dragon_q6a.git
 cd radxa_dragon_q6a
 ```
 
-Inside an existing LiDAR Viewer checkout, run from its repository root:
+## Имеющийся экземпляр платы
 
-```sh
-git submodule update --init -- hardware/board/radxa_dragon_q6a
-```
+Сведения владельца от **23 сентября 2026 года**:
 
-Changes to this package belong to its own repository. Publish its commit before
-updating the parent repository's gitlink. The initial package was extracted from
-[LiDAR Viewer commit `563271b7`](https://github.com/pOmelchenko/lidar_viewer/commit/563271b796e21d1f5a7b39e4457602a4676cac83);
-the original manufacturer files and their checksums are preserved.
-
-## Status
-
-Owner report, **2026-09-23**:
-
-| Item | Recorded state |
+| Компонент или направление | Зафиксированное состояние |
 | --- | --- |
-| Board / RAM | Radxa Dragon Q6A, **12 GB RAM**. PCB revision and CS/ES variant not recorded. |
-| Storage / current OS | **512 GB NVMe**, currently running **Ubuntu**; distribution release, image source, kernel and BIOS version not recorded. |
-| Main direction | Controller for the future scanner; planned migration to **Armbian Minimal/CLI without a desktop**. |
-| Camera experiment | The ordered color [AR0234 / DECXIN-3478V1 with 200° lens](https://github.com/pOmelchenko/lidar_viewer/blob/563271b796e21d1f5a7b39e4457602a4676cac83/hardware/camera/ar0234/README.md) was bought for compatibility tests on this board. Delivery and successful capture are not yet recorded. |
-| Optional OS experiment | Considering a **Radxa-compatible eMMC or UFS module** for Android; neither purchase nor installation is recorded. |
+| Плата и память | Radxa Dragon Q6A, **12 ГБ ОЗУ**. Ревизия PCB и вариант CS/ES не указаны. |
+| Накопитель и текущая ОС | **NVMe SSD 512 ГБ**, установлена **Ubuntu**. Версия дистрибутива, источник образа, ядро и версия BIOS не указаны. |
+| План по ОС | Переход на **Armbian Minimal/CLI без графического рабочего стола**. |
+| Камера | Для проверки совместимости с Q6A заказана цветная **AR0234 / DECXIN-3478V1 с объективом 200°**. Получение модуля и успешный захват изображения не зафиксированы; см. [план проверки](camera-research.md#эксперимент-с-ar0234). |
+| Дополнительный эксперимент с ОС | Рассматривается совместимый с Radxa модуль **eMMC или UFS** для Android. Покупка и установка не зафиксированы. |
 
-The installed Ubuntu system is owner-reported hardware state. No reproducible
-board test report, camera capture, throughput, synchronization or product
-qualification has been added. The intended scanner role does not establish
-that a viewer, recorder or SLAM application runs on this board.
+Установка Ubuntu описана со слов владельца. Воспроизводимый отчёт
+о проверке платы, захвате изображения, пропускной способности
+и синхронизации пока не добавлен.
 
-## Documentation
+## Документация
 
-- [Original manufacturer documents](docs/README.md): V1.21 schematic,
-  component placement, mechanical dimensions and connector illustration,
-  with source versions and checksums.
-- [Hardware reference](research/hardware-reference.md): storage, CSI ports,
-  power, serial console and the relevant schematic pages.
-- [Systems, storage and recovery](research/system-and-storage.md): current
-  NVMe installation, proposed headless Armbian migration, Android eMMC/UFS
-  requirements, BIOS handling and return to Linux.
-- [Camera research](camera-research.md): current AR0234 experiment and the
-  separate August IMX296 multi-camera proposal, with connector/driver/timing
-  boundaries preserved.
+- [Оригиналы документов производителя](docs/README.md): схема V1.21,
+  размещение компонентов, механические размеры и иллюстрация разъёмов;
+  версии, источники и контрольные суммы.
+- [Аппаратный справочник](research/hardware-reference.md): накопители,
+  CSI-разъёмы, питание, последовательная консоль и нужные страницы схемы.
+- [ОС, накопители и восстановление](research/system-and-storage.md): текущая
+  установка на NVMe, план перехода на Armbian, Android на eMMC/UFS,
+  работа с BIOS и возврат к Linux.
+- [Камерные эксперименты](camera-research.md): проверка AR0234 и отдельный
+  план подключения IMX296; разъёмы, драйверы, пропускная способность
+  и синхронизация.
 
-## Work To Collect
+## Что фиксировать в экспериментах
 
-- PCB/silicon identity, SSD model, OS image, boot firmware and kernel for each
-  experiment; retain the current Ubuntu baseline before replacing it.
-- Results of headless cold boot, SSH/network recovery and NVMe operation on
-  the chosen Armbian image.
-- AR0234 module pinout, audited adapter and software port, followed by a
-  single-stream test before trigger or multi-camera work.
-- Focused Ethernet, Wi-Fi, storage, GPIO, display, or other peripheral checks
-  as they are performed.
-- Scripts and patches together with their instructions, observed results,
-  and remaining limitations.
+- Ревизию PCB, вариант микросхемы, модель SSD, образ ОС, загрузочную прошивку
+  и ядро. Перед заменой ОС сохранить сведения о текущей установке Ubuntu.
+- Результаты холодного запуска без монитора, восстановления SSH и сети,
+  а также работы NVMe на выбранном образе Armbian.
+- Распиновку AR0234, проверенную схему переходника и программную настройку.
+  Сначала проверить один поток, затем внешний запуск и несколько камер.
+- Результаты проверок Ethernet, Wi-Fi, накопителей, GPIO, дисплея
+  и другой периферии.
+- Скрипты и патчи вместе с инструкциями, наблюдаемыми результатами,
+  ограничениями и способом восстановления.
 
-Add procedures and evidence as experiments are performed. Follow the shared
-[hardware ownership and validation rules](https://github.com/pOmelchenko/lidar_viewer/blob/563271b796e21d1f5a7b39e4457602a4676cac83/hardware/README.md).
+Подготовленный план, успешная сборка и проверка на физической плате
+должны быть отмечены отдельно. Образы ОС, сборочные каталоги и временные
+результаты экспериментов не добавляются в Git.
 
-## Reference Sources
+## Официальные источники
 
-- [Radxa Dragon Q6A product page](https://radxa.com/products/dragon/q6a/)
-- [Official board documentation](https://docs.radxa.com/en/dragon/q6a)
-- [OS images, boot firmware, and hardware resources](https://docs.radxa.com/en/dragon/q6a/download)
+- [Страница Radxa Dragon Q6A](https://radxa.com/products/dragon/q6a/).
+- [Документация платы](https://docs.radxa.com/en/dragon/q6a).
+- [Образы ОС, загрузочные прошивки и аппаратные материалы](https://docs.radxa.com/en/dragon/q6a/download).

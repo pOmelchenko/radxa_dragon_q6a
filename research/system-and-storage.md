@@ -1,17 +1,21 @@
-# Q6A Systems, Storage And Recovery
+# ОС, накопители и восстановление Q6A
 
-Status and official sources checked on **2026-09-23**. These are preparation
-notes, not a performed installation or recovery report.
+Состояние и официальные источники проверены **23 сентября 2026 года**.
+Это подготовительные заметки; установка и восстановление по ним
+не зафиксированы.
 
-## Current System And Intended Use
+## Текущая система
 
-The owner reports **Ubuntu on a 512 GB NVMe SSD, 12 GB RAM**. The board is
-intended to control the scanner, with **headless Armbian** replacing Ubuntu.
-An eMMC/UFS Android installation is a separate experiment under consideration.
-Ubuntu release/image origin, kernel, BIOS, PCB/silicon revision and SSD model
-remain unknown; do not label this installation Radxa OS without evidence.
+Владелец сообщил об **Ubuntu на NVMe SSD 512 ГБ и 12 ГБ ОЗУ**.
+Планируется переход на **Armbian без графического рабочего стола**.
+Установка Android на eMMC/UFS рассматривается как отдельный эксперимент.
 
-Before changing storage or firmware, collect a baseline **on the Q6A**:
+Версия Ubuntu, источник образа, ядро, BIOS, ревизия PCB, вариант
+микросхемы и модель SSD не указаны. Без этих сведений нельзя считать
+установленную систему Radxa OS.
+
+Перед изменением накопителя или прошивки собрать исходные сведения
+**на Q6A**:
 
 ```sh
 cat /etc/os-release
@@ -22,129 +26,144 @@ findmnt /
 sudo dmidecode -s bios-version
 ```
 
-Keep the image filename/hash, partition layout, BIOS identification and PCB
-markings with the eventual experiment report. Back up the current NVMe and
-retain a recovery image before replacing it. RAM capacity alone is not a
-record of the silicon variant or the appropriate firmware.
+Сохранить имя и хеш образа, разметку разделов, данные BIOS и маркировку PCB
+в отчёте об эксперименте. Перед заменой системы сделать резервную копию
+NVMe и сохранить образ для восстановления. Объём ОЗУ сам по себе
+не определяет вариант микросхемы и подходящую прошивку.
 
-## Headless Armbian Plan
+## План перехода на Armbian
 
-The [Armbian Q6A catalog](https://armbian.com/boards/radxa-dragon-q6a), inspected
-on this date, labels the board **Standard** and lists **Armbian 26.8.1** stable
-Minimal/CLI images with **current 6.18.2**, including **Debian 13 Trixie** and
-**Ubuntu 26.04 Resolute**. Separate UFS variants are listed. These are dated
-catalog observations; no image was downloaded, installed or tested here.
+В [каталоге Q6A на Armbian](https://armbian.com/boards/radxa-dragon-q6a),
+изученном 23 сентября 2026 года, плата отмечена как **Standard**.
+Указаны стабильные образы **Armbian 26.8.1** Minimal/CLI
+с ядром **current 6.18.2**, включая **Debian 13 Trixie**
+и **Ubuntu 26.04 Resolute**. Для UFS приведены отдельные варианты.
+Это сведения каталога на указанную дату; образы здесь не скачивались,
+не устанавливались и не проверялись.
 
-Select a **Minimal/CLI image for Q6A and the intended storage**, preserving
-the filename and publisher checksum/signature. The Debian stable Minimal
-entry is a reasonable first candidate; Ubuntu Minimal is also available if
-its userspace is preferred. Neither needs a desktop. The
-[Radxa Armbian page](https://docs.radxa.com/en/dragon/q6a/other-system/armbian)
-still lists different distribution releases, so use Armbian's own catalog
-for the image selection. Radxa also requires current UEFI firmware; resolve
-the concrete compatible version before installation.
+Выбирать образ **Minimal/CLI для Q6A и нужного накопителя**, сохраняя
+имя файла и опубликованную контрольную сумму или подпись.
+Debian stable Minimal рассматривается как первый вариант;
+Ubuntu Minimal подходит при предпочтении этой пользовательской среды.
+Рабочий стол для обоих вариантов не нужен.
 
-Proposed migration sequence:
+На [странице Radxa об Armbian](https://docs.radxa.com/en/dragon/q6a/other-system/armbian)
+указаны другие версии дистрибутивов, поэтому образ следует выбирать
+по каталогу Armbian. Radxa также требует актуальную UEFI-прошивку;
+конкретную совместимую версию нужно определить до установки.
 
-1. Preserve the Ubuntu/NVMe baseline and a matching Linux BIOS recovery bundle.
-2. Test the selected image on spare boot media, where supported, before
-   overwriting the 512 GB drive. Confirm its firmware and storage requirements.
-3. Configure network access and SSH for unattended boot. Verify access after
-   power cycling with no HDMI display or graphical login. For Wi-Fi, use a
-   system connection that does not depend on unlocking a desktop keyring.
-4. Validate NVMe detection/root filesystem, Ethernet, thermal behavior and
-   sustained file writes. Keep test files on a filesystem; do not use a raw
-   disk overwrite as a storage benchmark.
-5. Move to the intended NVMe installation and repeat cold-boot checks. Start
-   [AR0234 bring-up](../camera-research.md#ar0234-experiment) against the exact
-   installed kernel/device tree before claiming camera support.
+Порядок перехода:
 
-The distribution label does not qualify CSI, ISP, encoder, GPIO or timestamp
-behavior. Record those separately. Scanner deployment belongs to its product;
-this package owns board preparation and independent peripheral tests.
+1. Сохранить исходное состояние Ubuntu/NVMe и подходящий комплект
+   восстановления Linux BIOS.
+2. Проверить образ на запасном загрузочном носителе, если это поддерживается,
+   до перезаписи SSD 512 ГБ. Уточнить требования к прошивке и накопителю.
+3. Настроить сеть и SSH для запуска без участия пользователя.
+   Проверить доступ после отключения и включения питания без HDMI
+   и графического входа. Wi-Fi должен использовать системное соединение,
+   не зависящее от разблокировки связки ключей рабочего стола.
+4. Проверить обнаружение NVMe, корневую файловую систему, Ethernet,
+   температурный режим и длительную запись файлов. Для измерений
+   использовать файлы в файловой системе, а не перезапись сырого диска.
+5. Установить систему на выбранный NVMe и повторить холодный запуск.
+   Начать [проверку AR0234](../camera-research.md#эксперимент-с-ar0234)
+   на конкретных установленных ядре и дереве устройств.
 
-## Storage And Published Images
+Название дистрибутива не подтверждает работу CSI, ISP, кодировщика,
+GPIO или временных меток. Эти возможности проверяются отдельно.
 
-| Medium | Linux role | Published Android 15 route |
+## Накопители и опубликованные образы
+
+| Носитель | Использование с Linux | Путь установки Android 15 в документации |
 | --- | --- | --- |
-| Current 512 GB NVMe | Main planned Armbian storage; M.2 2230 PCIe Gen3 x2 | Not a supported system boot medium in Radxa's inspected Android guide. |
-| Radxa-compatible eMMC | Alternative system medium | Matching eMMC image plus the accompanying SPI NOR BIOS. |
-| Radxa-compatible UFS | Alternative system medium with storage-specific images | Matching UFS image plus SPI NOR BIOS and additional UFS provisioning. |
-| microSD / USB | Linux installation/recovery candidates | Not listed as Android system boot media. |
+| Текущий NVMe 512 ГБ | Основной планируемый накопитель Armbian; M.2 2230 PCIe Gen3 x2 | Не указан как поддерживаемый системный загрузочный носитель в изученном руководстве Radxa по Android. |
+| Совместимый с Radxa eMMC | Альтернативный системный носитель | Соответствующий образ eMMC и BIOS для SPI NOR из того же комплекта. |
+| Совместимый с Radxa UFS | Альтернативный системный носитель со специальными образами | Соответствующий образ UFS, BIOS для SPI NOR и дополнительная подготовка UFS. |
+| microSD / USB | Возможные носители установки и восстановления Linux | Не указаны как системные загрузочные носители Android. |
 
-The [combo connector](https://docs.radxa.com/en/dragon/q6a/hardware-use/ufs-emmc-com)
-accepts eMMC **or** UFS. Buy a Q6A-compatible module rather than choosing by
-capacity or storage-standard name alone. Neither module has been selected.
-For a first Android boot experiment, eMMC has fewer setup steps; UFS is useful
-if evaluating that storage path is itself a goal. This is a workflow comparison,
-not a measured performance ranking or a purchase decision.
+[Комбинированный разъём](https://docs.radxa.com/en/dragon/q6a/hardware-use/ufs-emmc-com)
+принимает **eMMC или UFS**. Модуль должен быть совместим с Q6A;
+ёмкости и названия стандарта недостаточно. Пока модуль не выбран.
 
-The [Radxa download catalog](https://docs.radxa.com/en/dragon/q6a/download)
-lists Radxa OS R2 `output_512` images for SD/USB/eMMC/NVMe and `output_4096`
-for UFS. Its R1-and-newer requirement is BIOS **20251230 or newer**; the listed
-Linux BIOS bundle is **flat_build_260120**. These Radxa OS identifiers do not
-identify the owner's Ubuntu or replace Armbian's firmware requirements.
+Для первого эксперимента с Android установка на eMMC содержит меньше шагов.
+UFS имеет смысл, если проверяется именно этот накопитель. Это сравнение
+процедур, а не измеренной производительности.
 
-For Android, the catalog currently links **20260630-b1 Android 15** archives
-for eMMC and UFS. Each contains its matching BIOS. The overview also mentions
-Android 16 for ES silicon, while other overview text mentions Android 14;
-the concrete download/install path reviewed here is Android 15. Confirm the
-actual CS/ES unit and image applicability before flashing.
+В [каталоге загрузок Radxa](https://docs.radxa.com/en/dragon/q6a/download)
+на указанную дату были образы Radxa OS R2 `output_512`
+для SD/USB/eMMC/NVMe и `output_4096` для UFS.
+Для R1 и новее требуется BIOS **20251230 или новее**;
+указанный комплект Linux BIOS — **flat_build_260120**.
+Эти обозначения не определяют установленную у владельца Ubuntu
+и не заменяют требования Armbian к прошивке.
 
-## Android Experiment And Return To Linux
+Для Android каталог содержит архивы **20260630-b1 Android 15**
+для eMMC и UFS, каждый со своим BIOS. В обзоре также упоминается
+Android 16 для варианта ES, а в другом тексте — Android 14;
+изученный здесь путь скачивания и установки относится к Android 15.
+Перед прошивкой нужно определить фактический вариант CS/ES
+и применимость выбранного образа.
 
-The [Android guide](https://docs.radxa.com/en/dragon/q6a/other-system/android)
-requires an x86 Windows/Linux host, a compatible module and the Qualcomm
-tools obtained through Software Center/account access. Its published image
-workflow uses **xPCATApp**:
+## Android и возврат к Linux
 
-1. Enter EDL by holding the EDL button while applying board power, then
-   releasing it. Connect the host with the specified Type-A data cable to
-   the board's **USB 3.1 OTG port**, not the USB-C power input.
-2. Flash the archive's `spinor` directory as **SPINOR**.
-3. For UFS only, provision with `provision_ufs31.xml` and the matching
-   `prog_firehose_ddr.elf` device programmer.
-4. Flash `emmc/asic` as **EMMC**, or `ufs/asic` as **UFS**.
+[Руководство по Android](https://docs.radxa.com/en/dragon/q6a/other-system/android)
+требует компьютера x86 с Windows/Linux, совместимого модуля памяти
+и инструментов Qualcomm, полученных через Software Center с доступом
+к учётной записи. Опубликованная процедура использует **xPCATApp**:
 
-Use the linked guide and matching bundle for the actual procedure. Generic
-Linux image-writing or BIOS EDL-NG instructions do not establish an alternative
-supported Android flashing method. UFS provisioning changes the module's
-configuration and belongs to a deliberate reinstall, not a harmless probe.
+1. Для входа в EDL удерживать кнопку EDL при подаче питания на плату,
+   затем отпустить её. Подключить компьютер указанным кабелем данных Type-A
+   к **порту USB 3.1 OTG** платы, а не к USB-C для питания.
+2. Записать каталог `spinor` из архива как **SPINOR**.
+3. Только для UFS выполнить подготовку с `provision_ufs31.xml`
+   и соответствующим загрузчиком `prog_firehose_ddr.elf`.
+4. Записать `emmc/asic` как **EMMC** или `ufs/asic` как **UFS**.
 
-**The SPI NOR BIOS is shared board state.** A separate Android module does
-not isolate the NVMe system from firmware changes. Retain the known-working
-Linux BIOS/image and verify the documented EDL connection before changing it.
-When returning to Linux, restore a compatible BIOS if required, select the
-intended boot medium and recheck NVMe boot. Automatic dual boot and return
-without reflashing are not established by these sources.
+Для выполнения процедуры нужны связанное руководство и подходящий комплект.
+Обычная запись Linux-образа или инструкции BIOS EDL-NG не подтверждают
+альтернативный поддерживаемый способ установки Android.
+Подготовка UFS меняет конфигурацию модуля и относится к переустановке.
 
-The [direct-UFS boot option](https://docs.radxa.com/en/dragon/q6a/hardware-use/boot)
-is a separate resistor modification that removes SD/eMMC/NVMe boot support.
-**It is not a step in the BIOS-plus-UFS Android procedure above.** Keep the
-default SPI NOR boot arrangement for this planned NVMe/Android experiment.
+**BIOS в SPI NOR общий для платы.** Отдельный модуль Android не изолирует
+систему на NVMe от изменения прошивки. До изменений сохранить рабочие
+Linux BIOS и образ, а также проверить описанное подключение EDL.
 
-For Linux firmware recovery, Radxa documents
-[BIOS flashing through EDL-NG](https://docs.radxa.com/en/dragon/q6a/low-level-dev/spi-fw).
-Record the exact loader, rawprogram/patch files and destination memory type.
-Do not erase working BIOS as routine preparation. The
-[serial-console reference](hardware-reference.md#power-and-serial-console)
-provides a separate way to capture boot failures.
+При возврате к Linux восстановить совместимый BIOS, если это требуется,
+выбрать нужный загрузочный носитель и повторно проверить загрузку NVMe.
+Автоматическая двойная загрузка и возврат без перепрошивки
+этими источниками не подтверждены.
 
-## BSP And Camera Boundary
+[Прямая загрузка с UFS](https://docs.radxa.com/en/dragon/q6a/hardware-use/boot)
+требует отдельного изменения резисторов, отключающего загрузку
+с SD/eMMC/NVMe. **Это не шаг процедуры Android с BIOS и UFS выше.**
+Для планируемых экспериментов NVMe/Android сохраняется штатная
+схема загрузки через SPI NOR.
 
-Radxa's [kernel-development entry](https://docs.radxa.com/en/dragon/q6a/low-level-dev/build-system/kernel)
-points to `radxa-pkg/linux-qcom`. Its
-[Radxa OS boot guide](https://docs.radxa.com/en/dragon/q6a/low-level-dev/radxa-os-boot)
-describes BIOS/default DT versus explicit device trees and overlays. Do not
-assume Radxa OS `rsetup`, boot paths or overlays apply unchanged to Armbian.
+Для восстановления Linux-прошивки Radxa описывает
+[запись BIOS через EDL-NG](https://docs.radxa.com/en/dragon/q6a/low-level-dev/spi-fw).
+Нужно зафиксировать конкретные загрузчик, файлы rawprogram/patch
+и тип памяти назначения. Стирание рабочего BIOS не является подготовительным
+шагом. [Последовательная консоль](hardware-reference.md#питание-и-последовательная-консоль)
+позволяет отдельно записать ошибки запуска.
 
-Radxa's [Camera 4K example](https://docs.radxa.com/en/dragon/q6a/accessories/camera-4k)
-uses libcamera/GStreamer and distinguishes software and Venus hardware
-encoding. It does not establish AR0234 support. The
-[FAQ](https://docs.radxa.com/en/dragon/q6a/faq) also records a hypervisor-related
-encoder workaround and its effect on `/dev/mtd0`; treat it as a BSP-specific
-diagnostic reference, not a setting to apply preemptively.
+## BSP и работа камер
 
-Android boot success would likewise not prove AR0234 camera HAL/ISP support.
-Keep Linux and Android camera results separate. Source revision, file hashes
-and retrieved manufacturer documents are indexed in [docs](../docs/README.md).
+[Раздел Radxa о сборке ядра](https://docs.radxa.com/en/dragon/q6a/low-level-dev/build-system/kernel)
+указывает на `radxa-pkg/linux-qcom`.
+[Описание загрузки Radxa OS](https://docs.radxa.com/en/dragon/q6a/low-level-dev/radxa-os-boot)
+различает BIOS и дерево устройств по умолчанию, явно заданные деревья
+и оверлеи. Нельзя считать, что `rsetup`, пути загрузки и оверлеи Radxa OS
+без изменений применимы к Armbian.
+
+[Пример Camera 4K](https://docs.radxa.com/en/dragon/q6a/accessories/camera-4k)
+использует libcamera/GStreamer и различает программное кодирование
+и аппаратное кодирование Venus. Он не подтверждает поддержку AR0234.
+[Раздел частых вопросов](https://docs.radxa.com/en/dragon/q6a/faq)
+описывает обход проблемы кодировщика, связанной с гипервизором,
+и влияние на `/dev/mtd0`. Это диагностическая заметка для конкретного BSP,
+а не настройка для предварительного применения.
+
+Успешная загрузка Android также не подтверждает работу камерного HAL/ISP
+для AR0234. Результаты камерных испытаний Linux и Android фиксируются отдельно.
+Версии источников, хеши файлов и документы производителя собраны
+в [каталоге документов](../docs/README.md).
