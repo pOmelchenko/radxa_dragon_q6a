@@ -2,12 +2,18 @@
 
 Установите Android 15 на **Q6A 12 ГБ с TOSHIBA THGJFCT2T84BAKCB rev 0100,
 UFS 3.0, 512 ГБ**. Рабочее решение использует исправленный XBL в UFS и SPI.
-Результат: завершённая загрузка Android и интерфейс HDMI после reset.
+Результат: завершённая загрузка Android и интерфейс HDMI, успешная обычная
+перезагрузка, два холодных включения и чтение UFS после простоя.
 
 Условия применимости: Secure Boot Off, закреплённый комплект Android 15,
-исправленный edl-ng v2 на Windows. Отдельные операции и итоговая загрузка
-проверены на плате; холодный запуск и повторный полный прогон на чистом модуле
-требуют отдельной проверки.
+исправленный edl-ng v2 на Windows. Проверен переход с Linux на уже настроенном
+UFS: полная запись Android, подготовленная ext4 metadata, исправленные XBL/SPI
+и повторные загрузки с UFS как единственного носителя. На каждом из четырёх
+проверенных запусков прочитан 1 ГиБ после сброса буферов и 45 секунд простоя;
+ошибок UFS и изменения ID загрузки за время чтения нет.
+Provisioning существующего модуля сохранён.
+Результаты: [запись и обратное чтение](../reference/validation/android-image-write-2026-10-11.json),
+[проверенные запуски](../reference/validation/android-boot-2026-10-11.json).
 
 ## Подготовка
 
@@ -16,13 +22,38 @@ UFS 3.0, 512 ГБ**. Рабочее решение использует испр
 `rawprogram` перезаписывает Android и userdata. Для уже рабочего Android,
 если нужно вернуть только BIOS, используйте последний раздел этой инструкции.
 
+## Проверить UFS и загрузить Lite
+
+После общего бэкапа SPI переведите текущий DDR Firehose обратно в Sahara:
+
+```powershell
+& $edl --memory spinor --loader "$spi\prog_firehose_ddr.elf" reset --mode Edl --delay 1
+Start-Sleep -Seconds 3
+& $edl --memory ufs --maxpayload 16384 --loader "$ufs\prog_firehose_lite.elf" --loglevel Debug printgpt --lun 0
+```
+
+В логе должна быть загрузка `prog_firehose_lite.elf` через Sahara.
+Проверьте модель `TOSHIBA THGJFCT2T84BAKCB0100`, сектор 4096 байт,
+восемь LUN и `bBootPartitionEnabled=0x1`. LUN 0 проверенного модуля содержит
+121268224 сектора, 496714645504 байта. Существующая GPT Linux или Android
+не требует повторного provisioning.
+
 ## Provisioning: только не настроенный UFS
 
 Для уже настроенного модуля пропустите этот раздел. Для модуля с подтверждённым
-отсутствием нужной конфигурации, после свежего EDL с Lite:
+отсутствием нужной конфигурации скачайте и проверьте официальный XML.
+Он использован в первоначальной успешной настройке этого модуля:
 
 ```powershell
-& $edl --memory ufs --maxpayload 16384 --loader "$ufs\prog_firehose_lite.elf" --loglevel Debug provision "$bundle\provision_ufs31.xml"
+$provisionXml = Join-Path $run 'provision_ufs31.xml'
+Invoke-WebRequest -Uri 'https://dl.radxa.com/dragon/q6a/images/android/provision_ufs31.xml' -OutFile $provisionXml
+if ((Get-FileHash $provisionXml -Algorithm SHA256).Hash.ToLowerInvariant() -ne '2eca74731049bfb399ec88bdbb830b5163910c471902d15dc3bfa6e9c1889c3e') { throw 'Unexpected provisioning XML' }
+```
+
+После свежего EDL с Lite:
+
+```powershell
+& $edl --memory ufs --maxpayload 16384 --loader "$ufs\prog_firehose_lite.elf" --loglevel Debug provision $provisionXml
 ```
 
 Ожидаемый результат: `All 10/10 commands sent and ACKed successfully`.
@@ -43,6 +74,26 @@ Set-Location $repo
 Ожидается запись LUN 0–5 и
 `'rawprogram' command finished successfully`, без ERROR. Затем установите
 исправленный XBL, необходимый для этого Toshiba.
+
+## Создать metadata при полной установке
+
+После записи всех XML запишите пустую ext4 в 16 МиБ `metadata`, где Android хранит
+служебные данные шифрования. `rawprogram` создаёт этот раздел, но не записывает
+в него образ. Файл `$metadata` создан командой `prepare-android` при подготовке.
+Он позволяет начать установку с новой конфигурацией,
+в том числе после Linux на UFS. Выполняйте эту запись только вместе с полной
+перезаписью Android и userdata:
+
+```powershell
+& $edl --memory ufs --maxpayload 16384 --loader "$ufs\prog_firehose_lite.elf" write-part metadata $metadata --lun 0
+& $edl --memory ufs --maxpayload 16384 --loader "$ufs\prog_firehose_lite.elf" read-part metadata "$run\metadata-readback.bin" --lun 0
+if ((Get-Item "$run\metadata-readback.bin").Length -ne 16777216 -or (Get-FileHash "$run\metadata-readback.bin" -Algorithm SHA256).Hash.ToLowerInvariant() -ne '5be1630bc6c3098c49cb7e6dbbf8fbdba314af9e886ca3716dcd3a937b2e061b') { throw 'Metadata readback mismatch' }
+```
+
+Ожидаются `Successfully wrote`, `Successfully read` и совпадение хеша.
+При первом запуске Android заполнит подготовленную служебную файловую систему.
+Для этой сборки одного `erase-part metadata` недостаточно: автоматического
+создания ext4 при запуске нет.
 
 ## Сохранить и исправить UFS XBL
 
@@ -95,6 +146,13 @@ Secure Boot Off. Файлы и [описание патча](../reference/xbl-uf
 ## Записать исправленный Android SPI
 
 **Снова войдите в EDL с полностью новым Sahara**, теперь нужен DDR программатор.
+Из текущей Lite Firehose-сессии:
+
+```powershell
+& $edl --memory ufs --maxpayload 16384 --loader "$ufs\prog_firehose_lite.elf" reset --mode Edl --delay 1
+Start-Sleep -Seconds 3
+```
+
 Запишите весь SPI и выполните обратное чтение:
 
 ```powershell
@@ -102,11 +160,12 @@ Secure Boot Off. Файлы и [описание патча](../reference/xbl-uf
 & $edl --memory spinor --loader "$spi\prog_firehose_ddr.elf" read-sector 0 8192 "$run\spi-android-readback.bin" --lun 0
 ```
 
-Ожидается 33554432 байта. Проверенная запись заняла 286 секунд, поэтому
+В логе записи подтвердите загрузку DDR ELF через Sahara.
+Ожидается 33554432 байта. Проверенная запись заняла около пяти минут, поэтому
 не прерывайте её из-за нескольких минут ожидания. Затем:
 
 ```powershell
-if ((Get-FileHash "$run\spi-android-readback.bin" -Algorithm SHA256).Hash.ToLowerInvariant() -ne 'd0e41c7d20efa0fffa7bf567a337b330038fb17c5d6f4c5502412a711921873c') { throw 'Android SPI readback mismatch' }
+if ((Get-FileHash "$run\spi-android-readback.bin" -Algorithm SHA256).Hash.ToLowerInvariant() -ne '51511ceb1043f89d187d0847a089f86fc49f6174f1ff15a7f9e5ba902e4b506b') { throw 'Android SPI readback mismatch' }
 'Android SPI verified'
 ```
 
@@ -118,17 +177,89 @@ if ((Get-FileHash "$run\spi-android-readback.bin" -Algorithm SHA256).Hash.ToLowe
 & $edl --memory spinor --loader "$spi\prog_firehose_ddr.elf" reset --mode Reset --delay 1
 ```
 
-Ожидается XBL → UEFI → ядро → интерфейс Android 15.
-С подключённым ADB:
+Ожидается XBL → UEFI → ядро → интерфейс Android 15. Сообщение о разблокированном
+загрузчике соответствует проверенной конфигурации Secure Boot Off.
+С подключённым USB и ADB из подготовленного SDK:
 
 ```powershell
-adb shell getprop ro.build.version.release
-adb shell getprop sys.boot_completed
-adb shell getprop init.svc.bootanim
+$adb = Join-Path $sdk 'adb.exe'
+& $adb devices -l
+& $adb shell getprop ro.build.version.release
+& $adb shell getprop sys.boot_completed
+& $adb shell getprop init.svc.bootanim
+& $adb shell 'cat /proc/mounts | grep " /metadata "'
+& $adb shell bootctl get-current-slot
+& $adb shell bootctl is-slot-marked-successful 0
 ```
 
-Ожидаемые значения: `15`, `1`, `stopped`. На проверенной конфигурации
-активен HDMI 3840×2160 @ 30 Hz, чтение 256 МиБ UFS прошло успешно.
+Ожидаемые значения: `15`, `1`, `stopped`; `metadata` — ext4 с `rw`.
+Активный слот — `0` (A), отметка успешной загрузки — `1`.
+На проверенном HDMI активен режим 3840×2160 @ 30 Hz.
+
+### Проверить UFS после простоя
+
+В этой userdebug-сборке доступен диагностический ADB root. Штатный Toybox `dd`
+не поддерживает `iflag=direct`: используйте чтение блочного устройства после
+сброса его буферов, затем 45 секунд простоя:
+
+```powershell
+& $adb root
+Start-Sleep -Seconds 2
+& $adb shell cat /sys/block/sda/device/model
+& $adb shell 'sync && blockdev --flushbufs /dev/block/sda'
+Start-Sleep -Seconds 45
+& $adb shell 'dd if=/dev/block/sda of=/dev/null bs=1048576 count=1024 skip=1024'
+& $adb shell 'dmesg | grep -iE "ufshcd.*(timed.out|failed|eh_fatal|force_reset.*1|OCS invalid)|I/O error|Kernel panic|soft lockup|watchdog.*BUG"'
+```
+
+Модель должна быть `THGJFCT2T84BAKCB`. Ожидаются `1024+0 records in/out`
+и 1073741824 прочитанных байта; последняя команда не должна вывести ошибок.
+Это чтение через буферизированный блочный интерфейс, а не измерение O_DIRECT.
+
+### Проверить повторные включения
+
+Выполните обычную перезагрузку, дождитесь интерфейса Android и повторите
+проверки ADB и чтения:
+
+```powershell
+& $adb reboot
+```
+
+Затем штатно выключите систему:
+
+```powershell
+& $adb shell reboot -p
+```
+
+После выключения снимите питание и отсоедините USB к ПК на 10 секунд.
+Включите без EDL; после появления интерфейса подключите USB к ПК и повторите
+проверки. Для второго холодного включения повторите выключение и этот порядок.
+
+### Активировать записанный слот A при исчерпанных попытках
+
+Если загрузчик уже остановился в Fastboot после предыдущих попыток запуска,
+проверьте состояние слота. Эти команды применяются после полной записи и
+проверки `metadata`, XBL и SPI по этому руководству:
+
+```powershell
+$fastboot = Join-Path $sdk 'fastboot.exe'
+& $fastboot devices
+& $fastboot getvar current-slot
+& $fastboot getvar slot-unbootable:a
+& $fastboot getvar slot-retry-count:a
+```
+
+Для записанного A с `slot-unbootable:a=yes` и `slot-retry-count:a=0`
+восстановите попытки и запустите его:
+
+```powershell
+& $fastboot set_active a
+& $fastboot reboot
+```
+
+Ожидается `OKAY` обеих операций, затем завершение загрузки и успешная отметка A.
+Этот переход проверен на плате; штатная полная установка с подготовленным
+`metadata` выполняется без ожидания циклов перезапуска.
 
 ## Ёмкость userdata
 
@@ -139,6 +270,10 @@ adb shell getprop init.svc.bootanim
 ## Вернуть только Android BIOS при установленной системе
 
 После общей подготовки и бэкапа, с Lite прочитайте текущий A:
+
+Если бэкап выполнялся через DDR, сначала выполните переход DDR → Lite
+из начала инструкции. Проверка модели остаётся обязательной; запись XML
+и очистка metadata для возврата только BIOS не выполняются.
 
 ```powershell
 & $edl --memory ufs --maxpayload 16384 --loader "$ufs\prog_firehose_lite.elf" read-part xbl_a "$run\xbl_a-current.bin" --lun 1

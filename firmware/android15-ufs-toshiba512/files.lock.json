@@ -1,0 +1,445 @@
+{
+  "release": "Q6A-Android15-spi-ufs-boot-20260630-b1",
+  "source_url": "https://dl.radxa.com/dragon/q6a/images/android/Q6A-Android15-spi-ufs-boot-20260630-b1.7z",
+  "files": [
+    {
+      "path": "spinor/gpt_backup0.bin",
+      "bytes": 20480,
+      "sha256": "4fed37098369dd7ad53416703e785dda61d03b443622d176a69ba3bbfaa1992f"
+    },
+    {
+      "path": "spinor/gpt_main0.bin",
+      "bytes": 24576,
+      "sha256": "861834a62025465b79083b30c2f3abd6a22868abcd2cd31005481859fa2d1e5d"
+    },
+    {
+      "path": "spinor/patch0.xml",
+      "bytes": 5243,
+      "sha256": "0ee2395d01d0a48181a003fc54c4a75dd450aff248450ec2d94d3ec09fe4e33c"
+    },
+    {
+      "path": "spinor/prog_firehose_ddr.elf",
+      "bytes": 979136,
+      "sha256": "eca4440984da4025048b8589e35373c073ce8b640fa9ccd92323f55c9bbe1a8b"
+    },
+    {
+      "path": "spinor/rawprogram0.xml",
+      "bytes": 1020,
+      "sha256": "e7b559b854a3ecee3684696b748397308e816e0279fe2ca87f1dcd1063c043b2"
+    },
+    {
+      "path": "spinor/xbl.elf",
+      "bytes": 3665840,
+      "sha256": "4c3e9eaa5bccf57fdd0f30233600276b25069fbbe019161331bfb75ed077c1f7"
+    },
+    {
+      "path": "ufs/asic/abl.elf",
+      "bytes": 151552,
+      "sha256": "cb4459c20d8caec7d4fb8c1802c118e5081cf178ad4c7b319bacb0ad9de2f4f9"
+    },
+    {
+      "path": "ufs/asic/aop.mbn",
+      "bytes": 208804,
+      "sha256": "95d1be951939ff8316f6953d66963da39b2f23c5d5b8ee6bd574162e8400c9dc"
+    },
+    {
+      "path": "ufs/asic/apdp.mbn",
+      "bytes": 13508,
+      "sha256": "1f37c635393a1ef6800c4b1fba322e4c7389aaa4ab133b29a7afb0ff34b2a853"
+    },
+    {
+      "path": "ufs/asic/boot.img",
+      "bytes": 100663296,
+      "sha256": "551f2ac56b5fbb66296c50ccfcc12907b743fde77da20dd0e81084c6283279a5"
+    },
+    {
+      "path": "ufs/asic/BTFM.bin",
+      "bytes": 3043328,
+      "sha256": "c4c68f991b9d306e3cff46f9ea90559e1a045a769bb821d25c50b4a8095d7457"
+    },
+    {
+      "path": "ufs/asic/cdt_rs701_la.bin",
+      "bytes": 24,
+      "sha256": "c60ed3df4b1e836de1f37ff6977b9aa279b3212c8c81edf5deb7bae2db80a605"
+    },
+    {
+      "path": "ufs/asic/contents.xml",
+      "bytes": 18600,
+      "sha256": "70d2d4cc78b8a71c7f5877f5664e6324622cf60c513e5998a135a10184a630a9"
+    },
+    {
+      "path": "ufs/asic/cpucp.elf",
+      "bytes": 186628,
+      "sha256": "abb64b7ff917bf38e60131abd9276a790ea2661cc58a3d20382297392781b098"
+    },
+    {
+      "path": "ufs/asic/devcfg.mbn",
+      "bytes": 59292,
+      "sha256": "614363072059e572d88450f2000408dcbc3d245c35fa63c7c356d1ec193d7a37"
+    },
+    {
+      "path": "ufs/asic/dspso.bin",
+      "bytes": 67108864,
+      "sha256": "cde491655a35fd66187bb70855ff0621dc0836834eb4f879ea12519d97de5cdc"
+    },
+    {
+      "path": "ufs/asic/dtbo.img",
+      "bytes": 25165824,
+      "sha256": "f529af8008d6df8a646ea621c0c7628189285fecdeb4f71411e95d1b8f4e4c20"
+    },
+    {
+      "path": "ufs/asic/featenabler.mbn",
+      "bytes": 86480,
+      "sha256": "762ef6bbfd215338b69d0b55f22c27124dd24e5e6083d89ad556d52b8efa7ccc"
+    },
+    {
+      "path": "ufs/asic/gpt_backup0.bin",
+      "bytes": 20480,
+      "sha256": "95b66975378a9d27ac970616b0f9ede308b21fe7ba5c30fbdbe662c9b500c692"
+    },
+    {
+      "path": "ufs/asic/gpt_backup1.bin",
+      "bytes": 20480,
+      "sha256": "7f9129bc67613cbd718d3705a07381179508ac33766e85e457b7170f8256a86b"
+    },
+    {
+      "path": "ufs/asic/gpt_backup2.bin",
+      "bytes": 20480,
+      "sha256": "05b904dd47a79f73d0b5d73ca21ed4de2727e9be15b0b2e2ef7292ed93c6fb0d"
+    },
+    {
+      "path": "ufs/asic/gpt_backup3.bin",
+      "bytes": 20480,
+      "sha256": "ce567f4e6221ba7e86d3fe7aa5578b56d5923a9d5dd05a59d0810614d8c1b6de"
+    },
+    {
+      "path": "ufs/asic/gpt_backup4.bin",
+      "bytes": 20480,
+      "sha256": "7b9d46016a87bc9e8620301fc8ddf6eaf1b5b979244311ad450010ffdc60dda8"
+    },
+    {
+      "path": "ufs/asic/gpt_backup5.bin",
+      "bytes": 20480,
+      "sha256": "a2311de0780d8ded19671606868b7b3a432c43bdd6f51d885da21dbfad0604b0"
+    },
+    {
+      "path": "ufs/asic/gpt_main0.bin",
+      "bytes": 24576,
+      "sha256": "866c68935a3979e35ea51d9ba6f54569a1b724af7e97d935fcd1c964aa778339"
+    },
+    {
+      "path": "ufs/asic/gpt_main1.bin",
+      "bytes": 24576,
+      "sha256": "3b5c0c7d101fc9120a3abfdde0d89c59616e9c214b49f9541d35123b17ef6022"
+    },
+    {
+      "path": "ufs/asic/gpt_main2.bin",
+      "bytes": 24576,
+      "sha256": "4642fca568a87c344c9e2562916bf8ddc9d5b52e3636b964e8f5f8f2d7bcefd9"
+    },
+    {
+      "path": "ufs/asic/gpt_main3.bin",
+      "bytes": 24576,
+      "sha256": "6341102c369830b7eeac875687e77e8ddae240513c79c941c0d96f429b8c78f2"
+    },
+    {
+      "path": "ufs/asic/gpt_main4.bin",
+      "bytes": 24576,
+      "sha256": "ceee7efbfc8a4297c01a6ecf6998c21d753a9ccc2973eb341c7ab76f0e826222"
+    },
+    {
+      "path": "ufs/asic/gpt_main5.bin",
+      "bytes": 24576,
+      "sha256": "4b55eb3ccb1afc70e5de94f93d17697250bcb690f5551d1c08ab18382632e8ea"
+    },
+    {
+      "path": "ufs/asic/hypvm.mbn",
+      "bytes": 3703968,
+      "sha256": "c9a9968e16c9a1d8a35089b4b8a69a28094c1b09daa570e8adec7825cf115787"
+    },
+    {
+      "path": "ufs/asic/imagefv.elf",
+      "bytes": 20480,
+      "sha256": "2ae8a7eb78454cf4e8ec5e52a9e2cff469ac7af589db1c742525fe47c802cf8f"
+    },
+    {
+      "path": "ufs/asic/km41.mbn",
+      "bytes": 271858,
+      "sha256": "5319a4c6e10a7ab188849e96d57237ebbc050c554b79b71ab2549a0cfdf6131d"
+    },
+    {
+      "path": "ufs/asic/logfs_ufs_8mb.bin",
+      "bytes": 16384,
+      "sha256": "cadf6d7179d79ad39cbead824e2aa5394dd6447058d7990a2e37a94bb22e9e55"
+    },
+    {
+      "path": "ufs/asic/multi_image.mbn",
+      "bytes": 13568,
+      "sha256": "d0009d165e7863062e30f071c18ba1a0b1f2c4683668643d0c06bd6a1300da31"
+    },
+    {
+      "path": "ufs/asic/NON-HLOS.bin",
+      "bytes": 84701184,
+      "sha256": "a7d0626ea0217c92dcadd07310df38dc9ac582321f6f60c5749c9dbdd64e60d9"
+    },
+    {
+      "path": "ufs/asic/patch0.xml",
+      "bytes": 6263,
+      "sha256": "7625ad58729b68e1a02af5d62f2162d4444431ecac6863c189bd2a4fccf9213c"
+    },
+    {
+      "path": "ufs/asic/patch1.xml",
+      "bytes": 6263,
+      "sha256": "ddd1543f63ec11da6620cc20fdb68d904823defde9240b62e36bc1b7f2f792eb"
+    },
+    {
+      "path": "ufs/asic/patch2.xml",
+      "bytes": 6263,
+      "sha256": "2c0a2125b2706e3c1b079fca4f3e80aa60eece64259b51ce9d70838d5fd9edde"
+    },
+    {
+      "path": "ufs/asic/patch3.xml",
+      "bytes": 6263,
+      "sha256": "b5987d9616d44d4af421ffe00ee485afa98ddf402596f944f602cacb1db9022a"
+    },
+    {
+      "path": "ufs/asic/patch4.xml",
+      "bytes": 6271,
+      "sha256": "eb4620b284f596a5438baa9152c56e6ebe90d3e5c47fd029a6e61e6240f302cb"
+    },
+    {
+      "path": "ufs/asic/patch5.xml",
+      "bytes": 6263,
+      "sha256": "6827f463fd448a963af569b1af8a47005048cbb04028796b49cff1c0f8cad1a1"
+    },
+    {
+      "path": "ufs/asic/persist.img",
+      "bytes": 33554432,
+      "sha256": "c865ba12b2c6d0c2ff2547278476f3a2a9c929561482d14001f04b1637f14827"
+    },
+    {
+      "path": "ufs/asic/prog_firehose_ddr.elf",
+      "bytes": 946368,
+      "sha256": "ad720c8b1cd12f54778676f4848ad88ba60fc09da9d76ea674e6bb9eb2a2cca4"
+    },
+    {
+      "path": "ufs/asic/prog_firehose_lite.elf",
+      "bytes": 946368,
+      "sha256": "d4a215f15129011562cc31401315dc42c5e70397c6125f88f62f0e54481269e5"
+    },
+    {
+      "path": "ufs/asic/qupv3fw.elf",
+      "bytes": 57269,
+      "sha256": "9cc5df3d926701936001c3c108b091f0a77ddca1385e0e7da372c8191d8f815c"
+    },
+    {
+      "path": "ufs/asic/qweslicstore.bin",
+      "bytes": 262144,
+      "sha256": "879c097b7daf3936d6c2371e56ca0695e9e23c55a307db1d9b936d3d79f4975e"
+    },
+    {
+      "path": "ufs/asic/rawprogram1.xml",
+      "bytes": 1592,
+      "sha256": "5edc317418d546901c88e1499b38dd7c4688413f5e0aeabe6979f6afbd7bfae0"
+    },
+    {
+      "path": "ufs/asic/rawprogram2.xml",
+      "bytes": 1571,
+      "sha256": "cb95adb0a156b556f20a296f71c6bc1a47eeb6d4ca4d4ecef35cbbddb7958799"
+    },
+    {
+      "path": "ufs/asic/rawprogram3.xml",
+      "bytes": 1857,
+      "sha256": "10ded6736e4a23a1f888d52cf9d4910be271db3bf380b53efab98303d6d0f021"
+    },
+    {
+      "path": "ufs/asic/rawprogram4.xml",
+      "bytes": 20336,
+      "sha256": "8af01e1b16a4288d258fd8d2fa2ab219117f97cc733f2eeb71f119d424375eb1"
+    },
+    {
+      "path": "ufs/asic/rawprogram5.xml",
+      "bytes": 2406,
+      "sha256": "abd92882a9802a36fd3fffec513cbcbd94fa9e237753c9a48e563a52886c23c2"
+    },
+    {
+      "path": "ufs/asic/rawprogram_unsparse0.xml",
+      "bytes": 7266,
+      "sha256": "3aebe0894c8e05cc37d33cd915e977863fef5e3aa4002b7dd210effad7ff6d9e"
+    },
+    {
+      "path": "ufs/asic/rtice.mbn",
+      "bytes": 368025,
+      "sha256": "f87f89b6fbbc975217a1b8edca52b8ce7f0adf094ba119a157f7175fab196f89"
+    },
+    {
+      "path": "ufs/asic/sec.dat",
+      "bytes": 80,
+      "sha256": "ae2626dda2397756de650d9b56cac98d0346ceab2bd1c350dbbbba767b10a7ab"
+    },
+    {
+      "path": "ufs/asic/shrm.elf",
+      "bytes": 45616,
+      "sha256": "2b49672b5d0dbfa7bfe20b1302c1d9ffeec7ae3c1a44774f1cb48522f195692e"
+    },
+    {
+      "path": "ufs/asic/storsec.mbn",
+      "bytes": 20721,
+      "sha256": "d23201728418f875524e2605e8c7f9d105124b4022526fcc3c1a641700f8f448"
+    },
+    {
+      "path": "ufs/asic/super_1.img",
+      "bytes": 405504,
+      "sha256": "6d0315f35333a70c4c5dedfc55774a14881a817d2c943fc3586295eb9ad16b63"
+    },
+    {
+      "path": "ufs/asic/super_2.img",
+      "bytes": 1273856,
+      "sha256": "4709fdb9b556a7252c83422c2fec293b0d4345f0b65e08db655c0b7173192ce9"
+    },
+    {
+      "path": "ufs/asic/super_3.img",
+      "bytes": 332943360,
+      "sha256": "4a5e45e2fcaf0c15fe6400b0c8ac29629d0302984fd51244d878e827932a2d4d"
+    },
+    {
+      "path": "ufs/asic/super_4.img",
+      "bytes": 1037819904,
+      "sha256": "82b1918fa3a5ec1c3f0bdb1f4b84e2698419135b3618bb1e9fde01031e823fdd"
+    },
+    {
+      "path": "ufs/asic/super_5.img",
+      "bytes": 920309760,
+      "sha256": "8d2522e46c4ea6f1188a61357fde55b67df3482d3a73ae07b4ffab5e6d8394c0"
+    },
+    {
+      "path": "ufs/asic/super_6.img",
+      "bytes": 912777216,
+      "sha256": "afb583b294a7e77ea5f60e2e64f90e4c5987f1569da5314e09af7d99811b7ad4"
+    },
+    {
+      "path": "ufs/asic/tz.mbn",
+      "bytes": 3823079,
+      "sha256": "211cefd846c21cc2f1ff6f709738098012f3004d884eaad0be9dd465705a8382"
+    },
+    {
+      "path": "ufs/asic/uefi_sec.mbn",
+      "bytes": 125201,
+      "sha256": "e0ee602b99cdf2af36f9a96fa95d688baea3103cde04b70e1292543e157ca43c"
+    },
+    {
+      "path": "ufs/asic/userdata.img",
+      "bytes": 10899852,
+      "sha256": "f61910411c4d3ec4cd704e6179839a43eabbb418a73764e6c60720068c774916"
+    },
+    {
+      "path": "ufs/asic/userdata_1.img",
+      "bytes": 8192,
+      "sha256": "1242e56573b4dee6fe2c8278afd66d53924a1b6d2ff28c4b6c830091b0d216d2"
+    },
+    {
+      "path": "ufs/asic/userdata_10.img",
+      "bytes": 4198400,
+      "sha256": "66266a1de478d427004d2a457c442faf096f91601a5b122c157c2409262558fe"
+    },
+    {
+      "path": "ufs/asic/userdata_11.img",
+      "bytes": 2666496,
+      "sha256": "e6d101e7020d5ce38c366ddfd5b94f9edf0996e4c1fa08e0e248ba817aa8e0da"
+    },
+    {
+      "path": "ufs/asic/userdata_2.img",
+      "bytes": 32768,
+      "sha256": "695616720bf4db5f63a4cece4241866213330801ad9cbb2d8ab43dd87659b3e3"
+    },
+    {
+      "path": "ufs/asic/userdata_3.img",
+      "bytes": 220258304,
+      "sha256": "a65d43097312c4e1d0352d57c31db38c6203926a1654a902890d04bb5858d39f"
+    },
+    {
+      "path": "ufs/asic/userdata_4.img",
+      "bytes": 4096,
+      "sha256": "c24f5beda378413958b89502c838b1e2aed392a009686b8d7be7faaf2022d9a3"
+    },
+    {
+      "path": "ufs/asic/userdata_5.img",
+      "bytes": 4096,
+      "sha256": "ca929688eda841e886b98f8062e3430c56f89b4b9c74672fe909f52af9ca05ea"
+    },
+    {
+      "path": "ufs/asic/userdata_6.img",
+      "bytes": 16384,
+      "sha256": "1cd51e337ddc4ef06c9be2f7d0aafd714b7e2736c42ccbbe4c26df55f91612cf"
+    },
+    {
+      "path": "ufs/asic/userdata_7.img",
+      "bytes": 28672,
+      "sha256": "fdd99f42c77cbc3eb4caf2808b786fa81cb0a8c609d8d365a453639b317a2c64"
+    },
+    {
+      "path": "ufs/asic/userdata_8.img",
+      "bytes": 24576,
+      "sha256": "2111919b52d59437a6af709ccb77cf72126b37e21c034559838140c78915391e"
+    },
+    {
+      "path": "ufs/asic/userdata_9.img",
+      "bytes": 49152,
+      "sha256": "08da69b8a5e7ea34ad2146f83592bb651c7d6b6e1b4fe3cd6d32ce817e13d0f4"
+    },
+    {
+      "path": "ufs/asic/vbmeta.img",
+      "bytes": 8192,
+      "sha256": "a30d9cef507c9d46eee080141f0c7a6bdc7aa911a7d3b9ae65019e2829f27741"
+    },
+    {
+      "path": "ufs/asic/vbmeta_system.img",
+      "bytes": 4096,
+      "sha256": "4a3dd2dd56ed2cdaba40267cbc55a61c0a28aa432ce7162a5a385d58f6837490"
+    },
+    {
+      "path": "ufs/asic/vendor_boot.img",
+      "bytes": 100663296,
+      "sha256": "6b26db8c90f02ed3f6007be760a5a23d22cd451f473b1512890b7d04bdd29874"
+    },
+    {
+      "path": "ufs/asic/xbl.elf",
+      "bytes": 3665840,
+      "sha256": "4c3e9eaa5bccf57fdd0f30233600276b25069fbbe019161331bfb75ed077c1f7"
+    },
+    {
+      "path": "ufs/asic/xbl_config.elf",
+      "bytes": 225472,
+      "sha256": "8caa3b081dfdedc950ed273dba857c7148e3f9953c810c41f5fd16606af9c800"
+    }
+  ],
+  "reproducible_spi_sha256": "51511ceb1043f89d187d0847a089f86fc49f6174f1ff15a7f9e5ba902e4b506b",
+  "reproducible_spi_bytes": 33554432,
+  "metadata_image": {
+    "bytes": 16777216,
+    "sha256": "5be1630bc6c3098c49cb7e6dbbf8fbdba314af9e886ca3716dcd3a937b2e061b"
+  },
+  "metadata_builder": {
+    "sdk_platform_tools_version": "37.0.1",
+    "mke2fs_version": "1.47.2",
+    "windows_url": "https://dl.google.com/android/repository/platform-tools_r37.0.1-win.zip",
+    "windows_archive_sha256": "45f4d63113e895ebde0c90f194099a4676b6ac653bd28d54314a9e022bbc1a99",
+    "windows_files": [
+      {
+        "path": "mke2fs.exe",
+        "bytes": 763544,
+        "sha256": "308304852b1f1a1449e9d9115332ab908b8a54b99f460ed1df5d109decef5be7"
+      },
+      {
+        "path": "mke2fs.conf",
+        "bytes": 1157,
+        "sha256": "ad58a58dcdd24d85055814ca9cac67db89d4e67c434e96774bdce0d0a007d067"
+      },
+      {
+        "path": "libwinpthread-1.dll",
+        "bytes": 243016,
+        "sha256": "f2044c755e39efc5d47f47c5a942178dd6d79dc8945bb182dc8753d10e2a4269"
+      }
+    ]
+  }
+}

@@ -5,7 +5,7 @@ import json
 import subprocess
 import sys
 
-from common import check_repository, edl_build, files, prepare_xbl
+from common import check_repository, edl_build, files, prepare_xbl, prepare_android
 
 
 def main(argv=None):
@@ -27,6 +27,10 @@ def main(argv=None):
     xbl.add_argument('--xbl', required=True)
     xbl.add_argument('--spi')
     xbl.add_argument('--output-dir', required=True)
+    android = sub.add_parser('prepare-android', help='Verify official Android files and build patched XBL/SPI')
+    android.add_argument('--directory', required=True)
+    android.add_argument('--output-dir', required=True)
+    android.add_argument('--mke2fs', required=True, help='Android SDK mke2fs executable (keep its config and DLL nearby)')
     edl = sub.add_parser('build-edl', help='Clone, patch, test and build pinned edl-ng sources')
     edl.add_argument('--runtime', default='auto')
     edl.add_argument('--plan', action='store_true', help='Print commands without running them or using the network')
@@ -48,6 +52,8 @@ def main(argv=None):
             options += ['--spi', args.spi]
         prepare_xbl.main(options)
         return
+    elif args.command == 'prepare-android':
+        result = prepare_android.prepare(args.directory, args.output_dir, args.mke2fs)
     else:
         runtime = edl_build.host_runtime() if args.runtime == 'auto' else args.runtime
         result = edl_build.build_plan(runtime) if args.plan else edl_build.build(runtime)

@@ -41,32 +41,39 @@ if ($LASTEXITCODE -ne 0) { throw 'Linux BIOS file verification failed' }
 
 ### Android
 
-Распакуйте [проверенный Android пакет](../reference/firmware-files.md). Он содержит
-edl-ng v2, оба программатора, оригинальные Android файлы и исправленные XBL/SPI:
+Скачайте и распакуйте официальный
+[Android 15 для SPI + UFS, 20260630-b1](https://dl.radxa.com/dragon/q6a/images/android/Q6A-Android15-spi-ufs-boot-20260630-b1.7z).
+Нужен каталог с `spinor` и `ufs/asic`. Подготовьте исправленный edl-ng v2
+по [описанию зависимости](../../tools/dependencies/edl-ng/README.md).
+Скачайте [Android SDK Platform-Tools 37.0.1 для Windows](https://dl.google.com/android/repository/platform-tools_r37.0.1-win.zip)
+и распакуйте `platform-tools` целиком: для служебного раздела нужны
+`mke2fs.exe`, `mke2fs.conf` и `libwinpthread-1.dll`.
+Соберите исправленные XBL и полный SPI из официальных файлов:
 
 ```powershell
-$bundle = 'D:\firmware\Q6A-Android15-UFS-Toshiba-512'
-$edl = "$bundle\tools\edl-ng.exe"
-$ufs = "$bundle\firmware\ufs\asic"
-$spi = "$bundle\firmware\spinor"
-$xbl = "$bundle\images\xbl-ufs30-power-test.elf"
-$androidSpi = "$bundle\images\spi-android-ufs30-power-test.bin"
+$android = 'D:\firmware\Q6A-Android15-spi-ufs-boot-20260630-b1'
+$edl = 'D:\tools\edl-ng.exe'
+$sdk = 'D:\tools\platform-tools'
+$prepared = Join-Path $run 'android-prepared'
+python "$repo\tools\q6a.py" prepare-android --directory $android --output-dir $prepared --mke2fs "$sdk\mke2fs.exe"
+if ($LASTEXITCODE -ne 0) { throw 'Android preparation failed' }
+$ufs = "$android\ufs\asic"
+$spi = "$android\spinor"
+$xbl = "$prepared\xbl-ufs30-power-test.elf"
+$androidSpi = "$prepared\spi-android-toshiba512.bin"
+$metadata = "$prepared\metadata-ext4.img"
 ```
 
-Проверьте точные файлы без обращения к плате:
+Команда проверяет размер и SHA-256 82 входных файлов, SHA-384 сегментов XBL
+и CRC обеих GPT. Она создаёт SPI размером 33554432 байта, заполняя
+неиспользуемые области нулями. Образы и отчёт `prepared.json` сохраняются
+в новом каталоге запуска. Также создаётся пустой ext4 `metadata` размером
+16 МиБ, нужный для полной установки Android. Его UUID, время создания,
+параметры и SHA-256 закреплены; исходные `mke2fs.exe`, конфигурация и DLL
+проверяются перед запуском. Снимок SPI с другой платы для сборки не требуется.
+Контрольные суммы закреплены в [files.lock.json](../../firmware/android15-ufs-toshiba512/files.lock.json).
 
-```powershell
-$lock = Get-Content "$repo\firmware\android15-ufs-toshiba512\bundle.lock.json" -Raw | ConvertFrom-Json
-if ((Get-FileHash "$bundle\manifest.json" -Algorithm SHA256).Hash.ToLowerInvariant() -ne $lock.manifest_sha256) { throw 'Wrong bundle manifest' }
-$manifest = Get-Content "$bundle\manifest.json" -Raw | ConvertFrom-Json
-foreach ($entry in $manifest.files) {
-    $path = Join-Path $bundle $entry.path
-    if ((Get-Item -LiteralPath $path).Length -ne $entry.bytes -or (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant() -ne $entry.sha256) { throw "File mismatch: $path" }
-}
-'119 bundle files checked'
-```
-
-Замороженный EXE имеет SHA-256
+Проверенный Windows EXE имеет SHA-256
 `2cfedece4030e3ba4e2742cc573b30e890d774504236a67f1b04131f22ab5646`.
 Исправления утилиты и её исходная версия описаны в
 [зависимости edl-ng](../../tools/dependencies/edl-ng/README.md).
@@ -84,6 +91,13 @@ HDMI нужен для проверки загрузки; UART можно под
 загрузка выбранного ELF через Sahara. Если виден уже работающий Firehose,
 один `--loader` его не заменит. Повторите физический вход в EDL при отключённом
 питании; учитывайте питание через USB соединения.
+
+В проверенном Android-маршруте новый Sahara также получен командой
+`reset --mode Edl --delay 1` из текущей Firehose-сессии и паузой 3 секунды.
+Команда reset должна использовать текущие тип памяти, программатор и размер
+payload. Затем следующая операция загружает новый ELF; подтвердите строку
+`Uploading loader:` с нужным путём. Обе смены DDR → Lite и Lite → DDR
+проверены на Windows. Прямые команды приведены в руководстве Android.
 
 Для SPI и проверенной записи Linux на SD используется DDR программатор.
 Маршруты Android и Linux на Toshiba UFS используют Lite из соответствующего

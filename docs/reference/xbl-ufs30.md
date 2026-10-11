@@ -20,7 +20,7 @@
 | SHA-384 code segment | Пересчитывается по смещению `0x1108` |
 | Изменено | 49 байтов; длина ELF сохранена |
 | Исправленный XBL SHA-256 | `347c5bfd376ee029ed60486ffb0d69ebbc82bd65111e418389fb724c482b3ed5` |
-| Исправленный SPI SHA-256 | `d0e41c7d20efa0fffa7bf567a337b330038fb17c5d6f4c5502412a711921873c` |
+| SPI, собранный из официальных файлов, SHA-256 | `51511ceb1043f89d187d0847a089f86fc49f6174f1ff15a7f9e5ba902e4b506b` |
 
 Успех патча подтверждает рабочий обход последовательности целиком.
 Он не устанавливает причину сбоя внутри неё и не задаёт напряжение для других UFS.
@@ -29,18 +29,24 @@
 
 ## Подготовить XBL и полный SPI
 
-Нужны исходный ELF и оригинальный Android SPI 32 МиБ из
-[закреплённого комплекта](firmware-files.md). Команда одинакова для трёх ОС хоста:
+Для установки на Windows нужны распакованный официальный Android
+`20260630-b1` и SDK Platform-Tools `37.0.1`:
 
-```sh
-python tools/q6a.py prepare-xbl --xbl /path/to/bundle/firmware/spinor/xbl.elf --spi /path/to/bundle/recovery/spi-before-linux-restore.bin --output-dir artifacts/rebuilt
+```powershell
+python tools/q6a.py prepare-android --directory 'D:\firmware\Q6A-Android15-spi-ufs-boot-20260630-b1' --output-dir artifacts\android-prepared --mke2fs 'D:\tools\platform-tools\mke2fs.exe'
 ```
 
-Используйте `python3` на macOS/Linux и свои пути к файлам.
-Инструмент проверяет исходные SHA-256, инструкцию и SHA-384 сегментов,
-создаёт ELF и SPI, затем требует совпадения с хешами рабочего решения.
+Инструмент проверяет исходные SHA-256, инструкцию, SHA-384 сегментов и GPT,
+создаёт исправленный ELF, полный SPI и пустую ext4 metadata.
+Неиспользуемые области SPI заполняются нулями. Образы совпадают с закреплёнными
+хешами; личный снимок SPI для сборки не требуется.
 При отличающемся исходнике или существующем другом результате запись прекращается.
 Устройство при подготовке не используется.
+
+Команда `prepare-xbl` сохранена для пересборки архивного комплекта со снимком
+SPI `d0e41c7d…`. Его хеш отличается от нового SPI из-за содержимого
+неиспользуемых областей. Для текущей установки используйте `prepare-android`
+и [общую подготовку](../guides/prepare-edl.md).
 
 Параметры исправления: [xbl-patch.json](../../firmware/android15-ufs-toshiba512/xbl-patch.json).
 Запись и readback: [руководство Android](../guides/android-ufs.md).

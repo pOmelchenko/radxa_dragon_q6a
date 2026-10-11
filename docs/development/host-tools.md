@@ -32,6 +32,7 @@ python tools/q6a.py fetch-linux-bios --directory /path/to/linux-bios-260916
 python tools/q6a.py verify-linux-bios --version 260916 --directory /path/to/linux-bios-260916
 python tools/q6a.py verify-linux-image --image /path/to/radxa-dragon-q6a_noble_gnome_r2.output_512.img.xz --target sd
 python tools/q6a.py prepare-xbl --xbl /path/to/xbl.elf --output-dir artifacts/rebuilt
+python tools/q6a.py prepare-android --directory /path/to/Q6A-Android15-spi-ufs-boot-20260630-b1 --output-dir artifacts/android-prepared --mke2fs /path/to/platform-tools/mke2fs.exe
 python tools/q6a.py build-edl --plan
 ```
 
@@ -39,6 +40,16 @@ python tools/q6a.py build-edl --plan
 исходные файлы описаны в [справочнике XBL](../reference/xbl-ufs30.md).
 `verify-bundle` принимает распакованный пакет и сверяет 119 файлов с закреплённым
 manifest. Образцы путей замените своими. На macOS/Linux используйте `python3`.
+
+`prepare-android` проверяет 82 официальных файла, создаёт исправленный XBL,
+полный SPI с нулевыми неиспользуемыми областями и новую пустую ext4 `metadata`.
+Для metadata используется `mke2fs` с конфигурацией из Android SDK 37.0.1.
+На Windows проверяются также хеши EXE, конфигурации и DLL. Команда
+нормализует время в закреплённом формате ext4 без metadata/inode checksums
+и требует точного совпадения трёх результатов с SHA-256 в `files.lock.json`.
+Чужие существующие результаты сохраняются: при отличии команда останавливается.
+Подготовка не обращается к USB. Сборка этих файлов проверена на Windows;
+для других хостов нужна отдельная проверка `mke2fs` и аппаратного маршрута.
 
 `fetch-linux-bios` получает 26 файлов BIOS `260916` из закреплённого коммита
 официального репозитория Radxa и сверяет размер и SHA-256 каждого файла до

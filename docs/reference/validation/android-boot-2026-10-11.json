@@ -1,0 +1,214 @@
+{
+  "recorded_at": "2026-10-11T12:16:38.844678+00:00",
+  "scope": "Android 15 on Toshiba UFS: verified boots listed below; HDMI, ADB, metadata/data mounts and 1 GiB reads after idle",
+  "host": "Windows",
+  "board": "Radxa Dragon Q6A, 12 GB",
+  "release": "Q6A-Android15-spi-ufs-boot-20260630-b1",
+  "image_write_evidence": "android-image-write-2026-10-11.json",
+  "software_reboot_verified": true,
+  "cold_boots_verified": 2,
+  "hdmi_interface_confirmed_by_user": [
+    "first-boot",
+    "cold-1",
+    "cold-2"
+  ],
+  "all_physical_storage_devices_are_ufs_luns": true,
+  "slot_a_marked_successful": true,
+  "first_successful_boot_slot_activation": "fastboot set_active a after earlier boot attempts had exhausted retries",
+  "ufs_timeout_reset_or_io_errors_in_verified_boots": false,
+  "userdata_partition_bytes": 477124964352,
+  "data_filesystem_kib": 47183872,
+  "data_filesystem_expanded": false,
+  "boot_tests": [
+    {
+      "recorded_at": "2026-10-11T11:35:04.612140+00:00",
+      "boot_kind": "first-boot",
+      "boot_id": "40354d0a-db5e-4706-9040-eaf1546fcf07",
+      "kernel": "Linux localhost 5.4.295-qgki-debug-g646f05065a7e-dirty #17 SMP PREEMPT Tue Jun 30 18:22:56 CST 2026 aarch64 Toybox",
+      "adb_serial": "6609443d",
+      "properties": {
+        "ro.build.version.release": "15",
+        "ro.build.version.sdk": "35",
+        "ro.build.fingerprint": "qti/lahaina/lahaina:15/AQ3A.251211.001/eng.liupen.00000000.000000:userdebug/test-keys",
+        "sys.boot_completed": "1",
+        "dev.bootcomplete": "1",
+        "init.svc.bootanim": "stopped",
+        "ro.boot.slot_suffix": "_a",
+        "ro.boot.verifiedbootstate": "orange",
+        "ro.crypto.state": "encrypted",
+        "ro.crypto.type": "file"
+      },
+      "slot_status": [
+        "0",
+        "1"
+      ],
+      "hdmi": {
+        "monitor": "LG Ultra HD",
+        "width": 3840,
+        "height": 2160,
+        "refresh_hz": 30.000002,
+        "state": "ON"
+      },
+      "metadata_mount": "/dev/block/by-name/metadata /metadata ext4 rw,seclabel,nosuid,nodev,noatime,discard 0 0",
+      "data_mount": "/dev/block/dm-47 /data f2fs rw,lazytime,seclabel,nosuid,nodev,noatime,background_gc=on,discard,no_heap,user_xattr,inline_xattr,acl,inline_data,inline_dentry,flush_merge,extent_cache,mode=adaptive,active_logs=6,reserve_root=32768,resuid=0,resgid=1065,inlinecrypt,alloc_mode=default,fsync_mode=posix 0 0",
+      "data_df_kib": "Filesystem       1K-blocks    Used Available Use% Mounted on\r\n/dev/block/dm-47  47183872 1536964  45646908   4% /storage/emulated/0/Android/obb",
+      "storage": "sda 970145792 TOSHIBA  THGJFCT2T84BAKCB\r\nsdb 16384 TOSHIBA  THGJFCT2T84BAKCB\r\nsdc 16384 TOSHIBA  THGJFCT2T84BAKCB\r\nsdd 65536 TOSHIBA  THGJFCT2T84BAKCB\r\nsde 12582912 TOSHIBA  THGJFCT2T84BAKCB\r\nsdf 65536 TOSHIBA  THGJFCT2T84BAKCB\r\nsdg 8388608 TOSHIBA  THGJFCT2T84BAKCB\r\nsdh 8388608 TOSHIBA  THGJFCT2T84BAKCB",
+      "read_test": {
+        "bytes": 1073741824,
+        "offset_bytes": 1073741824,
+        "idle_seconds": 45,
+        "method": "Buffered raw block read; BLKFLSBUF before the idle interval; stock Toybox dd has no O_DIRECT option",
+        "command_output": "1024+0 records in\r\n1024+0 records out\r\n1073741824 bytes (1.0 G) copied, 1.059 s, 967 M/s",
+        "host_elapsed_seconds": 1.187
+      },
+      "boot_id_unchanged_during_read": true,
+      "kernel_storage_error_lines": [],
+      "dmesg_after_sha256": "9fb7f99d8870e53dfb85479331a2af1e0c9d5dd7d6110cd8d37675ba133a0861",
+      "display_dump_sha256": "f04311ab4235745bb7bb4d4ce42bc3d3df0a446317a19eac7a348e92d25b04fc"
+    },
+    {
+      "recorded_at": "2026-10-11T11:37:39.806665+00:00",
+      "boot_kind": "reboot",
+      "boot_id": "24de0cf3-cb30-44f6-a5e6-ae54352bf501",
+      "kernel": "Linux localhost 5.4.295-qgki-debug-g646f05065a7e-dirty #17 SMP PREEMPT Tue Jun 30 18:22:56 CST 2026 aarch64 Toybox",
+      "adb_serial": "6609443d",
+      "properties": {
+        "ro.build.version.release": "15",
+        "ro.build.version.sdk": "35",
+        "ro.build.fingerprint": "qti/lahaina/lahaina:15/AQ3A.251211.001/eng.liupen.00000000.000000:userdebug/test-keys",
+        "sys.boot_completed": "1",
+        "dev.bootcomplete": "1",
+        "init.svc.bootanim": "stopped",
+        "ro.boot.slot_suffix": "_a",
+        "ro.boot.verifiedbootstate": "orange",
+        "ro.crypto.state": "encrypted",
+        "ro.crypto.type": "file"
+      },
+      "slot_status": [
+        "0",
+        "1"
+      ],
+      "hdmi": {
+        "monitor": "LG Ultra HD",
+        "width": 3840,
+        "height": 2160,
+        "refresh_hz": 30.000002,
+        "state": "ON"
+      },
+      "metadata_mount": "/dev/block/by-name/metadata /metadata ext4 rw,seclabel,nosuid,nodev,noatime,discard 0 0",
+      "data_mount": "/dev/block/dm-47 /data f2fs rw,lazytime,seclabel,nosuid,nodev,noatime,background_gc=on,discard,no_heap,user_xattr,inline_xattr,acl,inline_data,inline_dentry,flush_merge,extent_cache,mode=adaptive,active_logs=6,reserve_root=32768,resuid=0,resgid=1065,inlinecrypt,alloc_mode=default,fsync_mode=posix 0 0",
+      "data_df_kib": "Filesystem       1K-blocks    Used Available Use% Mounted on\r\n/dev/block/dm-47  47183872 1538504  45645368   4% /storage/emulated/0/Android/obb",
+      "storage": "sda 970145792 TOSHIBA  THGJFCT2T84BAKCB\r\nsdb 16384 TOSHIBA  THGJFCT2T84BAKCB\r\nsdc 16384 TOSHIBA  THGJFCT2T84BAKCB\r\nsdd 65536 TOSHIBA  THGJFCT2T84BAKCB\r\nsde 12582912 TOSHIBA  THGJFCT2T84BAKCB\r\nsdf 65536 TOSHIBA  THGJFCT2T84BAKCB\r\nsdg 8388608 TOSHIBA  THGJFCT2T84BAKCB\r\nsdh 8388608 TOSHIBA  THGJFCT2T84BAKCB",
+      "read_test": {
+        "bytes": 1073741824,
+        "offset_bytes": 1073741824,
+        "idle_seconds": 45,
+        "method": "Buffered raw block read; BLKFLSBUF before the idle interval; stock Toybox dd has no O_DIRECT option",
+        "command_output": "1024+0 records in\r\n1024+0 records out\r\n1073741824 bytes (1.0 G) copied, 0.873 s, 1.1 G/s",
+        "host_elapsed_seconds": 1.063
+      },
+      "boot_id_unchanged_during_read": true,
+      "kernel_storage_error_lines": [],
+      "dmesg_after_sha256": "ece734191208a350a4eed3096d02d23d6864ef1e2028232ca27b97260e806d01",
+      "display_dump_sha256": "21f8383526070d63dc707a06ea979b6511cd8cff1843e82fc079604a6762d173"
+    },
+    {
+      "recorded_at": "2026-10-11T12:10:45.676409+00:00",
+      "boot_kind": "cold-1",
+      "boot_id": "7ec9ff7c-ecf5-4b74-b0db-ae47ce8b5931",
+      "kernel": "Linux localhost 5.4.295-qgki-debug-g646f05065a7e-dirty #17 SMP PREEMPT Tue Jun 30 18:22:56 CST 2026 aarch64 Toybox",
+      "adb_serial": "6609443d",
+      "properties": {
+        "ro.build.version.release": "15",
+        "ro.build.version.sdk": "35",
+        "ro.build.fingerprint": "qti/lahaina/lahaina:15/AQ3A.251211.001/eng.liupen.00000000.000000:userdebug/test-keys",
+        "sys.boot_completed": "1",
+        "dev.bootcomplete": "1",
+        "init.svc.bootanim": "stopped",
+        "ro.boot.slot_suffix": "_a",
+        "ro.boot.verifiedbootstate": "orange",
+        "ro.crypto.state": "encrypted",
+        "ro.crypto.type": "file"
+      },
+      "slot_status": [
+        "0",
+        "1"
+      ],
+      "hdmi": {
+        "monitor": "LG Ultra HD",
+        "width": 3840,
+        "height": 2160,
+        "refresh_hz": 30.000002,
+        "state": "ON"
+      },
+      "metadata_mount": "/dev/block/by-name/metadata /metadata ext4 rw,seclabel,nosuid,nodev,noatime,discard 0 0",
+      "data_mount": "/dev/block/dm-47 /data f2fs rw,lazytime,seclabel,nosuid,nodev,noatime,background_gc=on,discard,no_heap,user_xattr,inline_xattr,acl,inline_data,inline_dentry,flush_merge,extent_cache,mode=adaptive,active_logs=6,reserve_root=32768,resuid=0,resgid=1065,inlinecrypt,alloc_mode=default,fsync_mode=posix 0 0",
+      "data_df_kib": "Filesystem       1K-blocks    Used Available Use% Mounted on\r\n/dev/block/dm-47  47183872 1538396  45645476   4% /storage/emulated/0/Android/obb",
+      "storage": "sda 970145792 TOSHIBA  THGJFCT2T84BAKCB\r\nsdb 16384 TOSHIBA  THGJFCT2T84BAKCB\r\nsdc 16384 TOSHIBA  THGJFCT2T84BAKCB\r\nsdd 65536 TOSHIBA  THGJFCT2T84BAKCB\r\nsde 12582912 TOSHIBA  THGJFCT2T84BAKCB\r\nsdf 65536 TOSHIBA  THGJFCT2T84BAKCB\r\nsdg 8388608 TOSHIBA  THGJFCT2T84BAKCB\r\nsdh 8388608 TOSHIBA  THGJFCT2T84BAKCB",
+      "read_test": {
+        "bytes": 1073741824,
+        "offset_bytes": 1073741824,
+        "idle_seconds": 45,
+        "method": "Buffered raw block read; BLKFLSBUF before the idle interval; stock Toybox dd has no O_DIRECT option",
+        "command_output": "1024+0 records in\r\n1024+0 records out\r\n1073741824 bytes (1.0 G) copied, 0.812 s, 1.2 G/s",
+        "host_elapsed_seconds": 0.969
+      },
+      "boot_id_unchanged_during_read": true,
+      "kernel_storage_error_lines": [],
+      "dmesg_after_sha256": "15010ec2ee08875e62191123ae157985fcf561e60396cad8560bd87ae3ba2323",
+      "display_dump_sha256": "76547cfcd238cad5ae41eb92d91020a6e68d5cf4e573dbe79d607375ba694eb4"
+    },
+    {
+      "recorded_at": "2026-10-11T12:14:30.171437+00:00",
+      "boot_kind": "cold-2",
+      "boot_id": "0f84978f-140f-465a-85f1-fc744ae50150",
+      "kernel": "Linux localhost 5.4.295-qgki-debug-g646f05065a7e-dirty #17 SMP PREEMPT Tue Jun 30 18:22:56 CST 2026 aarch64 Toybox",
+      "adb_serial": "6609443d",
+      "properties": {
+        "ro.build.version.release": "15",
+        "ro.build.version.sdk": "35",
+        "ro.build.fingerprint": "qti/lahaina/lahaina:15/AQ3A.251211.001/eng.liupen.00000000.000000:userdebug/test-keys",
+        "sys.boot_completed": "1",
+        "dev.bootcomplete": "1",
+        "init.svc.bootanim": "stopped",
+        "ro.boot.slot_suffix": "_a",
+        "ro.boot.verifiedbootstate": "orange",
+        "ro.crypto.state": "encrypted",
+        "ro.crypto.type": "file"
+      },
+      "slot_status": [
+        "0",
+        "1"
+      ],
+      "hdmi": {
+        "monitor": "LG Ultra HD",
+        "width": 3840,
+        "height": 2160,
+        "refresh_hz": 30.000002,
+        "state": "ON"
+      },
+      "metadata_mount": "/dev/block/by-name/metadata /metadata ext4 rw,seclabel,nosuid,nodev,noatime,discard 0 0",
+      "data_mount": "/dev/block/dm-47 /data f2fs rw,lazytime,seclabel,nosuid,nodev,noatime,background_gc=on,discard,no_heap,user_xattr,inline_xattr,acl,inline_data,inline_dentry,flush_merge,extent_cache,mode=adaptive,active_logs=6,reserve_root=32768,resuid=0,resgid=1065,inlinecrypt,alloc_mode=default,fsync_mode=posix 0 0",
+      "data_df_kib": "Filesystem       1K-blocks    Used Available Use% Mounted on\r\n/dev/block/dm-47  47183872 1538760  45645112   4% /storage/emulated/0/Android/obb",
+      "storage": "sda 970145792 TOSHIBA  THGJFCT2T84BAKCB\r\nsdb 16384 TOSHIBA  THGJFCT2T84BAKCB\r\nsdc 16384 TOSHIBA  THGJFCT2T84BAKCB\r\nsdd 65536 TOSHIBA  THGJFCT2T84BAKCB\r\nsde 12582912 TOSHIBA  THGJFCT2T84BAKCB\r\nsdf 65536 TOSHIBA  THGJFCT2T84BAKCB\r\nsdg 8388608 TOSHIBA  THGJFCT2T84BAKCB\r\nsdh 8388608 TOSHIBA  THGJFCT2T84BAKCB",
+      "read_test": {
+        "bytes": 1073741824,
+        "offset_bytes": 1073741824,
+        "idle_seconds": 45,
+        "method": "Buffered raw block read; BLKFLSBUF before the idle interval; stock Toybox dd has no O_DIRECT option",
+        "command_output": "1024+0 records in\r\n1024+0 records out\r\n1073741824 bytes (1.0 G) copied, 0.810 s, 1.2 G/s",
+        "host_elapsed_seconds": 1.0
+      },
+      "boot_id_unchanged_during_read": true,
+      "kernel_storage_error_lines": [],
+      "dmesg_after_sha256": "89784f8cdb46b6b2f178192f91b78579cca86b29a7861bbb39e9784f1dc4783f",
+      "display_dump_sha256": "3638ef3d15b4b7dece43ab7ad971df02d2e16487a138fae649371cd6f8644d26"
+    }
+  ],
+  "uart_capture_sha256": {
+    "metadata-fixed-boot-uart.log": "29d33541069bc93c0f9ee0b7b9938dfad1bc061d29320a0135d0f7a79cf4ea4d",
+    "android-reboot-uart.log": "c86fb6bf0fd1a0c1db21fdca6575828226d36c524169163f5e049e81b0b7535b",
+    "android-cold-1-uart.log": "45e91ea39c89b3b191b790c76fec8a1ee52f44bf7d4499e328529d10e132b844",
+    "android-cold-2-uart.log": "ae8b5900aef3cf08bb3fe623eea5195eb771e534a5702c8562c171653b3914e5"
+  }
+}
