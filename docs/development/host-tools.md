@@ -17,12 +17,20 @@
 Платформенные точки входа вызывают одну общую реализацию и передают аргументы.
 Они не запускают прошивку автоматически.
 
+Команды, которые выполняются в Linux на самой Q6A, находятся отдельно в
+[`tools/target`](../../tools/target/README.md). Здесь размещён установщик
+настройки питания Toshiba UFS; компьютер Windows, macOS или Linux только
+передаёт этот скрипт на плату.
+
 ## Команды
 
 ```sh
 python tools/q6a.py check-repo
 python tools/q6a.py verify-bundle --bundle /path/to/Q6A-Android15-UFS-Toshiba-512
 python tools/q6a.py verify-linux-bios --directory /path/to/linux-bios
+python tools/q6a.py fetch-linux-bios --directory /path/to/linux-bios-260916
+python tools/q6a.py verify-linux-bios --version 260916 --directory /path/to/linux-bios-260916
+python tools/q6a.py verify-linux-image --image /path/to/radxa-dragon-q6a_noble_gnome_r2.output_512.img.xz --target sd
 python tools/q6a.py prepare-xbl --xbl /path/to/xbl.elf --output-dir artifacts/rebuilt
 python tools/q6a.py build-edl --plan
 ```
@@ -31,6 +39,21 @@ python tools/q6a.py build-edl --plan
 исходные файлы описаны в [справочнике XBL](../reference/xbl-ufs30.md).
 `verify-bundle` принимает распакованный пакет и сверяет 119 файлов с закреплённым
 manifest. Образцы путей замените своими. На macOS/Linux используйте `python3`.
+
+`fetch-linux-bios` получает 26 файлов BIOS `260916` из закреплённого коммита
+официального репозитория Radxa и сверяет размер и SHA-256 каждого файла до
+сохранения. Повторный запуск использует уже проверенные файлы и скачивает
+недостающие. При отличающемся существующем файле команда останавливается,
+сохраняя его. Загрузка и проверка этой команды выполнены на Windows.
+Команда не обращается к SBC. `verify-linux-bios` без `--version` проверяет
+набор `260120`, используемый в проверенных руководствах SD и NVMe.
+
+`verify-linux-image` принимает сжатый `.img.xz` и носитель `sd`, `nvme` или `ufs`.
+Команда сверяет размер, SHA-256 и SHA-512 с официальным Radxa OS R2:
+для SD/NVMe нужен образ с секторами 512 байт, для UFS — 4096 байт.
+Для распакованного `.img` добавьте `--uncompressed`: будут проверены
+размер и SHA-256 исходного дискового образа. Этим же способом можно проверить
+обратное чтение записанной области до первого запуска ОС.
 
 ## Сборка edl-ng
 

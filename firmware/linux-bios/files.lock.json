@@ -2,6 +2,13 @@
   "schema_version": 1,
   "recorded_on": "2026-10-10",
   "source_folder": "flat_build/spinor/dragon-q6a",
+  "source_archive": {
+    "version": "260120",
+    "url": "https://dl.radxa.com/dragon/q6a/images/dragon-q6a_flat_build_wp_260120.zip",
+    "bytes": 11434972,
+    "sha256": "cf23a1742ae5d51c451947d82cb21fd3f1c10bbcd621d611f55520673e3f90ca",
+    "payload_files_matching_lock": 23
+  },
   "files": [
     {
       "path": "Fat12.bin",

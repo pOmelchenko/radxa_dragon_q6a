@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "release": "rsdk-r2",
+  "release_url": "https://github.com/radxa-build/radxa-dragon-q6a/releases/tag/rsdk-r2",
+  "published_at": "2026-02-14T08:14:03Z",
+  "distribution": "Ubuntu 24.04 Noble, GNOME",
+  "kernel_package_version": "6.18.2-3",
+  "minimum_linux_bios_date": "20251230",
+  "images": [
+    {
+      "filename": "radxa-dragon-q6a_noble_gnome_r2.output_512.img.xz",
+      "targets": ["sd", "nvme"],
+      "logical_sector_bytes": 512,
+      "compressed_bytes": 1582866836,
+      "uncompressed_bytes": 6003352576,
+      "uncompressed_sha256": "6385ad766ca51214aa9e4ce08f3c367430310b27285164b71b143af341d53900",
+      "sha256": "f5ba7d3b34006759b54e14e28f38ec9caaabf6b9a325f4c2c67e6d9fd4412132",
+      "sha512": "c96977042a6c8b1d09f07d3428024aedf0a9527188472be1717195d668a872b256a61e383015b82e67e639f70e22b6427e4b932468468945139714dc00a88aaf",
+      "url": "https://github.com/radxa-build/radxa-dragon-q6a/releases/download/rsdk-r2/radxa-dragon-q6a_noble_gnome_r2.output_512.img.xz"
+    },
+    {
+      "filename": "radxa-dragon-q6a_noble_gnome_r2.output_4096.img.xz",
+      "targets": ["ufs"],
+      "logical_sector_bytes": 4096,
+      "compressed_bytes": 1578528436,
+      "uncompressed_bytes": 10737418240,
+      "uncompressed_sha256": "0295d2a4cc5aa9a68c6d098cb9db740e1b28c5337ddaf8266d92ac07bf47bc41",
+      "sha256": "c83ce7f610104f6c0185f88bf10c405acb995f46e95a9c94419065db0cf964cb",
+      "sha512": "58fb11856e8ac492c76eb1b260cb9b5342b793ed459f8cbd81b4f1056d57056192984903019753f0f81a7a7fbcb1108219fc401e9872d92978ef706aa6260015",
+      "url": "https://github.com/radxa-build/radxa-dragon-q6a/releases/download/rsdk-r2/radxa-dragon-q6a_noble_gnome_r2.output_4096.img.xz"
+    }
+  ]
+}

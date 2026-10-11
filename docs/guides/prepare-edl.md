@@ -5,22 +5,14 @@
 
 ## Файлы и PowerShell
 
-Нужен распакованный [проверенный Android пакет](../reference/firmware-files.md). У него уже есть
-edl-ng v2, оба программатора, оригинальные Android файлы и исправленные XBL/SPI.
-Для Linux дополнительно нужен каталог из `Q6A-Linux-BIOS-tested-files.zip` или
-точный исходный `flat_build/spinor/dragon-q6a`. Его файлы фиксирует
-[files.lock.json](../../firmware/linux-bios/files.lock.json).
+Выберите файлы для устанавливаемой ОС. Для Linux нужен официальный BIOS
+`260120` и исправленный edl-ng; Android использует свой проверенный комплект.
+Источники и контрольные суммы приведены в [справочнике файлов](../reference/firmware-files.md).
 
 Откройте PowerShell от администратора **в корне репозитория**. Задайте свои пути:
 
 ```powershell
 $ErrorActionPreference = 'Stop'
-$bundle = 'D:\firmware\Q6A-Android15-UFS-Toshiba-512'
-$edl = "$bundle\tools\edl-ng.exe"
-$ufs = "$bundle\firmware\ufs\asic"
-$spi = "$bundle\firmware\spinor"
-$xbl = "$bundle\images\xbl-ufs30-power-test.elf"
-$androidSpi = "$bundle\images\spi-android-ufs30-power-test.bin"
 $repo = (Get-Location).Path
 $run = Join-Path $repo 'runs\direct-001'
 if (Test-Path -LiteralPath $run) { throw 'Choose a new run directory; preserve previous backups.' }
@@ -28,6 +20,39 @@ New-Item -ItemType Directory -Path $run | Out-Null
 ```
 
 Для следующей установки выберите новый каталог вместо `direct-001`.
+
+### Linux
+
+Распакуйте [официальный Linux BIOS 260120](https://dl.radxa.com/dragon/q6a/images/dragon-q6a_flat_build_wp_260120.zip).
+Путь к программатору находится внутри `flat_build\spinor\dragon-q6a`.
+Укажите проверенный edl-ng v2 и этот каталог:
+
+```powershell
+$edl = 'D:\tools\edl-ng.exe'
+$bios = 'D:\firmware\flat_build\spinor\dragon-q6a'
+$spi = $bios
+python "$repo\tools\q6a.py" verify-linux-bios --directory $bios
+if ($LASTEXITCODE -ne 0) { throw 'Linux BIOS file verification failed' }
+```
+
+Проверка сверяет все 23 файла с [files.lock.json](../../firmware/linux-bios/files.lock.json).
+Исходники и способ сборки edl-ng доступны в [описании зависимости](../../tools/dependencies/edl-ng/README.md).
+Для Linux пакет Android не нужен.
+
+### Android
+
+Распакуйте [проверенный Android пакет](../reference/firmware-files.md). Он содержит
+edl-ng v2, оба программатора, оригинальные Android файлы и исправленные XBL/SPI:
+
+```powershell
+$bundle = 'D:\firmware\Q6A-Android15-UFS-Toshiba-512'
+$edl = "$bundle\tools\edl-ng.exe"
+$ufs = "$bundle\firmware\ufs\asic"
+$spi = "$bundle\firmware\spinor"
+$xbl = "$bundle\images\xbl-ufs30-power-test.elf"
+$androidSpi = "$bundle\images\spi-android-ufs30-power-test.bin"
+```
+
 Проверьте точные файлы без обращения к плате:
 
 ```powershell
@@ -48,8 +73,9 @@ foreach ($entry in $manifest.files) {
 
 ## EDL и смена программатора
 
-Подключите отдельное питание 12 В 3 А, USB ПК к нижнему USB A OTG порту,
-HDMI и уже настроенный UART. До подачи питания удерживайте EDL, подайте питание,
+Подключите отдельное питание 12 В 3 А и USB ПК к нижнему USB A OTG порту.
+HDMI нужен для проверки загрузки; UART можно подключить для журнала.
+До подачи питания удерживайте EDL, подайте питание,
 отпустите кнопку. Windows должна определить `05C6:9008` / QDLoader 9008.
 У проверенной платы EDL serial `7B57A3EB`. COM номер может меняться.
 
@@ -59,7 +85,9 @@ HDMI и уже настроенный UART. До подачи питания у�
 один `--loader` его не заменит. Повторите физический вход в EDL при отключённом
 питании; учитывайте питание через USB соединения.
 
-Для SPI используется DDR программатор; для UFS — Lite и `--maxpayload 16384`.
+Для SPI и проверенной записи Linux на SD используется DDR программатор.
+Маршруты Android и Linux на Toshiba UFS используют Lite из соответствующего
+набора прошивки и `--maxpayload 16384`.
 Выполняйте операции по одной и проверяйте вывод: `[ERROR]`, NAK, тайм-аут,
 неполное чтение или несовпадение хеша означают остановку. Нулевой код выхода
 или одна строка `finished successfully` не отменяют ERROR.

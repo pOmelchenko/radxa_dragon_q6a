@@ -63,6 +63,76 @@ class PackageTests(unittest.TestCase):
                 files.contained_file(self.root, 'link.bin')
 
 
+class LinuxImageTests(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name)
+        entries = []
+        self.images = {}
+        self.raw_images = {}
+        for size, targets in [(512, ['sd', 'nvme']), (4096, ['ufs'])]:
+            payload = f'Linux image with {size} byte sectors'.encode()
+            path = self.root / f'image-{size}.xz'
+            path.write_bytes(payload)
+            self.images[size] = path
+            raw = b'raw disk data: ' + payload
+            raw_path = self.root / f'image-{size}.img'
+            raw_path.write_bytes(raw)
+            self.raw_images[size] = raw_path
+            entries.append({'targets': targets, 'logical_sector_bytes': size,
+                            'compressed_bytes': len(payload),
+                            'uncompressed_bytes': len(raw),
+                            'uncompressed_sha256': hashlib.sha256(raw).hexdigest(),
+                            'sha256': hashlib.sha256(payload).hexdigest(),
+                            'sha512': hashlib.sha512(payload).hexdigest()})
+        self.lock = {'release': 'test', 'images': entries}
+        patch = mock.patch.object(files, 'load_json', return_value=self.lock)
+        patch.start()
+        self.addCleanup(patch.stop)
+
+    def test_ufs_and_standard_images_cannot_be_interchanged(self):
+        for target, correct, wrong in [('sd', 512, 4096), ('nvme', 512, 4096), ('ufs', 4096, 512)]:
+            with self.subTest(target=target):
+                result = files.verify_linux_image(self.images[correct], target)
+                self.assertEqual(result['logical_sector_bytes'], correct)
+                self.assertFalse(result['device_contacted'])
+                with self.assertRaises(ValueError):
+                    files.verify_linux_image(self.images[wrong], target)
+
+    def test_corruption_and_incomplete_download_are_rejected(self):
+        original = self.images[512].read_bytes()
+        for payload in [original[:-1], bytes([original[0] ^ 1]) + original[1:]]:
+            with self.subTest(payload=payload):
+                self.images[512].write_bytes(payload)
+                with self.assertRaises(ValueError):
+                    files.verify_linux_image(self.images[512], 'sd')
+
+    def test_ambiguous_and_unknown_targets_are_rejected(self):
+        self.lock['images'].append(self.lock['images'][0])
+        with self.assertRaises(ValueError):
+            files.verify_linux_image(self.images[512], 'sd')
+        with self.assertRaises(ValueError):
+            files.verify_linux_image(self.images[512], 'unknown')
+
+    def test_raw_images_reject_wrong_sector_type_corruption_and_format(self):
+        for target, correct, wrong in [('sd', 512, 4096), ('nvme', 512, 4096), ('ufs', 4096, 512)]:
+            with self.subTest(target=target):
+                result = files.verify_linux_image(self.raw_images[correct], target, uncompressed=True)
+                self.assertTrue(result['uncompressed'])
+                with self.assertRaises(ValueError):
+                    files.verify_linux_image(self.raw_images[wrong], target, uncompressed=True)
+                with self.assertRaises(ValueError):
+                    files.verify_linux_image(self.images[correct], target, uncompressed=True)
+                with self.assertRaises(ValueError):
+                    files.verify_linux_image(self.raw_images[correct], target)
+        original = self.raw_images[512].read_bytes()
+        for payload in [original[:-1], bytes([original[0] ^ 1]) + original[1:]]:
+            self.raw_images[512].write_bytes(payload)
+            with self.assertRaises(ValueError):
+                files.verify_linux_image(self.raw_images[512], 'sd', uncompressed=True)
+
+
 class BuildTests(unittest.TestCase):
     def test_native_runtime_detection(self):
         for system, machine, expected in [('Windows', 'AMD64', 'win-x64'),

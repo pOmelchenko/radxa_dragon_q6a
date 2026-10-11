@@ -5,7 +5,10 @@
 | Задача | Инструкция |
 | --- | --- |
 | Подготовить файлы и сохранить SPI | [EDL на Windows](guides/prepare-edl.md) |
-| Подготовить загрузку Linux с NVMe | [Прошивка Linux BIOS](guides/linux-bios.md) |
+| Записать загрузочную прошивку для Linux | [Прошивка Linux BIOS](guides/linux-bios.md) |
+| Установить штатную Ubuntu на SD из Windows | [Radxa OS R2 на SD](guides/linux-sd.md) |
+| Установить и обновить Ubuntu на NVMe из Windows | [Radxa OS R2 на NVMe](guides/linux-nvme.md) |
+| Установить Ubuntu на Toshiba UFS из Windows | [Radxa OS R2 на UFS](guides/linux-ufs.md) |
 | Развернуть Android 15 на Toshiba UFS | [Установка Android](guides/android-ufs.md) |
 | Проверить подключение и этап загрузки | [Диагностика](guides/troubleshooting.md) |
 

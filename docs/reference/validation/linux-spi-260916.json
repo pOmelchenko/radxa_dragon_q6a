@@ -1,0 +1,169 @@
+{
+  "recorded_at": "2026-10-10T16:52:44.5272822-07:00",
+  "scope": "SPI programming and readback verification",
+  "bios_version": "260916",
+  "board_serial": "7B57A3EB",
+  "source_revision": "48835fa3de36ea80597cf39e7a41a9ddf9648f52",
+  "source_url": "https://github.com/radxa-pkg/edk2-qualcomm/tree/48835fa3de36ea80597cf39e7a41a9ddf9648f52/src/qcs6490",
+  "host_os": "Windows",
+  "readback_bytes": 33554432,
+  "readback_sha256": "9596eec8424cca3bfbb736cb04ea6cd02e6724ee3ea74e84ce1937e4610db731",
+  "payloads": [
+    {
+      "label": "cdt",
+      "file": "cdt_rs701_wp.bin",
+      "bytes": 24,
+      "offset": 1220608,
+      "sha256": "b527d25d122d9e6cb6147e182810e44afe738e6ea21cabf483d7eaa0d30bf77f",
+      "matched": true
+    },
+    {
+      "label": "ddr",
+      "file": "zeros_5sectors.bin",
+      "bytes": 20480,
+      "offset": 1224704,
+      "sha256": "cc61635da46b2c9974335ea37e0b5fd660a5c8a42a89b271fa7ec2ac4b8b26f6",
+      "matched": true
+    },
+    {
+      "label": "SYSFW_VERSION",
+      "file": "SYSFW_VERSION.bin",
+      "bytes": 28,
+      "offset": 2187264,
+      "sha256": "6de5bcafd38b4ee951ca33d92e3873c45fca07ac0d9fdafcc0be28e7443ba134",
+      "matched": true
+    },
+    {
+      "label": "SMBIOS",
+      "file": "smbios.bin",
+      "bytes": 151552,
+      "offset": 2584576,
+      "sha256": "bcad1ee96068c2dbe5236116efe2233448a2475edde25793b232a2d069678327",
+      "matched": true
+    },
+    {
+      "label": "PLAT",
+      "file": "Fat12.bin",
+      "bytes": 1048576,
+      "offset": 2740224,
+      "sha256": "c34b4b5fb0ce7a89c3de023eacdf7b13318cf3cad0ce5f4f7c2a836b5ee3c949",
+      "matched": true
+    },
+    {
+      "label": "XBL",
+      "file": "xbl.elf",
+      "bytes": 5370512,
+      "offset": 3788800,
+      "sha256": "a1b0e8c558636fb2f0bb5835bec6f2cff615857ec924ba0036d5bc9328683bf1",
+      "matched": true
+    },
+    {
+      "label": "XBL_CONFIG",
+      "file": "xbl_config.elf",
+      "bytes": 225472,
+      "offset": 10080256,
+      "sha256": "a82bcec04040456be8a0ae2e461ccca8c6143017e5da6aee0e6ddfc9d418e3b8",
+      "matched": true
+    },
+    {
+      "label": "AOP",
+      "file": "aop.mbn",
+      "bytes": 208804,
+      "offset": 10375168,
+      "sha256": "3ec7927fa91811666faa8564a4b7f869621e5d2e47aabd299f50e492efc73335",
+      "matched": true
+    },
+    {
+      "label": "TZ",
+      "file": "tz.mbn",
+      "bytes": 3818983,
+      "offset": 10637312,
+      "sha256": "91b04ecf3d2573b14ef2a89c6b30056f6d0b454fe01f303384f3aaa54f7dd711",
+      "matched": true
+    },
+    {
+      "label": "DEVCFG",
+      "file": "devcfg_windows_hyp_rfcomm.mbn",
+      "bytes": 47904,
+      "offset": 15355904,
+      "sha256": "684d3f3be4bbe11d8791d9397d92dc241fc444919f468fc4b703a25fada1595d",
+      "matched": true
+    },
+    {
+      "label": "HYP",
+      "file": "hyp.mbn",
+      "bytes": 436888,
+      "offset": 15486976,
+      "sha256": "9008951e9858aba1765bc10e104ae4bb0bb6cddc84c252d0d094dc53e55fc514",
+      "matched": true
+    },
+    {
+      "label": "QUP",
+      "file": "qupv3fw.elf",
+      "bytes": 57269,
+      "offset": 16142336,
+      "sha256": "9cc5df3d926701936001c3c108b091f0a77ddca1385e0e7da372c8191d8f815c",
+      "matched": true
+    },
+    {
+      "label": "TZAPPS",
+      "file": "tzapps.bin",
+      "bytes": 786432,
+      "offset": 16273408,
+      "sha256": "97bce26ed8c44bd53fc393cf1528ff807c51d5f3080919bbc78641af96685644",
+      "matched": true
+    },
+    {
+      "label": "MULTIIMGOEM",
+      "file": "multi_image.mbn",
+      "bytes": 13176,
+      "offset": 17059840,
+      "sha256": "6d315462eead79ac89f4c8e85466641cf978dce1fd6c593869093b99bbe4eec1",
+      "matched": true
+    },
+    {
+      "label": "CPUCP",
+      "file": "cpucp.elf",
+      "bytes": 186628,
+      "offset": 17092608,
+      "sha256": "2e9e47491de28fe989adfdb100b2145dab726e013918ba9ede4bb186515253f4",
+      "matched": true
+    },
+    {
+      "label": "SHRM",
+      "file": "shrm.elf",
+      "bytes": 45616,
+      "offset": 17616896,
+      "sha256": "49a0131bfe8457b4fd7b31e1f1332312ea7cf2ebe07db6deb317bf5aa7d5157a",
+      "matched": true
+    },
+    {
+      "label": "ImageFv",
+      "file": "imagefv.elf",
+      "bytes": 2076672,
+      "offset": 17698816,
+      "sha256": "2b72af8846aab7c4f075c0c080cf4423c58efc9c5a2d1d2867bada9ff0655354",
+      "matched": true
+    },
+    {
+      "label": "PILFv",
+      "file": "PILFV.Fv",
+      "bytes": 3342336,
+      "offset": 19795968,
+      "sha256": "9da3dd092ccbd49d7a9abe9f2081867c955a78e6c3ee4a0f3c0a428eb93705bf",
+      "matched": true
+    }
+  ],
+  "gpt": [
+    {
+      "header_lba": 1,
+      "header_crc_verified": true,
+      "entries_crc_verified": true
+    },
+    {
+      "header_lba": 8191,
+      "header_crc_verified": true,
+      "entries_crc_verified": true
+    }
+  ]
+}

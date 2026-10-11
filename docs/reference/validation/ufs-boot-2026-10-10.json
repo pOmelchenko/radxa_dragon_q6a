@@ -1,0 +1,115 @@
+{
+  "recorded_at": "2026-10-11T01:53:25.249077+00:00",
+  "scope": "Linux on Toshiba UFS with active power policy: software reboot and two cold boots, desktop, SSH, capacity and reads after idle",
+  "host": "Windows",
+  "board": "Radxa Dragon Q6A, 12 GB",
+  "release": "rsdk-r2",
+  "linux_bios": "6.0.260916.BOOT.MXF.1.0.1-00549-KODIAKWP-1",
+  "kernel": "6.18.2-3-qcom",
+  "image": "radxa-dragon-q6a_noble_gnome_r2.output_4096.img",
+  "image_write_evidence": "ufs-image-write-260916-2026-10-10.json",
+  "first_boot_method": "Append console=ttyMSM0,115200n8 init=/bin/bash for one boot; set UFS active before exec /sbin/init",
+  "package_upgrade_performed_for_this_route": false,
+  "firmware_appended_kernel_arguments": [
+    "clk_ignore_unused"
+  ],
+  "kernel_command_line_matches_loader_entry_plus_firmware_argument": true,
+  "kernel_command_line": "root=UUID=6783c260-922f-46a9-ba5a-7c202d0552dd console=ttyMSM0,115200n8 quiet splash loglevel=4 rw earlycon consoleblank=0 console=tty1 coherent_pool=2M irqchip.gicv3_pseudo_nmi=0 cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory swapaccount=1 kasan=off clk_ignore_unused",
+  "desktop_visible_confirmed_by_user_for_verified_boots": true,
+  "software_reboot_verified": true,
+  "cold_boots_verified": 2,
+  "target_matches": true,
+  "root_storage_sysfs": "/sys/devices/platform/soc@0/1d84000.ufshc/host0/target0:0:0/0:0:0:0",
+  "all_physical_storage_devices_are_ufs_luns": true,
+  "disk_model": "THGJFCT2T84BAKCB",
+  "lun_0_bytes": 496714645504,
+  "logical_sector_bytes": 4096,
+  "root_source": "/dev/sda3",
+  "root_fstype": "ext4",
+  "efi_source": "/dev/sda2",
+  "root_partition_bytes": 495372333056,
+  "root_filesystem_bytes": 487458680832,
+  "root_available_bytes_at_capture": 462478823424,
+  "root_expanded_automatically": true,
+  "partition_table_verified": true,
+  "partition_table_result": "/dev/sda:\nNo errors detected.\nHeader version: 1.0\nUsing 3 out of 128 partitions.\nA total of 32790 free sectors is available in 2 segments (the largest is 128 MiB).",
+  "enabled_additional_overlay_count": 0,
+  "services_active": [
+    "multi-user.target",
+    "graphical.target",
+    "ssh.service"
+  ],
+  "ssh_enabled": true,
+  "ssh_config_valid": true,
+  "packages": [
+    "embloader 0.4",
+    "linux-image-radxa-dragon-q6a 6.18.2-3",
+    "qcom-iot-defaults 1.19",
+    "radxa-overlays-dkms 0.2.18",
+    "sdboot-is-embloader 0.4"
+  ],
+  "active_policy": {
+    "installer": "tools/target/linux/install-ufs-active-policy.sh",
+    "installer_sha256": "df7241ac186814a99b67196b10cabbac33f70545705d073ec21ad43fcba1b534",
+    "rule_sha256": "0b1f0088cf9fdcab328adc4dc64fe624acf123a339af8528b280f214b4066ae5",
+    "helper_sha256": "46cc54e01c61c42851fea99fcc503b308a4dfa2d20069a641e3f92eb7625e8eb",
+    "initramfs_hook_sha256": "57d7459872f10fd89eff25fadc98300257d36919e4079265a49d7061f1f4d0f1",
+    "model_match_source": "Cached SCSI vendor/model on discovered UFS LUNs",
+    "rule_and_helper_in_initramfs_verified": true,
+    "root_initramfs_matches_efi_copy": true,
+    "controller_settings": {
+      "power/control": "on",
+      "power/runtime_status": "active",
+      "power/autosuspend_delay_ms": {
+        "error": "[Errno 5] Input/output error"
+      },
+      "auto_hibern8": "0",
+      "rpm_lvl": "0",
+      "spm_lvl": "0",
+      "clkgate_enable": "0",
+      "string_descriptors/product_name": "THGJFCT2T84BAKCB"
+    },
+    "all_ufs_scsi_power_controls": "on"
+  },
+  "direct_reads_after_idle": [
+    {
+      "boot": "software-reboot",
+      "idle_seconds": 45,
+      "bytes": 4294967296,
+      "seconds": 4.49209,
+      "megabytes_per_second": 956.0,
+      "exit_code": 0
+    },
+    {
+      "boot": "cold-boot-1",
+      "idle_seconds": 45,
+      "bytes": 4294967296,
+      "seconds": 4.81775,
+      "megabytes_per_second": 891.0,
+      "exit_code": 0
+    },
+    {
+      "boot": "cold-boot-2",
+      "idle_seconds": 45,
+      "bytes": 4294967296,
+      "seconds": 4.8703,
+      "megabytes_per_second": 882.0,
+      "exit_code": 0
+    }
+  ],
+  "ufs_timeout_reset_or_io_errors_in_verified_boots": false,
+  "startup_observations": {
+    "failed_units": [],
+    "r8169_async_module_request_warning_observed": true,
+    "adsp_apm_command_timeout_observed": true
+  },
+  "private_capture_sha256": {
+    "ufs-clean-r2-scsi-policy-ordinary-reboot-check.json": "8f4301d82da6f75e7333cc7a9778aaa8fbe973c18b9ac75cb87b507e25cdf6f7",
+    "ufs-clean-r2-scsi-policy-cold-1-check.json": "cefde3d7063f6a150cdc4a50d1c8841c1ed1ad6e1c64dad6cce9185652b0b488",
+    "ufs-clean-r2-scsi-policy-cold-2-check.json": "a190b28bad3a2ed44bc629a82037450bbe6b2baff9738e2d321824811a48dca5",
+    "ufs-clean-r2-scsi-policy-ordinary-reboot-baseline.json": "263879fc62863ca2c559e20df52cc79807a938042f4703664fa6628d7b8a2db0",
+    "ufs-clean-r2-scsi-policy-cold-2-baseline.json": "0de788d0c23a5ebd93cb5616f3b1a5ff2b1096ac9cd99d736521b76550080390",
+    "ufs-clean-r2-scsi-policy-healthy-repair.json": "ec08f9e88af2d3b9eb18a8ae426002cf1314105f89c282e39c7f7ab4b5348a0f"
+  },
+  "private_captures_published": false
+}

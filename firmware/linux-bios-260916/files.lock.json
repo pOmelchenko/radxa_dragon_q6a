@@ -1,0 +1,141 @@
+{
+  "schema_version": 1,
+  "recorded_on": "2026-10-10",
+  "version": "260916",
+  "source_repository": "https://github.com/radxa-pkg/edk2-qualcomm",
+  "source_revision": "48835fa3de36ea80597cf39e7a41a9ddf9648f52",
+  "source_folder": "src/qcs6490",
+  "source_url": "https://github.com/radxa-pkg/edk2-qualcomm/tree/48835fa3de36ea80597cf39e7a41a9ddf9648f52/src/qcs6490",
+  "files": [
+    {
+      "path": "Fat12.bin",
+      "bytes": 1048576,
+      "sha256": "c34b4b5fb0ce7a89c3de023eacdf7b13318cf3cad0ce5f4f7c2a836b5ee3c949"
+    },
+    {
+      "path": "PILFV.Fv",
+      "bytes": 3342336,
+      "sha256": "9da3dd092ccbd49d7a9abe9f2081867c955a78e6c3ee4a0f3c0a428eb93705bf"
+    },
+    {
+      "path": "SYSFW_VERSION.bin",
+      "bytes": 28,
+      "sha256": "6de5bcafd38b4ee951ca33d92e3873c45fca07ac0d9fdafcc0be28e7443ba134"
+    },
+    {
+      "path": "aop.mbn",
+      "bytes": 208804,
+      "sha256": "3ec7927fa91811666faa8564a4b7f869621e5d2e47aabd299f50e492efc73335"
+    },
+    {
+      "path": "cdt_rs701_wp.bin",
+      "bytes": 24,
+      "sha256": "b527d25d122d9e6cb6147e182810e44afe738e6ea21cabf483d7eaa0d30bf77f"
+    },
+    {
+      "path": "contents.xml",
+      "bytes": 11889,
+      "sha256": "8bd601808f4521b957a4750a20d8b7128efe5985daeb324609e3d8bb46bc914a"
+    },
+    {
+      "path": "cpucp.elf",
+      "bytes": 186628,
+      "sha256": "2e9e47491de28fe989adfdb100b2145dab726e013918ba9ede4bb186515253f4"
+    },
+    {
+      "path": "devcfg_windows_hyp_rfcomm.mbn",
+      "bytes": 47904,
+      "sha256": "684d3f3be4bbe11d8791d9397d92dc241fc444919f468fc4b703a25fada1595d"
+    },
+    {
+      "path": "gpt_backup0.bin",
+      "bytes": 20480,
+      "sha256": "44352a99fd77464a9e628f3458cea03b12bb39f0845894f0709f05b90c40e125"
+    },
+    {
+      "path": "gpt_both0.bin",
+      "bytes": 45056,
+      "sha256": "1a2101d20e18a359c0a88ed9687cab1967687e3e4ac84d0db6614415cd12c7b8"
+    },
+    {
+      "path": "gpt_main0.bin",
+      "bytes": 24576,
+      "sha256": "47ce950241c12623ec1919d5dc6587f57f11dd5acf7064702564aa06a1d0d03d"
+    },
+    {
+      "path": "hyp.mbn",
+      "bytes": 436888,
+      "sha256": "9008951e9858aba1765bc10e104ae4bb0bb6cddc84c252d0d094dc53e55fc514"
+    },
+    {
+      "path": "imagefv.elf",
+      "bytes": 2076672,
+      "sha256": "2b72af8846aab7c4f075c0c080cf4423c58efc9c5a2d1d2867bada9ff0655354"
+    },
+    {
+      "path": "multi_image.mbn",
+      "bytes": 13176,
+      "sha256": "6d315462eead79ac89f4c8e85466641cf978dce1fd6c593869093b99bbe4eec1"
+    },
+    {
+      "path": "patch0.xml",
+      "bytes": 5243,
+      "sha256": "e5b444932b4f6b2877cc48506bee054e6dc9650cd5eee3c4622c68bd16a3c191"
+    },
+    {
+      "path": "prog_firehose_ddr.elf",
+      "bytes": 983232,
+      "sha256": "a35ca2f9e30e10c0d16fb7e9d7508d00c0f03717bca565950f00ddc7ed7a35eb"
+    },
+    {
+      "path": "prog_firehose_lite.elf",
+      "bytes": 966848,
+      "sha256": "a6cc81d98a7cc4208a206bcb0819ad1581a6165f9642ccd1586dc9b1e440c1e2"
+    },
+    {
+      "path": "qupv3fw.elf",
+      "bytes": 57269,
+      "sha256": "9cc5df3d926701936001c3c108b091f0a77ddca1385e0e7da372c8191d8f815c"
+    },
+    {
+      "path": "rawprogram0.xml",
+      "bytes": 8129,
+      "sha256": "849ce0f06295a5099e883705844438e23a33bd1e00f3c5da81da7c2bc2263645"
+    },
+    {
+      "path": "shrm.elf",
+      "bytes": 45616,
+      "sha256": "49a0131bfe8457b4fd7b31e1f1332312ea7cf2ebe07db6deb317bf5aa7d5157a"
+    },
+    {
+      "path": "smbios.bin",
+      "bytes": 151552,
+      "sha256": "bcad1ee96068c2dbe5236116efe2233448a2475edde25793b232a2d069678327"
+    },
+    {
+      "path": "tz.mbn",
+      "bytes": 3818983,
+      "sha256": "91b04ecf3d2573b14ef2a89c6b30056f6d0b454fe01f303384f3aaa54f7dd711"
+    },
+    {
+      "path": "tzapps.bin",
+      "bytes": 786432,
+      "sha256": "97bce26ed8c44bd53fc393cf1528ff807c51d5f3080919bbc78641af96685644"
+    },
+    {
+      "path": "xbl.elf",
+      "bytes": 5370512,
+      "sha256": "a1b0e8c558636fb2f0bb5835bec6f2cff615857ec924ba0036d5bc9328683bf1"
+    },
+    {
+      "path": "xbl_config.elf",
+      "bytes": 225472,
+      "sha256": "a82bcec04040456be8a0ae2e461ccca8c6143017e5da6aee0e6ddfc9d418e3b8"
+    },
+    {
+      "path": "zeros_5sectors.bin",
+      "bytes": 20480,
+      "sha256": "cc61635da46b2c9974335ea37e0b5fd660a5c8a42a89b271fa7ec2ac4b8b26f6"
+    }
+  ]
+}

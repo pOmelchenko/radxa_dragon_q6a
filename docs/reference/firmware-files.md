@@ -1,8 +1,10 @@
 # Файлы прошивки и версии
 
-Рабочий набор состоит из Android 15 Radxa, исправленного edl-ng v2,
-исправленных XBL/SPI и файлов Linux BIOS. Каждое руководство использует
-закреплённый набор; проверка хешей выполняется до обращения к SBC.
+Для Linux используются BIOS 260120 (SD/NVMe), BIOS 260916 (Toshiba UFS)
+и образы Radxa OS R2. Для Android 15
+на Toshiba UFS используются исправленные XBL/SPI. Оба маршрута используют
+исправленный edl-ng v2. Каждое руководство задаёт свой закреплённый набор;
+проверка хешей выполняется до обращения к SBC.
 
 ## Android 15 и исправления
 
@@ -36,6 +38,14 @@ SHA256 94cf5947c6d6af85ea499108d8b74d6e4c3d6c86abf1521b75ca05bf2970008a
 
 ## Linux BIOS
 
+Официальный источник проверенных файлов — [Linux BIOS 260120](https://dl.radxa.com/dragon/q6a/images/dragon-q6a_flat_build_wp_260120.zip).
+Архив занимает 11434972 байта, SHA-256:
+`cf23a1742ae5d51c451947d82cb21fd3f1c10bbcd621d611f55520673e3f90ca`.
+После распаковки нужен каталог `flat_build/spinor/dragon-q6a`.
+Все 23 файла этого каталога совпадают с закреплённым набором.
+
+Также сохранён локальный архив с теми же файлами:
+
 ```text
 Q6A-Linux-BIOS-tested-files.zip
 11067838 bytes
@@ -46,12 +56,45 @@ SHA256 49a615adbad48c6af558825bc1d72e3ee1be62ec2a49f8480e11552a04507497
 образы. Можно использовать исходный `flat_build/spinor/dragon-q6a` с теми же хешами.
 Список фиксирует [files.lock.json](../../firmware/linux-bios/files.lock.json).
 
+Отдельно закреплены 26 файлов BIOS `260916` из
+[официального репозитория edk2-qualcomm](https://github.com/radxa-pkg/edk2-qualcomm/tree/48835fa3de36ea80597cf39e7a41a9ddf9648f52/src/qcs6490):
+[размеры и SHA-256](../../firmware/linux-bios-260916/files.lock.json).
+Для получения этого набора используйте `fetch-linux-bios`, для проверки —
+`verify-linux-bios --version 260916`. Версию BIOS для установки ОС выбирайте
+по соответствующему руководству.
+
+## Radxa OS R2
+
+Образы Ubuntu 24.04 Noble с GNOME взяты из [официального выпуска rsdk-r2](https://github.com/radxa-build/radxa-dragon-q6a/releases/tag/rsdk-r2).
+Версия пакета ядра — `6.18.2-3`, минимальная дата Linux BIOS — `20251230`.
+
+| Носитель | Файл | Размер `.xz`, байт | Логический сектор |
+| --- | --- | --- | --- |
+| SD и NVMe | `radxa-dragon-q6a_noble_gnome_r2.output_512.img.xz` | 1582866836 | 512 байт |
+| UFS | `radxa-dragon-q6a_noble_gnome_r2.output_4096.img.xz` | 1578528436 | 4096 байт |
+
+Точные ссылки, размеры, SHA-256 и опубликованные SHA-512 находятся в
+[images.lock.json](../../firmware/radxa-os-r2/images.lock.json).
+Команда `verify-linux-image` проверяет выбор образа для носителя и обе суммы
+сжатого файла. Для записи через EDL образ нужно распаковать в `.img`.
+Размеры и SHA-256 распакованных `.img` также закреплены в этом файле;
+они получены из архивов после проверки опубликованных сумм.
+Для их проверки добавьте `--uncompressed`.
+
+В штатном образе используется embloader 0.4, запись Ubuntu 24.04.4 LTS
+с ядром `6.18.2-3-qcom`. Загрузчик читает записи Boot Loader Specification
+из `loader/entries` и установлен в том числе по пути
+`EFI/systemd/systemd-bootaa64.efi`. Все файлы дополнительных оверлеев в каталоге
+`RadxaOS/6.18.2-3-qcom/dtbo` имеют суффикс `.disabled`.
+
 ## Зачем нужны JSON-файлы
 
 | Файл | Для чего используется |
 | --- | --- |
 | [Android bundle.lock.json](../../firmware/android15-ufs-toshiba512/bundle.lock.json) | Закрепляет хеш архива, внутреннего manifest, размер и число файлов; используется проверкой пакета |
 | [Linux files.lock.json](../../firmware/linux-bios/files.lock.json) | Закрепляет размеры и SHA-256 23 файлов; используется перед Linux rawprogram |
+| [Linux BIOS 260916 files.lock.json](../../firmware/linux-bios-260916/files.lock.json) | Закрепляет коммит официального источника, размеры и SHA-256 26 файлов; используется загрузкой и проверкой набора 260916 |
+| [Radxa OS images.lock.json](../../firmware/radxa-os-r2/images.lock.json) | Закрепляет выпуск, ссылки, размеры и SHA-256/SHA-512 образов с секторами 512 и 4096 байт; используется проверкой образа для выбранного носителя |
 | [XBL xbl-patch.json](../../firmware/android15-ufs-toshiba512/xbl-patch.json) | Задаёт исходный ELF, смещение инструкции и ожидаемые хеши; используется подготовкой XBL |
 | [BIOS profiles](../../firmware/bios-profiles.json) | Закрепляет сохранённые SPI-образы внутри пакета; используется его проверкой |
 | [edl-ng source.lock.json](../../tools/dependencies/edl-ng/source.lock.json) | Задаёт upstream, коммит, хеш патча и целевые платформы сборки |
@@ -68,6 +111,9 @@ SHA256 49a615adbad48c6af558825bc1d72e3ee1be62ec2a49f8480e11552a04507497
 ```sh
 python tools/q6a.py verify-bundle --bundle /path/to/Q6A-Android15-UFS-Toshiba-512
 python tools/q6a.py verify-linux-bios --directory /path/to/linux-bios
+python tools/q6a.py verify-linux-image --image /path/to/radxa-dragon-q6a_noble_gnome_r2.output_512.img.xz --target sd
+python tools/q6a.py verify-linux-image --image /path/to/radxa-dragon-q6a_noble_gnome_r2.output_4096.img.xz --target ufs
+python tools/q6a.py verify-linux-image --image /path/to/radxa-dragon-q6a_noble_gnome_r2.output_512.img --target sd --uncompressed
 ```
 
 На macOS и Linux используйте `python3`, если команда `python` не установлена.

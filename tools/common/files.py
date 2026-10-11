@@ -73,6 +73,86 @@ def verify_bundle(bundle):
     return {'files_checked': count, 'device_contacted': False}
 
 
-def verify_linux_bios(directory):
-    data = load_json(ROOT / 'firmware/linux-bios/files.lock.json')
-    return {'files_checked': check_entries(directory, data['files']), 'device_contacted': False}
+def linux_bios_lock(version):
+    folders = {'260120': 'linux-bios', '260916': 'linux-bios-260916'}
+    if version not in folders:
+        raise ValueError(f'Unsupported pinned Linux BIOS version: {version}')
+    return load_json(ROOT / 'firmware' / folders[version] / 'files.lock.json')
+
+
+def verify_linux_bios(directory, version='260120'):
+    data = linux_bios_lock(version)
+    return {'version': version, 'files_checked': check_entries(directory, data['files']),
+            'device_contacted': False}
+
+
+def fetch_linux_bios(directory, version='260916'):
+    """Fetch the pinned package files; preserve existing files and verify every byte."""
+    from urllib.request import urlopen
+    if version != '260916':
+        raise ValueError('Automatic download is available for BIOS 260916')
+    data = linux_bios_lock(version)
+    revision = data['source_revision']
+    if not re.fullmatch('[0-9a-f]{40}', revision):
+        raise ValueError('Linux BIOS source must be pinned to a complete Git commit')
+    names = set()
+    for entry in data['files']:
+        name, size, sha256 = entry['path'], entry['bytes'], entry['sha256']
+        if not re.fullmatch('[A-Za-z0-9_.-]+', name) or name in ('.', '..') or name in names:
+            raise ValueError(f'Invalid or duplicate BIOS filename: {name}')
+        if type(size) is not int or not 0 <= size <= 16 * 1024 * 1024:
+            raise ValueError(f'Invalid BIOS file size: {name}')
+        if not re.fullmatch('[0-9a-f]{64}', sha256):
+            raise ValueError(f'Invalid BIOS SHA256: {name}')
+        names.add(name)
+    if not names:
+        raise ValueError('Expected a nonempty BIOS file list')
+    directory = Path(directory).resolve()
+    directory.mkdir(parents=True, exist_ok=True)
+    base = f'https://raw.githubusercontent.com/radxa-pkg/edk2-qualcomm/{revision}/src/qcs6490/'
+    downloaded = 0
+    for entry in data['files']:
+        path = directory / entry['path']
+        if path.exists() or path.is_symlink():
+            check_entries(directory, [entry])
+        else:
+            with urlopen(base + entry['path'], timeout=40) as response:
+                content = response.read(entry['bytes'] + 1)
+            if len(content) != entry['bytes'] or hashlib.sha256(content).hexdigest() != entry['sha256']:
+                raise ValueError(f'Download size or SHA256 mismatch: {entry["path"]}')
+            with path.open('xb') as stream:
+                stream.write(content)
+            downloaded += 1
+        print(f'Verified {entry["path"]}', flush=True)
+    result = verify_linux_bios(directory, version)
+    result['files_downloaded'] = downloaded
+    return result
+
+
+def verify_linux_image(image, target, uncompressed=False):
+    data = load_json(ROOT / 'firmware/radxa-os-r2/images.lock.json')
+    candidates = [entry for entry in data['images'] if target in entry['targets']]
+    if len(candidates) != 1:
+        raise ValueError(f'Expected exactly one pinned Linux image for {target}')
+    entry = candidates[0]
+    image = Path(image)
+    size = entry['uncompressed_bytes' if uncompressed else 'compressed_bytes']
+    expected_sha256 = entry['uncompressed_sha256' if uncompressed else 'sha256']
+    if not image.is_file() or image.stat().st_size != size:
+        raise ValueError(f'Wrong image size for {target}')
+    sha256 = hashlib.sha256()
+    sha512 = None if uncompressed else hashlib.sha512()
+    with image.open('rb') as stream:
+        for chunk in iter(lambda: stream.read(4 * 1024 * 1024), b''):
+            sha256.update(chunk)
+            if sha512 is not None:
+                sha512.update(chunk)
+    if sha256.hexdigest() != expected_sha256 or (sha512 is not None and sha512.hexdigest() != entry['sha512']):
+        raise ValueError(f'Wrong image or checksum for {target}')
+    result = {'release': data['release'], 'target': target,
+              'logical_sector_bytes': entry['logical_sector_bytes'],
+              'uncompressed': uncompressed, 'bytes': size,
+              'sha256': sha256.hexdigest(), 'device_contacted': False}
+    if sha512 is not None:
+        result['sha512'] = sha512.hexdigest()
+    return result

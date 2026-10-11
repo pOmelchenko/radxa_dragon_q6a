@@ -1,0 +1,78 @@
+{
+  "recorded_at": "2026-10-10T21:44:40.730386+00:00",
+  "scope": "Independent NVMe boot of R2, APT package update, software reboot and cold boot of the updated system",
+  "host": "Windows",
+  "board": "Radxa Dragon Q6A, 12 GB",
+  "release": "rsdk-r2",
+  "linux_bios": "6.0.260120.BOOT.MXF.1.0.1-00549-KODIAKWP-1",
+  "source_image": "radxa-dragon-q6a_noble_gnome_r2.output_512.img",
+  "image_write_evidence": "nvme-image-write-2026-10-10.json",
+  "original_image_kernel_boot_verified": "6.18.2-3-qcom",
+  "updated_kernel": "7.0.11-7-qcom",
+  "update_command_observed_in_apt_history": "apt upgrade -y",
+  "updated_packages": [
+    "linux-image-radxa-dragon-q6a 7.0.11-7",
+    "qcom-iot-defaults 1.21",
+    "radxa-overlays-dkms 0.2.31"
+  ],
+  "software_reboot_verified": true,
+  "updated_system_cold_boot_verified": true,
+  "cold_boot_login_screen_confirmed_by_user": true,
+  "target_matches": true,
+  "physical_storage_devices": [
+    "nvme0n1"
+  ],
+  "disk_model": "KBG40ZNS256G NVMe KIOXIA 256GB",
+  "disk_bytes": 256060514304,
+  "logical_sector_bytes": 512,
+  "root_source": "/dev/nvme0n1p3",
+  "root_fstype": "ext4",
+  "efi_source": "/dev/nvme0n1p2",
+  "root_partition_bytes": 254953201152,
+  "root_filesystem_bytes": 250830680064,
+  "root_available_bytes_at_capture": 234946211840,
+  "root_expanded_automatically": true,
+  "partition_table_verified": true,
+  "partition_table_result": "/dev/nvme0n1:\nNo errors detected.\nHeader version: 1.0\nUsing 3 out of 128 partitions.\nA total of 32734 free sectors is available in 1 segment.",
+  "enabled_additional_overlay_count": 0,
+  "kernel_command_line_matches_package_generated_loader_entry": true,
+  "kernel_command_line": "root=UUID=a03a5c05-3365-4811-a1dd-f1776983aa76 console=ttyMSM0,115200n8 quiet splash loglevel=4 rw earlycon consoleblank=0 console=tty1 coherent_pool=2M irqchip.gicv3_pseudo_nmi=0 cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory swapaccount=1 kasan=off clk_ignore_unused",
+  "services_active": [
+    "multi-user.target",
+    "graphical.target",
+    "ssh.service"
+  ],
+  "ssh_enabled": true,
+  "ssh_config_valid": true,
+  "ssh_package": "openssh-server 1:9.6p1-3ubuntu13.19 installed",
+  "failed_units_at_capture": [],
+  "direct_read_check": {
+    "bytes": 1073741824,
+    "exit_code": 0,
+    "output": "956301312 bytes (956 MB, 912 MiB) copied, 1 s, 956 MB/s\n1024+0 records in\n1024+0 records out\n1073741824 bytes (1.1 GB, 1.0 GiB) copied, 1.12708 s, 953 MB/s"
+  },
+  "rpmh_timeout_or_soft_lockup_in_verified_boots": false,
+  "startup_observations": [
+    {
+      "component": "disp_cc_mdss_dp_pixel_clk_src",
+      "message": "rcg didn't update its configuration.",
+      "warning_location": "drivers/clk/qcom/clk-rcg2.c:156",
+      "login_screen_and_ssh_available": true,
+      "configuration_changed_for_this_observation": false
+    }
+  ],
+  "earlier_r2_boot_observation": {
+    "message": "Error sending AMC RPMH requests (-110)",
+    "soft_lockup_cpu": 7,
+    "observed_in_previous_boot_journal": true,
+    "next_successful_original_image_boot_followed_user_power_cycle": true,
+    "root_cause_confirmed": false
+  },
+  "long_term_stability_verified": false,
+  "private_capture_sha256": {
+    "nvme-boot-1.json": "54363d3438fe819ad4b46917a00b5e4aebdc5b40ed0679b6237be292b438fc0a",
+    "nvme-boot-3.json": "eadb034bb21bccf520f5548c37539e28a62418fa832df6b1a07fef01acfe1072",
+    "nvme-boot-4.json": "34c510af08c3aca7be17333f0821651f3296f49bf44e13894e23698477fee92d"
+  },
+  "private_captures_published": false
+}

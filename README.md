@@ -10,7 +10,10 @@
 | Задача | Руководство |
 | --- | --- |
 | Подготовить Windows, файлы прошивки и EDL | [Подготовка к прошивке](docs/guides/prepare-edl.md) |
-| Записать BIOS для Linux с NVMe | [Linux BIOS](docs/guides/linux-bios.md) |
+| Записать BIOS для Linux | [Linux BIOS](docs/guides/linux-bios.md) |
+| Установить штатную Ubuntu на SD из Windows | [Radxa OS R2 на SD](docs/guides/linux-sd.md) |
+| Установить и обновить Ubuntu на NVMe из Windows | [Radxa OS R2 на NVMe](docs/guides/linux-nvme.md) |
+| Установить Ubuntu на Toshiba UFS из Windows | [Radxa OS R2 на UFS](docs/guides/linux-ufs.md) |
 | Установить Android 15 на Toshiba UFS 512 ГБ | [Android на UFS](docs/guides/android-ufs.md) |
 | Подключить UART, определить разъёмы и питание | [Аппаратный справочник](docs/reference/hardware.md) |
 | Выбрать прошивку и проверить файлы | [BIOS](docs/reference/boot-firmware.md), [файлы прошивки](docs/reference/firmware-files.md) |
@@ -23,7 +26,9 @@
 | Компонент | Конфигурация и результат |
 | --- | --- |
 | SBC | Dragon Q6A, 12 ГБ LPDDR5 |
-| Linux | Ubuntu на NVMe 256 ГБ, ядро `7.0.11-7-qcom`, параметр `module_blacklist=i2c_qcom_geni` |
+| Linux на SD | Radxa OS R2, SD 32 ГБ, ядро `6.18.2-3-qcom`, штатные параметры, рабочий стол и SSH |
+| Linux на NVMe | Radxa OS R2 с обновлением пакетов, SSD 256 ГБ, ядро `7.0.11-7-qcom`, SSH и холодная загрузка |
+| Linux на UFS | Radxa OS R2, BIOS `260916`, ядро `6.18.2-3-qcom`, Toshiba с постоянной настройкой питания, рабочий стол и SSH |
 | UFS | TOSHIBA THGJFCT2T84BAKCB rev 0100, UFS 3.0, 512 ГБ |
 | Android | Android 15, исправленный XBL в SPI и UFS; завершение загрузки и интерфейс HDMI |
 | Хост прошивки | Windows, исправленный edl-ng v2 |
@@ -42,6 +47,7 @@ tools/
   windows/             Windows, включая экспериментальную автоматизацию
   linux/               точка входа Linux
   macos/               точка входа macOS
+  target/              настройки, выполняемые в ОС самой Q6A
   dependencies/edl-ng/  источник, версия, патч и лицензия зависимости
 tests/                 проверки инструментов без подключения SBC
 ```

@@ -1,0 +1,56 @@
+{
+  "recorded_at": "2026-10-10T20:51:36.664001+00:00",
+  "scope": "Independent SD cold boot, desktop login and SSH checks after installing openssh-server",
+  "host": "Windows",
+  "board": "Radxa Dragon Q6A, 12 GB",
+  "release": "rsdk-r2",
+  "linux_bios": "6.0.260120.BOOT.MXF.1.0.1-00549-KODIAKWP-1",
+  "kernel": "6.18.2-3-qcom",
+  "image": "radxa-dragon-q6a_noble_gnome_r2.output_512.img",
+  "image_write_evidence": "sd-image-write-2026-10-10.json",
+  "desktop_login_confirmed_by_user": true,
+  "wifi_connection_confirmed_by_user": true,
+  "target_matches": true,
+  "root_source": "/dev/mmcblk1p3",
+  "root_fstype": "ext4",
+  "efi_source": "/dev/mmcblk1p2",
+  "card_type": "SD",
+  "card_bytes": 31268536320,
+  "logical_sector_bytes": 512,
+  "root_partition_bytes": 30161223168,
+  "root_filesystem_bytes": 29575102464,
+  "root_available_bytes_at_capture": 23313809408,
+  "root_expanded_automatically": true,
+  "partition_table_verified": true,
+  "partition_table_verifier": "sfdisk --verify /dev/mmcblk1",
+  "partition_table_result": "/dev/mmcblk1:\nNo errors detected.\nHeader version: 1.0\nUsing 3 out of 128 partitions.\nA total of 32734 free sectors is available in 1 segment.",
+  "physical_storage_devices": [
+    "mmcblk1"
+  ],
+  "enabled_additional_overlay_count": 0,
+  "kernel_command_line_matches_stock_loader_entry": true,
+  "kernel_command_line": "root=UUID=a03a5c05-3365-4811-a1dd-f1776983aa76 console=ttyMSM0,115200n8 quiet splash loglevel=4 rw earlycon consoleblank=0 console=tty1 coherent_pool=2M irqchip.gicv3_pseudo_nmi=0 cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory swapaccount=1 kasan=off",
+  "services_active": [
+    "multi-user.target",
+    "graphical.target",
+    "ssh.service"
+  ],
+  "ssh_enabled": true,
+  "ssh_config_valid": true,
+  "ssh_package": "openssh-server 1:9.6p1-3ubuntu13.19 installed",
+  "image_packages": [
+    "linux-image-radxa-dragon-q6a 6.18.2-3",
+    "qcom-iot-defaults 1.19",
+    "radxa-overlays-dkms 0.2.18"
+  ],
+  "startup_observations": [
+    {
+      "unit": "systemd-sysupdate-reboot.service",
+      "state": "failed",
+      "journal_message": "No transfer definitions found.",
+      "configuration_changed_for_this_observation": false
+    }
+  ],
+  "private_capture_sha256": "8e98cefff3931034e15814e4b269b3143090842c812d1634df306d102492b4f8",
+  "private_capture_published": false
+}
