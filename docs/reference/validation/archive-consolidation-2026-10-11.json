@@ -1,0 +1,280 @@
+{
+  "schema_version": 1,
+  "reviewed_on": "2026-10-11",
+  "device_contacted": false,
+  "main_commit_before_import": "f877208dfd6bef9f2bcac593d742ee6bbb8e2d5a",
+  "source_archives": [
+    {
+      "name": "radxa_q6a.zip",
+      "bytes": 54278050,
+      "sha256": "963cc84a65ae86955d072df7a5d3c0ac804c5dbca30deec849ddee675be86d2a",
+      "source_files": 256
+    },
+    {
+      "name": "edl-ng-patched-src.zip",
+      "bytes": 44593457,
+      "sha256": "393a5fc7a6e83c51cb13e638c697b61fd213070f57321f62c4798822c7b04b70",
+      "source_files": 567
+    }
+  ],
+  "all_823_archive_file_hashes_verified": true,
+  "file_dispositions": {
+    "local_git_metadata": 96,
+    "legacy_repository_sources": 31,
+    "offline_documentation_fixture": 10,
+    "pinned_upstream_download_cache": 1,
+    "dependency_sources_reproducible_from_committed_lock_and_patch": 240,
+    "superseded_portability_fixture": 22,
+    "firmware_rebuild_outputs_and_local_configuration": 4,
+    "reproducible_build_and_python_caches": 419
+  },
+  "imported_validation_records": [
+    "docs/reference/validation/legacy-source-checksums-2026-10-11.json",
+    "docs/reference/validation/xbl-rebuild-import-2026-10-11.json"
+  ],
+  "legacy_source_history": [
+    {
+      "path": ".gitattributes",
+      "git_blob": "39d7904a678b31a4f83c2efe36d179d161a7d174",
+      "reachable_in_main_history": true
+    },
+    {
+      "path": ".github/workflows/offline.yml",
+      "git_blob": "072aac972b8c774eb313da2aa242e542b194dcfc",
+      "reachable_in_main_history": true
+    },
+    {
+      "path": ".gitignore",
+      "git_blob": "21633aaf4d20e625c3024151b260ac460a85e4d7",
+      "reachable_in_main_history": false
+    },
+    {
+      "path": "README.md",
+      "git_blob": "56c616958093956ab87e82640c6a812e9119da7c",
+      "reachable_in_main_history": false
+    },
+    {
+      "path": "docs/android-scripted.md",
+      "git_blob": "c78f11647c45387b5a87ef32fd1ab9779d43dc61",
+      "reachable_in_main_history": true
+    },
+    {
+      "path": "docs/android-ufs.md",
+      "git_blob": "a4add76bb5d2fcfe43907272fe1579de41a1c5da",
+      "reachable_in_main_history": true
+    },
+    {
+      "path": "docs/artifacts.md",
+      "git_blob": "da5ed843af9ff3a080a90ff200369c1c1231cace",
+      "reachable_in_main_history": false
+    },
+    {
+      "path": "docs/bios-profiles.md",
+      "git_blob": "58e36ae14362716d74b504a7ed99fb63607d65cd",
+      "reachable_in_main_history": true
+    },
+    {
+      "path": "docs/bios-scripted.md",
+      "git_blob": "96f4ad469c3dc1f126e841b3f12fda7fce1998a1",
+      "reachable_in_main_history": true
+    },
+    {
+      "path": "docs/direct-edl.md",
+      "git_blob": "034886461ec1d39313f5dc7eb54068bfee763cba",
+      "reachable_in_main_history": true
+    },
+    {
+      "path": "docs/linux-bios.md",
+      "git_blob": "6b8babcf052a97d6bb763e1fe58bb7422b513e6e",
+      "reachable_in_main_history": true
+    },
+    {
+      "path": "docs/linux-recovery.md",
+      "git_blob": "84d16a0d09ee4433f67259e7a2a253389275a538",
+      "reachable_in_main_history": true
+    },
+    {
+      "path": "docs/troubleshooting.md",
+      "git_blob": "6df90e455d245a9a59b399ff0e09f3826d667fa5",
+      "reachable_in_main_history": true
+    },
+    {
+      "path": "docs/xbl-workaround.md",
+      "git_blob": "c060dd8e7800fff578657b995512e8a4d629b400",
+      "reachable_in_main_history": true
+    },
+    {
+      "path": "manifests/bios-profiles.json",
+      "git_blob": "6216acde00460c564596e332e8e771b402de0e50",
+      "reachable_in_main_history": true
+    },
+    {
+      "path": "manifests/bundle-lock.json",
+      "git_blob": "0402b1697e7e1f7a1ad5062f554fe0ac1f2a1409",
+      "reachable_in_main_history": true
+    },
+    {
+      "path": "manifests/direct-route-evidence.json",
+      "git_blob": "321856074bb983268f6973b1f02214b371e47504",
+      "reachable_in_main_history": true
+    },
+    {
+      "path": "manifests/edl-ng-provenance.json",
+      "git_blob": "ea00e51e6c363ab6080b8a28e3d0994d23e9ffc5",
+      "reachable_in_main_history": true
+    },
+    {
+      "path": "manifests/hardware-results.json",
+      "git_blob": "c66ab65aba9345d9b13122823373afc3fef5e8e0",
+      "reachable_in_main_history": true
+    },
+    {
+      "path": "manifests/linux-bios-files.json",
+      "git_blob": "f79375e55bccdb44131bee4827f8d4102b52811e",
+      "reachable_in_main_history": true
+    },
+    {
+      "path": "manifests/offline-results.json",
+      "git_blob": "a4f530e358bb98995ea208c0b92662215fc44b0b",
+      "reachable_in_main_history": true
+    },
+    {
+      "path": "manifests/source-checksums.json",
+      "git_blob": "4957ecafbfa34a40028a42e99a71c111edc4e182",
+      "reachable_in_main_history": false
+    },
+    {
+      "path": "patches/edl-ng-q6a.patch",
+      "git_blob": "4fc353b45115da3ce4abda8e68417de360f4fa27",
+      "reachable_in_main_history": true
+    },
+    {
+      "path": "patches/xbl-ufs30.json",
+      "git_blob": "93e65fa248cc0bd5c7da0c2667775be69f4ca200",
+      "reachable_in_main_history": true
+    },
+    {
+      "path": "scripts/Install-Q6A-Android.ps1",
+      "git_blob": "7208ed3a46c8fe69e05b0ee7477fb3cfa678050e",
+      "reachable_in_main_history": true
+    },
+    {
+      "path": "scripts/Prepare-Bundle.ps1",
+      "git_blob": "a002d6d0689236fb0e73b665b0fee51a455e7a4b",
+      "reachable_in_main_history": true
+    },
+    {
+      "path": "scripts/Switch-Q6A-Bios.ps1",
+      "git_blob": "c2c96753a7cf21541c51ff14cd828620bb4a5c5e",
+      "reachable_in_main_history": true
+    },
+    {
+      "path": "scripts/Test-Q6A-Offline.ps1",
+      "git_blob": "5a70badc080c1300fe1db7fd0d50dbd4d0623355",
+      "reachable_in_main_history": true
+    },
+    {
+      "path": "scripts/check_repository.py",
+      "git_blob": "a9398eacebd101a95b0088a6ff0d20173ea8bff8",
+      "reachable_in_main_history": true
+    },
+    {
+      "path": "scripts/prepare_xbl.py",
+      "git_blob": "734e482a3ed5c48146f578c20f4005f44904dd1c",
+      "reachable_in_main_history": true
+    },
+    {
+      "path": "third_party/edl-ng-LICENSE",
+      "git_blob": "b5ec067fe3a1af51fc4f4bb10c4d79088c8edabd",
+      "reachable_in_main_history": true
+    }
+  ],
+  "legacy_variants_not_copied": {
+    ".gitignore": "The active Git ignore rules already cover these patterns and add further generated files.",
+    "README.md": "Earlier overview of the same tested route; facts and commands are retained in the current guides, references and Git history. The old 45 GiB /data and unconfirmed cold-start status describe an earlier stage.",
+    "docs/artifacts.md": "Only difference from the published historical file says the repository has not been published yet; that status is obsolete.",
+    "manifests/source-checksums.json": "Both original checksum manifests were imported into the historical checksum record above."
+  },
+  "edl_dependency": {
+    "base_commit": "4a658eee465a84b13c53b338edfd22bd08e4b211",
+    "patch_sha256": "1e480c58ee3427941542a9578c4b343a615c0d82c864f82a7bc2fd9e7b550ca4",
+    "source_copies_checked": {
+      "edl-ng-patched-src/": 120,
+      "radxa_q6a/.work/edl-ng-replayed/": 120
+    },
+    "all_sources_match_after_checkout_line_ending_normalization": true,
+    "additional_local_commits_or_stashes": false,
+    "retained_paths": [
+      "tools/dependencies/edl-ng/source.lock.json",
+      "tools/dependencies/edl-ng/q6a.patch",
+      "tools/dependencies/edl-ng/LICENSE",
+      "tools/common/edl_build.py"
+    ]
+  },
+  "portability_fixture": {
+    "files": 22,
+    "hardware_results_equal_later_record": true,
+    "earlier_guard_tests_passed": 10,
+    "later_guard_tests_passed": 25,
+    "decision": "Older installer and test copies were superseded by the committed versions. Their checksum manifest was retained; no independent hardware results were found."
+  },
+  "offline_control_files": {
+    "scope": "Archived local inputs and generated copies from the old documentation check, not a new acquisition from the board.",
+    "files": [
+      {
+        "path": "radxa_q6a/.work/direct-docs-check/spi-android-readback.bin",
+        "bytes": 33554432,
+        "sha256": "d0e41c7d20efa0fffa7bf567a337b330038fb17c5d6f4c5502412a711921873c"
+      },
+      {
+        "path": "radxa_q6a/.work/direct-docs-check/spi-linux-readback.bin",
+        "bytes": 33554432,
+        "sha256": "5d2f841bebe96f06d933d634bc0addfba2b681b602a93798b1e5013608824e57"
+      },
+      {
+        "path": "radxa_q6a/.work/direct-docs-check/xbl_a-before.bin",
+        "bytes": 3690496,
+        "sha256": "3b7a41c0738982c590b52a0dff77efa704010632ad70689695fa8325872b3723"
+      },
+      {
+        "path": "radxa_q6a/.work/direct-docs-check/xbl_a-before.bin.sha256",
+        "bytes": 66,
+        "sha256": "afe45fc169b375cbf01d9e5761bfdf01023ea0cc91af1fc53163e47788398b15"
+      },
+      {
+        "path": "radxa_q6a/.work/direct-docs-check/xbl_a-candidate.bin",
+        "bytes": 3690496,
+        "sha256": "90d6635a0b66e6ad070d0c23e08dc550775ff3c4c68434bba7eb5b1bea4be5d0"
+      },
+      {
+        "path": "radxa_q6a/.work/direct-docs-check/xbl_a-current.bin",
+        "bytes": 3690496,
+        "sha256": "90d6635a0b66e6ad070d0c23e08dc550775ff3c4c68434bba7eb5b1bea4be5d0"
+      },
+      {
+        "path": "radxa_q6a/.work/direct-docs-check/xbl_a-readback.bin",
+        "bytes": 3690496,
+        "sha256": "90d6635a0b66e6ad070d0c23e08dc550775ff3c4c68434bba7eb5b1bea4be5d0"
+      },
+      {
+        "path": "radxa_q6a/.work/direct-docs-check/xbl_b-before.bin",
+        "bytes": 3690496,
+        "sha256": "2c87824365571a09163a53a362d95b2f9edecb82e358807f265e50a9e0d85ee3"
+      },
+      {
+        "path": "radxa_q6a/.work/direct-docs-check/xbl_b-before.bin.sha256",
+        "bytes": 66,
+        "sha256": "3066835ef77515c1ec36326c8f53cc60bf9d2ce1d0c0bbccd6f1f74089bbf09d"
+      }
+    ],
+    "equivalent_checks_retained_in": [
+      "tests/windows/Test-Documentation.ps1",
+      "tools/common/files.py",
+      "tools/common/prepare_xbl.py",
+      "docs/guides/linux-bios.md",
+      "docs/guides/android-ufs.md",
+      "docs/reference/validation/offline-2026-10-10.json"
+    ]
+  },
+  "cleanup_decision": "Remove the two ZIP snapshots after the validation records are committed. Generated caches, old working copies, host paths and per-device dumps do not belong in Git; reusable source changes, reproducible recipes and verification metadata are retained."
+}

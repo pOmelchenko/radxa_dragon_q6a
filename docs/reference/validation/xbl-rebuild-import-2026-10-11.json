@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "imported_on": "2026-10-11",
+  "source_record": "radxa_q6a/artifacts/rebuilt/rebuild.json",
+  "source_record_sha256": "47551e5bf17a4ff82cab4f57fa39f6e1d0920ba8edfdc03e1bc5470133a71467",
+  "scope": "Original offline reconstruction result. Both archived outputs match committed candidate hashes; this is not a new hardware test.",
+  "original_report": {
+    "device_contacted": false,
+    "vendor_signature_valid": false,
+    "hashes_match_tested_candidates": true,
+    "checked_sha384_segments": [
+      0,
+      2,
+      4,
+      5,
+      8,
+      9,
+      10,
+      11,
+      13,
+      14
+    ],
+    "changed_xbl_bytes": 49,
+    "files": {
+      "xbl-ufs30-power-test.elf": {
+        "bytes": 3665840,
+        "sha256": "347c5bfd376ee029ed60486ffb0d69ebbc82bd65111e418389fb724c482b3ed5"
+      },
+      "spi-android-ufs30-power-test.bin": {
+        "bytes": 33554432,
+        "sha256": "d0e41c7d20efa0fffa7bf567a337b330038fb17c5d6f4c5502412a711921873c"
+      }
+    }
+  }
+}

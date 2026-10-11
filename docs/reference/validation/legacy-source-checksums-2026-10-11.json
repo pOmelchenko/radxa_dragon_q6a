@@ -1,0 +1,284 @@
+{
+  "schema_version": 1,
+  "imported_on": "2026-10-11",
+  "scope": "Historical source-package checksums for two retired Q6A snapshots; not the current repository file layout.",
+  "archive_text_normalization": "CRCRLF and CRLF checkout line endings were converted to LF before verifying declared text hashes.",
+  "all_51_source_hashes_verified": true,
+  "snapshots": [
+    {
+      "archived_path": "radxa_q6a/manifests/source-checksums.json",
+      "original_file_sha256": "0d46ce6e9a0207b724f731b33016a676a89c16bb85a9b1e4c4be6211d192af2b",
+      "manifest": {
+        "schema_version": 1,
+        "normalization": "CRLF to LF for declared text files; other files exact bytes",
+        "files": [
+          {
+            "path": ".gitattributes",
+            "normalize_lf": true,
+            "sha256": "683509c794b2df84da0fb023d44d4fa14f6315eec5eb5bb566f42eb95a48ddb3"
+          },
+          {
+            "path": ".github/workflows/offline.yml",
+            "normalize_lf": true,
+            "sha256": "b2b94f28d33dbf3184537074f5170dfa747cdc58d2090ce2d4dac25b3a3e0589"
+          },
+          {
+            "path": ".gitignore",
+            "normalize_lf": true,
+            "sha256": "7418653e437715d0dbae625d370f42730d3e3adcc6569967ec023af4c65d3383"
+          },
+          {
+            "path": "docs/android-scripted.md",
+            "normalize_lf": true,
+            "sha256": "e3fc0604c514f82b554d7558bb05ea795e3fc015015423a4e507cf5ad7d2a36b"
+          },
+          {
+            "path": "docs/android-ufs.md",
+            "normalize_lf": true,
+            "sha256": "1acea28a45d95b27783d29d6bd9b4dd888d1726f5b507678ed28e4b389d1ab51"
+          },
+          {
+            "path": "docs/artifacts.md",
+            "normalize_lf": true,
+            "sha256": "0b6b81dc6ee2170a4b37a2800e03bdde17f541b498be179b1eea6d2835449bbe"
+          },
+          {
+            "path": "docs/bios-profiles.md",
+            "normalize_lf": true,
+            "sha256": "eddabe0754d8440f85acb9c73fdf85c6d5467773ba70dd5c9a668950101fed56"
+          },
+          {
+            "path": "docs/bios-scripted.md",
+            "normalize_lf": true,
+            "sha256": "a95c65a419da2300a423fc89c8d6d2cb7f4fdb560cd1a837866cca7cce62dbb8"
+          },
+          {
+            "path": "docs/direct-edl.md",
+            "normalize_lf": true,
+            "sha256": "8ff234c76871c0a33a2fb45db27a163208b3800cf9b00b40bc3475c6d75d396f"
+          },
+          {
+            "path": "docs/linux-bios.md",
+            "normalize_lf": true,
+            "sha256": "2abbd02c5e5e17c7330583f6719776790a6deb3523d36872c8363c0f3a286ad7"
+          },
+          {
+            "path": "docs/linux-recovery.md",
+            "normalize_lf": true,
+            "sha256": "68aeaaeecf6ec238093dbcdb7bfec8e84353803812cde2db58d4c710d59e90d3"
+          },
+          {
+            "path": "docs/troubleshooting.md",
+            "normalize_lf": true,
+            "sha256": "5c242dbfafcb1c23ded4797449dbf68fd227ce9014add29208a2bea57138d069"
+          },
+          {
+            "path": "docs/xbl-workaround.md",
+            "normalize_lf": true,
+            "sha256": "33e34e02cb1763607bb5c96f823d676c5bc9366f5abb128edc1088062ccd21ae"
+          },
+          {
+            "path": "manifests/bios-profiles.json",
+            "normalize_lf": true,
+            "sha256": "76de7ce7f5d9e1a9d1d3db9bf603fdb1cf0d34292cf7d736e9fef1dd914c7dd1"
+          },
+          {
+            "path": "manifests/bundle-lock.json",
+            "normalize_lf": true,
+            "sha256": "a66c599688d7a6088b6dfc21f0077b3beb57ef301b33e94a40d90ca14ac743d7"
+          },
+          {
+            "path": "manifests/direct-route-evidence.json",
+            "normalize_lf": true,
+            "sha256": "b085f6b327002f76dc6c21f99fe54d6d48cc52cea836b76719e6b6c9200c6199"
+          },
+          {
+            "path": "manifests/edl-ng-provenance.json",
+            "normalize_lf": true,
+            "sha256": "e5899a9f16ffce0affbd1bae813c7d31f9d87de4f606cab440ef510bebc55c46"
+          },
+          {
+            "path": "manifests/hardware-results.json",
+            "normalize_lf": true,
+            "sha256": "723c9bd4de39b5721189565fd722f2fb3e375309f0bf69721d068b16ebfa0beb"
+          },
+          {
+            "path": "manifests/linux-bios-files.json",
+            "normalize_lf": true,
+            "sha256": "1d7d9c25f9b3357954f25392c138ce0902d55445821bc30d5171f2ba12df9564"
+          },
+          {
+            "path": "manifests/offline-results.json",
+            "normalize_lf": true,
+            "sha256": "e1d3fc60feed330a416875f234a3c31d9c39440c46cdc20ac8aec99f8b21bcc9"
+          },
+          {
+            "path": "patches/edl-ng-q6a.patch",
+            "normalize_lf": false,
+            "sha256": "1e480c58ee3427941542a9578c4b343a615c0d82c864f82a7bc2fd9e7b550ca4"
+          },
+          {
+            "path": "patches/xbl-ufs30.json",
+            "normalize_lf": true,
+            "sha256": "2b9239555736caf256fb2e2e8dc0a0c55ab63e3fa2aab08ae433d274ca51eee5"
+          },
+          {
+            "path": "README.md",
+            "normalize_lf": true,
+            "sha256": "15d9233417b8e798304e90bd90def366b982987b226d9b6e23f612292ba30503"
+          },
+          {
+            "path": "scripts/check_repository.py",
+            "normalize_lf": true,
+            "sha256": "2f8cb2833c6209ef9d9f32c4c5fc83fcc2f2d33389f2ad3d65a0b798995a19b7"
+          },
+          {
+            "path": "scripts/Install-Q6A-Android.ps1",
+            "normalize_lf": true,
+            "sha256": "6a31236ee6cb4b83b3cbf6107e97a570a5357ac69d8564cbaa1c7e7a1311475c"
+          },
+          {
+            "path": "scripts/Prepare-Bundle.ps1",
+            "normalize_lf": true,
+            "sha256": "18fe8f28062677435a74a2c05d6d2771784717a554e498decde94b497154f379"
+          },
+          {
+            "path": "scripts/prepare_xbl.py",
+            "normalize_lf": true,
+            "sha256": "2da5d31369da935ed8d1455c9b9002607011cacf1529bbafac31c6a15d7eb814"
+          },
+          {
+            "path": "scripts/Switch-Q6A-Bios.ps1",
+            "normalize_lf": true,
+            "sha256": "effd08e3f71ca756ba802d450a0ccff41d34202464d4568ad193050e279e331e"
+          },
+          {
+            "path": "scripts/Test-Q6A-Offline.ps1",
+            "normalize_lf": true,
+            "sha256": "b808bf3cce2b2274cf1e9463140ea1c9fee208f2d368dfda58d6f1d88cf819c1"
+          },
+          {
+            "path": "third_party/edl-ng-LICENSE",
+            "normalize_lf": true,
+            "sha256": "3457ee2dc5fdfe44bb81732e0660f2299baba2672664b7c9c537929e4c6c9084"
+          }
+        ]
+      }
+    },
+    {
+      "archived_path": "radxa_q6a/.work/portable-check/radxa_q6a/manifests/source-checksums.json",
+      "original_file_sha256": "a88a755e803e86be9373df415b0613176c374e768e07fb34f24e88a8105405e5",
+      "manifest": {
+        "schema_version": 1,
+        "normalization": "CRLF to LF for declared text files; other files exact bytes",
+        "files": [
+          {
+            "path": ".gitattributes",
+            "normalize_lf": true,
+            "sha256": "683509c794b2df84da0fb023d44d4fa14f6315eec5eb5bb566f42eb95a48ddb3"
+          },
+          {
+            "path": ".github/workflows/offline.yml",
+            "normalize_lf": true,
+            "sha256": "b2b94f28d33dbf3184537074f5170dfa747cdc58d2090ce2d4dac25b3a3e0589"
+          },
+          {
+            "path": ".gitignore",
+            "normalize_lf": true,
+            "sha256": "7418653e437715d0dbae625d370f42730d3e3adcc6569967ec023af4c65d3383"
+          },
+          {
+            "path": "docs/android-ufs.md",
+            "normalize_lf": true,
+            "sha256": "9599e0909d0d5d22ca99873eea6cd3c51e5a5c62af144617ef8082ec91c8f6c2"
+          },
+          {
+            "path": "docs/artifacts.md",
+            "normalize_lf": true,
+            "sha256": "510360cd7422a122f84b2e7dae7aab18b50d0e5c3a1c337be28fd2772c531ea0"
+          },
+          {
+            "path": "docs/linux-recovery.md",
+            "normalize_lf": true,
+            "sha256": "abc5ee2004deaf584d28479910d27d57c10d35ed552fe6362a5e8c9f27871adb"
+          },
+          {
+            "path": "docs/troubleshooting.md",
+            "normalize_lf": true,
+            "sha256": "9943fca147449bbd6e20d5d0846aad46d144a79209e30d6045664156eb146da8"
+          },
+          {
+            "path": "docs/xbl-workaround.md",
+            "normalize_lf": true,
+            "sha256": "33e34e02cb1763607bb5c96f823d676c5bc9366f5abb128edc1088062ccd21ae"
+          },
+          {
+            "path": "manifests/bundle-lock.json",
+            "normalize_lf": true,
+            "sha256": "a66c599688d7a6088b6dfc21f0077b3beb57ef301b33e94a40d90ca14ac743d7"
+          },
+          {
+            "path": "manifests/edl-ng-provenance.json",
+            "normalize_lf": true,
+            "sha256": "e5899a9f16ffce0affbd1bae813c7d31f9d87de4f606cab440ef510bebc55c46"
+          },
+          {
+            "path": "manifests/hardware-results.json",
+            "normalize_lf": true,
+            "sha256": "723c9bd4de39b5721189565fd722f2fb3e375309f0bf69721d068b16ebfa0beb"
+          },
+          {
+            "path": "manifests/offline-results.json",
+            "normalize_lf": true,
+            "sha256": "6829223c731415ba4dca76382b6a777783bfbdde9565883192e39e93ffe5e684"
+          },
+          {
+            "path": "patches/edl-ng-q6a.patch",
+            "normalize_lf": false,
+            "sha256": "1e480c58ee3427941542a9578c4b343a615c0d82c864f82a7bc2fd9e7b550ca4"
+          },
+          {
+            "path": "patches/xbl-ufs30.json",
+            "normalize_lf": true,
+            "sha256": "2b9239555736caf256fb2e2e8dc0a0c55ab63e3fa2aab08ae433d274ca51eee5"
+          },
+          {
+            "path": "README.md",
+            "normalize_lf": true,
+            "sha256": "b7c7c652f0c39cb63c77465dddc5c9126fc519af9d4d96477abf66c512814a8b"
+          },
+          {
+            "path": "scripts/check_repository.py",
+            "normalize_lf": true,
+            "sha256": "193e4b0914e2a8fc91849becaa12cd084192282521d17638cbfa6e935879bebd"
+          },
+          {
+            "path": "scripts/Install-Q6A-Android.ps1",
+            "normalize_lf": true,
+            "sha256": "4ea542ad9ae3cd8fcac8c7f335cbb118023be3afd0e365a3d9034db7154e32d5"
+          },
+          {
+            "path": "scripts/Prepare-Bundle.ps1",
+            "normalize_lf": true,
+            "sha256": "18fe8f28062677435a74a2c05d6d2771784717a554e498decde94b497154f379"
+          },
+          {
+            "path": "scripts/prepare_xbl.py",
+            "normalize_lf": true,
+            "sha256": "2da5d31369da935ed8d1455c9b9002607011cacf1529bbafac31c6a15d7eb814"
+          },
+          {
+            "path": "scripts/Test-Q6A-Offline.ps1",
+            "normalize_lf": true,
+            "sha256": "43b34d8d72ef2d3a2664e358c207a54312650e31409d420a103a3e63eac0f39a"
+          },
+          {
+            "path": "third_party/edl-ng-LICENSE",
+            "normalize_lf": true,
+            "sha256": "3457ee2dc5fdfe44bb81732e0660f2299baba2672664b7c9c537929e4c6c9084"
+          }
+        ]
+      }
+    }
+  ]
+}
