@@ -1,0 +1,127 @@
+{
+  "recorded_at": "2026-10-11T13:18:23.014685+00:00",
+  "scope": "Clean creation of full-sized encrypted Android /data via stock recovery; existing GPT retained",
+  "host": "Windows",
+  "board": "Radxa Dragon Q6A, 12 GB",
+  "ufs": "TOSHIBA THGJFCT2T84BAKCB rev 0100, UFS 3.0, 512 GB",
+  "release": "Q6A-Android15-spi-ufs-boot-20260630-b1",
+  "installation_evidence": "android-image-write-2026-10-11.json",
+  "previous_filesystem_evidence": "android-boot-2026-10-11.json",
+  "previous_data_filesystem_kib": 47183872,
+  "userdata_partition_bytes": 477124964352,
+  "data_filesystem_kib": 465940300,
+  "data_filesystem_bytes": 477122867200,
+  "data_filesystem_gib": 444.3553,
+  "userdata_reset_authorized": true,
+  "reset_method": "Stock recovery --wipe_data requested through the 2048-byte bootloader message",
+  "reset_request": {
+    "requested_at": "2026-10-11T13:08:47.303404+00:00",
+    "method": "stock recovery --wipe_data, first 2048 bytes of BCB only",
+    "userdata_reset_authorized": true,
+    "bcb_sha256": "fe6d0f552357c38027be0b1831b4a06306d287d27f419c9d3c9ae39162f8f64b",
+    "bcb_readback_matches": true,
+    "boot_slot_metadata_2048_4095_preserved": true,
+    "write_result": ""
+  },
+  "recovery_request_cleared_after_success": true,
+  "software_reboot_verified": true,
+  "cold_boot_tested_after_reset": false,
+  "file_based_and_metadata_encryption_enabled": true,
+  "test_files_removed": true,
+  "boot_tests": [
+    {
+      "recorded_at": "2026-10-11T13:12:30.781367+00:00",
+      "boot_kind": "first-full-data-boot",
+      "boot_id": "9fd1d173-0007-4870-9741-d41b9a5ada4e",
+      "kernel": "Linux localhost 5.4.295-qgki-debug-g646f05065a7e-dirty #17 SMP PREEMPT Tue Jun 30 18:22:56 CST 2026 aarch64 Toybox",
+      "properties": {
+        "ro.build.version.release": "15",
+        "ro.build.fingerprint": "qti/lahaina/lahaina:15/AQ3A.251211.001/eng.liupen.00000000.000000:userdebug/test-keys",
+        "sys.boot_completed": "1",
+        "init.svc.bootanim": "stopped",
+        "ro.crypto.state": "encrypted",
+        "ro.crypto.type": "file",
+        "ro.boot.slot_suffix": "_a"
+      },
+      "selinux": "Enforcing",
+      "userdata_partition_bytes": 477124964352,
+      "userdata_mapper_bytes": 477124964352,
+      "data_df_kib": "Filesystem       1K-blocks    Used Available Use% Mounted on\r\n/dev/block/dm-47 465940300 4264772 461675528   1% /storage/emulated/0/Android/obb",
+      "data_filesystem_kib": 465940300,
+      "data_mount": "/dev/block/dm-47 /data f2fs rw,lazytime,seclabel,nosuid,nodev,noatime,background_gc=on,discard,no_heap,user_xattr,inline_xattr,acl,inline_data,inline_dentry,flush_merge,extent_cache,mode=adaptive,active_logs=6,reserve_root=32768,resuid=0,resgid=1065,inlinecrypt,alloc_mode=default,fsync_mode=posix 0 0",
+      "metadata_mount": "/dev/block/by-name/metadata /metadata ext4 rw,seclabel,nosuid,nodev,noatime,discard 0 0",
+      "slot_status": [
+        "0",
+        "1"
+      ],
+      "allocation_test": {
+        "bytes": 68719476736,
+        "allocated_blocks_512": 134349712,
+        "allocated_bytes": 68787052544,
+        "df_used_increase_kib": 67174860,
+        "tail_write_offset_bytes": 68711088128,
+        "tail_write_bytes": 8388608,
+        "tail_sha256": "2a54c623cd4ae08a8b897de8e261ccc3e42134eaae835e9fc01d5f6b6fb5b77c",
+        "elapsed_seconds": 1.547
+      },
+      "data_file_test": {
+        "bytes": 8388608,
+        "sha256": "2a54c623cd4ae08a8b897de8e261ccc3e42134eaae835e9fc01d5f6b6fb5b77c",
+        "verified_after_reboot": false
+      },
+      "kernel_storage_error_lines": [],
+      "hdmi": {
+        "width": 3840,
+        "height": 2160,
+        "state": "ON",
+        "evidence": "dumpsys display: LG Ultra HD, committedState ON"
+      }
+    },
+    {
+      "recorded_at": "2026-10-11T13:16:34.801119+00:00",
+      "boot_kind": "full-data-reboot",
+      "boot_id": "d561872a-15e3-4c88-a6a6-0f338219ae87",
+      "kernel": "Linux localhost 5.4.295-qgki-debug-g646f05065a7e-dirty #17 SMP PREEMPT Tue Jun 30 18:22:56 CST 2026 aarch64 Toybox",
+      "properties": {
+        "ro.build.version.release": "15",
+        "ro.build.fingerprint": "qti/lahaina/lahaina:15/AQ3A.251211.001/eng.liupen.00000000.000000:userdebug/test-keys",
+        "sys.boot_completed": "1",
+        "init.svc.bootanim": "stopped",
+        "ro.crypto.state": "encrypted",
+        "ro.crypto.type": "file",
+        "ro.boot.slot_suffix": "_a"
+      },
+      "selinux": "Enforcing",
+      "userdata_partition_bytes": 477124964352,
+      "userdata_mapper_bytes": 477124964352,
+      "data_df_kib": "Filesystem       1K-blocks    Used Available Use% Mounted on\r\n/dev/block/dm-47 465940300 4274716 461665584   1% /storage/emulated/0/Android/obb",
+      "data_filesystem_kib": 465940300,
+      "data_mount": "/dev/block/dm-47 /data f2fs rw,lazytime,seclabel,nosuid,nodev,noatime,background_gc=on,discard,no_heap,user_xattr,inline_xattr,acl,inline_data,inline_dentry,flush_merge,extent_cache,mode=adaptive,active_logs=6,reserve_root=32768,resuid=0,resgid=1065,inlinecrypt,alloc_mode=default,fsync_mode=posix 0 0",
+      "metadata_mount": "/dev/block/by-name/metadata /metadata ext4 rw,seclabel,nosuid,nodev,noatime,discard 0 0",
+      "slot_status": [
+        "0",
+        "1"
+      ],
+      "data_file_test": {
+        "bytes": 8388608,
+        "sha256": "2a54c623cd4ae08a8b897de8e261ccc3e42134eaae835e9fc01d5f6b6fb5b77c",
+        "verified_after_reboot": true
+      },
+      "raw_read_test": {
+        "bytes": 1073741824,
+        "idle_seconds": 45,
+        "method": "buffered block read after BLKFLSBUF",
+        "output": "1024+0 records in\r\n1024+0 records out\r\n1073741824 bytes (1.0 G) copied, 1.041 s, 984 M/s",
+        "elapsed_seconds": 1.187
+      },
+      "kernel_storage_error_lines": [],
+      "test_files_removed": true,
+      "hdmi": {
+        "width": 3840,
+        "height": 2160,
+        "state": "ON",
+        "evidence": "dumpsys display: LG Ultra HD, committedState ON"
+      }
+    }
+  ]
+}

@@ -10,6 +10,7 @@
 | Установить и обновить Ubuntu на NVMe из Windows | [Radxa OS R2 на NVMe](guides/linux-nvme.md) |
 | Установить Ubuntu на Toshiba UFS из Windows | [Radxa OS R2 на UFS](guides/linux-ufs.md) |
 | Развернуть Android 15 на Toshiba UFS | [Установка Android](guides/android-ufs.md) |
+| Использовать весь раздел userdata в Android | [Полный объём /data](guides/android-data-capacity.md) |
 | Проверить подключение и этап загрузки | [Диагностика](guides/troubleshooting.md) |
 
 ## Справочник

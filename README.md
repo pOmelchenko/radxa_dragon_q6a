@@ -15,6 +15,7 @@
 | Установить и обновить Ubuntu на NVMe из Windows | [Radxa OS R2 на NVMe](docs/guides/linux-nvme.md) |
 | Установить Ubuntu на Toshiba UFS из Windows | [Radxa OS R2 на UFS](docs/guides/linux-ufs.md) |
 | Установить Android 15 на Toshiba UFS 512 ГБ | [Android на UFS](docs/guides/android-ufs.md) |
+| Создать /data на весь доступный объём UFS | [Полный объём Android /data](docs/guides/android-data-capacity.md) |
 | Подключить UART, определить разъёмы и питание | [Аппаратный справочник](docs/reference/hardware.md) |
 | Выбрать прошивку и проверить файлы | [BIOS](docs/reference/boot-firmware.md), [файлы прошивки](docs/reference/firmware-files.md) |
 
@@ -30,7 +31,7 @@
 | Linux на NVMe | Radxa OS R2 с обновлением пакетов, SSD 256 ГБ, ядро `7.0.11-7-qcom`, SSH и холодная загрузка |
 | Linux на UFS | Radxa OS R2, BIOS `260916`, ядро `6.18.2-3-qcom`, Toshiba с постоянной настройкой питания, рабочий стол и SSH |
 | UFS | TOSHIBA THGJFCT2T84BAKCB rev 0100, UFS 3.0, 512 ГБ |
-| Android | Android 15, воспроизводимые XBL/SPI и ext4 metadata; HDMI, ADB, обычная перезагрузка, два холодных включения и чтение UFS после простоя |
+| Android | Android 15, воспроизводимые XBL/SPI и ext4 metadata; HDMI, ADB, обычная перезагрузка, два холодных включения и чтение UFS после простоя; `/data` 444,36 ГиБ после штатного сброса |
 | Хост прошивки | Windows, исправленный edl-ng v2 |
 
 Каждое руководство задаёт применимую конфигурацию, нужные файлы, команды
