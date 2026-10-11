@@ -1,7 +1,8 @@
 # Установка Radxa OS R2 на NVMe через EDL
 
-Установите Ubuntu 24.04 Noble с GNOME на NVMe из Windows, затем обновите
-систему штатными пакетами. Путь проверен на Q6A 12 ГБ с KIOXIA
+Установите Ubuntu 24.04 Noble с GNOME на NVMe из Windows. Обновление
+пакетов описано в [общей инструкции Radxa OS](linux-update.md).
+Путь проверен на Q6A 12 ГБ с KIOXIA
 `KBG40ZNS256G` 256 ГБ: запись и полное обратное чтение образа, расширение
 корня на весь SSD, доступ по SSH, программная перезагрузка и холодное
 включение обновлённой системы. Дополнительные оверлеи не включались.
@@ -74,39 +75,23 @@ if ($LASTEXITCODE -ne 0) { throw 'NVMe readback verification failed' }
 Проверенное обратное чтение заняло 137,51 секунды. Выполняйте сравнение
 до первого запуска Ubuntu: работа системы изменяет содержимое SSD.
 
-## Первый вход, обновление и SSH
+## Первый вход и SSH
 
 Обесточьте Q6A, отсоедините USB к ПК, оставьте NVMe единственным носителем.
 Подключите HDMI и клавиатуру, включите без EDL. Дождитесь экрана входа
 и войдите как `radxa`, пароль `radxa`. Подключите Ethernet или Wi-Fi.
 
-Исходный образ R2 содержит ядро `6.18.2-3-qcom`. Проверенный маршрут NVMe
-включает обновление пакетов после входа. В терминале Ubuntu:
+Исходный образ R2 содержит ядро `6.18.2-3-qcom`. Для доступа с ПК
+установите и включите SSH в терминале Ubuntu:
 
 ```bash
-sudo apt update
-sudo apt upgrade -y
-sudo apt install -y openssh-server
-sudo systemctl enable --now ssh
-sudo reboot
+sudo apt update && sudo apt install -y openssh-server && sudo systemctl enable --now ssh
+systemctl is-active ssh
+hostname -I
 ```
 
-После перезагрузки проверенная система использует:
-
-| Пакет или компонент | Проверенная версия |
-| --- | --- |
-| Ядро | `7.0.11-7-qcom` |
-| `linux-image-radxa-dragon-q6a` | `7.0.11-7` |
-| `qcom-iot-defaults` | `1.21` |
-| `radxa-overlays-dkms` | `0.2.31` |
-
-Это версии из репозиториев на 10 октября 2026 года. Обновление пакетов
-также добавило `clk_ignore_unused` в штатную запись загрузчика.
-Вручную менять параметры ядра или включать оверлеи для этого маршрута
-не потребовалось. Состав исходного образа и обновлённой системы различается.
-
-На Q6A проверьте `systemctl is-active ssh` и `hostname -I`, затем подключитесь
-с Windows: `ssh radxa@<IP-платы>`.
+Ожидается `active` и IP платы. Подключитесь с Windows:
+`ssh radxa@<IP-платы>`.
 
 ## Проверить установленную систему
 
@@ -122,7 +107,7 @@ sudo sfdisk --verify /dev/nvme0n1
 systemctl is-active graphical.target ssh
 systemctl --failed
 cat /proc/cmdline
-sudo dmesg | grep -iE 'rpmh|soft lockup|I/O error'
+sudo dmesg | grep -iE 'Error sending AMC RPMH|soft lockup|I/O error'
 ```
 
 Корень должен быть на `/dev/nvme0n1p3`, EFI — `/dev/nvme0n1p2`.
@@ -130,6 +115,9 @@ sudo dmesg | grep -iE 'rpmh|soft lockup|I/O error'
 На SSD 256060514304 байта раздел корня расширился до 254953201152 байт,
 файловая система — до 250830680064 байт, около 234 ГиБ в `df -h`.
 GPT: `No errors detected`; `graphical.target` и SSH: `active`.
+До обновления ожидается ядро `6.18.2-3-qcom`; после него версия зависит
+от установленных пакетов. Обновление и проверку нового запуска выполняйте
+по [общей инструкции для SD, NVMe и UFS](linux-update.md).
 
 Штатно выключите систему через `sudo poweroff`, отключите питание на
 10 секунд и включите снова. Повторите проверки и убедитесь, что экран входа

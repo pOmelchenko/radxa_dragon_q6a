@@ -12,8 +12,9 @@
 | Подготовить Windows, файлы прошивки и EDL | [Подготовка к прошивке](docs/guides/prepare-edl.md) |
 | Записать BIOS для Linux | [Linux BIOS](docs/guides/linux-bios.md) |
 | Установить штатную Ubuntu на SD из Windows | [Radxa OS R2 на SD](docs/guides/linux-sd.md) |
-| Установить и обновить Ubuntu на NVMe из Windows | [Radxa OS R2 на NVMe](docs/guides/linux-nvme.md) |
+| Установить Ubuntu на NVMe из Windows | [Radxa OS R2 на NVMe](docs/guides/linux-nvme.md) |
 | Установить Ubuntu на Toshiba UFS из Windows | [Radxa OS R2 на UFS](docs/guides/linux-ufs.md) |
+| Обновить Radxa OS на SD, NVMe или UFS | [Обновление Radxa OS](docs/guides/linux-update.md) |
 | Установить Android 15 на Toshiba UFS 512 ГБ | [Android на UFS](docs/guides/android-ufs.md) |
 | Создать /data на весь доступный объём UFS | [Полный объём Android /data](docs/guides/android-data-capacity.md) |
 | Подключить UART, определить разъёмы и питание | [Аппаратный справочник](docs/reference/hardware.md) |

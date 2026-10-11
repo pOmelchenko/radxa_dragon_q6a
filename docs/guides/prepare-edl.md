@@ -5,8 +5,9 @@
 
 ## Файлы и PowerShell
 
-Выберите файлы для устанавливаемой ОС. Для Linux нужен официальный BIOS
-`260120` и исправленный edl-ng; Android использует свой проверенный комплект.
+Выберите файлы для устанавливаемой ОС и носителя. Для Linux используются
+официальный BIOS `260120` на SD/NVMe или `260916` на Toshiba UFS;
+Android использует свой проверенный комплект. Нужен исправленный edl-ng v2.
 Источники и контрольные суммы приведены в [справочнике файлов](../reference/firmware-files.md).
 
 Откройте PowerShell от администратора **в корне репозитория**. Задайте свои пути:
@@ -23,19 +24,52 @@ New-Item -ItemType Directory -Path $run | Out-Null
 
 ### Linux
 
-Распакуйте [официальный Linux BIOS 260120](https://dl.radxa.com/dragon/q6a/images/dragon-q6a_flat_build_wp_260120.zip).
-Путь к программатору находится внутри `flat_build\spinor\dragon-q6a`.
-Укажите проверенный edl-ng v2 и этот каталог:
+Выполните только раздел для выбранного носителя. Он задаёт `$bios` и `$spi`
+для бэкапа и дальнейшей записи; для UFS набор `260120` скачивать не требуется.
+
+| Носитель Radxa OS | Набор BIOS |
+| --- | --- |
+| SD или NVMe | `260120` |
+| Toshiba `THGJFCT2T84BAKCB rev 0100`, UFS | `260916` |
+
+Укажите проверенный edl-ng v2:
 
 ```powershell
 $edl = 'D:\tools\edl-ng.exe'
+```
+
+#### SD и NVMe: BIOS 260120
+
+Распакуйте [официальный Linux BIOS 260120](https://dl.radxa.com/dragon/q6a/images/dragon-q6a_flat_build_wp_260120.zip).
+Путь к программатору находится внутри `flat_build\spinor\dragon-q6a`.
+Укажите этот каталог:
+
+```powershell
 $bios = 'D:\firmware\flat_build\spinor\dragon-q6a'
 $spi = $bios
-python "$repo\tools\q6a.py" verify-linux-bios --directory $bios
+python "$repo\tools\q6a.py" verify-linux-bios --version 260120 --directory $bios
 if ($LASTEXITCODE -ne 0) { throw 'Linux BIOS file verification failed' }
 ```
 
 Проверка сверяет все 23 файла с [files.lock.json](../../firmware/linux-bios/files.lock.json).
+
+#### Toshiba UFS: BIOS 260916
+
+Получите закреплённые файлы официального репозитория Radxa в отдельный каталог:
+
+```powershell
+$bios = 'D:\firmware\linux-bios-260916'
+python "$repo\tools\q6a.py" fetch-linux-bios --directory $bios
+if ($LASTEXITCODE -ne 0) { throw 'BIOS download or verification failed' }
+python "$repo\tools\q6a.py" verify-linux-bios --version 260916 --directory $bios
+if ($LASTEXITCODE -ne 0) { throw 'Linux BIOS file verification failed' }
+$spi = $bios
+```
+
+Проверяются 26 файлов с закреплённого коммита по
+[files.lock.json](../../firmware/linux-bios-260916/files.lock.json).
+DDR и Lite программаторы берутся из этого же набора.
+
 Исходники и способ сборки edl-ng доступны в [описании зависимости](../../tools/dependencies/edl-ng/README.md).
 Для Linux пакет Android не нужен.
 
@@ -54,6 +88,7 @@ if ($LASTEXITCODE -ne 0) { throw 'Linux BIOS file verification failed' }
 $android = 'D:\firmware\Q6A-Android15-spi-ufs-boot-20260630-b1'
 $edl = 'D:\tools\edl-ng.exe'
 $sdk = 'D:\tools\platform-tools'
+$adb = Join-Path $sdk 'adb.exe'
 $prepared = Join-Path $run 'android-prepared'
 python "$repo\tools\q6a.py" prepare-android --directory $android --output-dir $prepared --mke2fs "$sdk\mke2fs.exe"
 if ($LASTEXITCODE -ne 0) { throw 'Android preparation failed' }

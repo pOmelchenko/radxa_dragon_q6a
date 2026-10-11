@@ -14,10 +14,10 @@
 
 Нужны все файлы BIOS `260120` из [официального архива](https://dl.radxa.com/dragon/q6a/images/dragon-q6a_flat_build_wp_260120.zip).
 Источник и контрольная сумма архива указаны в [справочнике файлов](../reference/firmware-files.md).
-Укажите распакованный каталог:
+Используйте `$bios`, заданный для SD/NVMe в общей подготовке.
+Повторно проверьте выбранные файлы перед записью:
 
 ```powershell
-$bios = 'D:\firmware\linux-bios'
 $linuxLock = Get-Content "$repo\firmware\linux-bios\files.lock.json" -Raw | ConvertFrom-Json
 foreach ($entry in $linuxLock.files) {
     $path = Join-Path $bios $entry.path
@@ -30,17 +30,16 @@ foreach ($entry in $linuxLock.files) {
 
 ### Набор 260916
 
-Скачайте закреплённые файлы официального репозитория Radxa в отдельный каталог:
+Используйте `$bios` из раздела Toshiba UFS общей подготовки: файлы
+официального репозитория Radxa уже скачаны в отдельный каталог.
+Повторно проверьте их перед записью:
 
 ```powershell
-$bios = 'D:\firmware\linux-bios-260916'
-python "$repo\tools\q6a.py" fetch-linux-bios --directory $bios
-if ($LASTEXITCODE -ne 0) { throw 'BIOS download or verification failed' }
 python "$repo\tools\q6a.py" verify-linux-bios --version 260916 --directory $bios
 if ($LASTEXITCODE -ne 0) { throw 'BIOS verification failed' }
 ```
 
-Команда получает 26 файлов с закреплённого коммита и сверяет размеры и SHA-256.
+Команда сверяет размеры и SHA-256 26 файлов с закреплённого коммита.
 Запись SPI и сравнение payload выполняются командами ниже для выбранного `$bios`.
 
 ## Запись SPI
@@ -100,7 +99,9 @@ $sha.Dispose()
 отсоедините USB к ПК и включите плату без кнопки EDL.
 
 В штатной Radxa OS R2 используется embloader 0.4 и ядро `6.18.2-3-qcom`.
-Маршрут NVMe включает обновление штатных пакетов до ядра `7.0.11-7-qcom`.
+Пакеты и ядро на SD, NVMe и UFS обновляются по
+[общей инструкции Radxa OS](linux-update.md). На NVMe отдельно зафиксирован
+успешный APT-прогон с ядром `7.0.11-7-qcom`.
 Для проверенных запусков дополнительные оверлеи и ручной параметр
 `module_blacklist=i2c_qcom_geni` не потребовались.
 После входа проверьте `uname -r`, `findmnt /` и доступный объём через `df -h /`.

@@ -19,8 +19,28 @@ Android.** Выполняйте её сразу после установки л
 
 ## Проверить установленный Android
 
-Используются `$adb` из Android SDK и `$run` — локальная папка текущей операции
-из [подготовки](prepare-edl.md). В `adb devices` должно быть одно устройство.
+Откройте PowerShell в корне репозитория. Укажите установленный Android SDK
+Platform-Tools и задайте `$adb` явно:
+
+```powershell
+$ErrorActionPreference = 'Stop'
+$sdk = 'D:\tools\platform-tools'
+$adb = Join-Path $sdk 'adb.exe'
+if (-not (Test-Path -LiteralPath $adb -PathType Leaf)) { throw 'adb.exe not found; check the SDK path' }
+```
+
+В том же сеансе после установки Android используйте `$run` из
+[подготовки](prepare-edl.md). Если открыли новый сеанс, создайте новый каталог
+для файлов этой операции; измените `android-data-001`, если он уже существует:
+
+```powershell
+$repo = (Get-Location).Path
+$run = Join-Path $repo 'runs\android-data-001'
+if (Test-Path -LiteralPath $run) { throw 'Choose a new run directory; preserve previous backups.' }
+New-Item -ItemType Directory -Path $run | Out-Null
+```
+
+В `adb devices` должно быть одно устройство.
 Подключите USB к нижнему USB-A порту Q6A; SD и NVMe на время проверки снимите.
 
 ```powershell
