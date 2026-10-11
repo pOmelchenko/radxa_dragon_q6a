@@ -5,9 +5,9 @@
 
 ## Файлы и PowerShell
 
-Выберите файлы для проверенного маршрута установки. В руководствах Linux
-закреплены официальный BIOS `260120` для SD/NVMe и `260916` для Toshiba UFS;
-Android использует свой проверенный комплект. Нужен исправленный edl-ng v2.
+Ниже выберите ОС: раздел Linux содержит единый выбор версии BIOS и подготовку
+его файлов для SD, NVMe и UFS. Android использует свой проверенный комплект.
+Нужен исправленный edl-ng v2.
 Источники и контрольные суммы приведены в [справочнике файлов](../reference/firmware-files.md).
 
 Откройте PowerShell от администратора **в корне репозитория**. Задайте свои пути:
@@ -24,18 +24,27 @@ New-Item -ItemType Directory -Path $run | Out-Null
 
 ### Linux
 
-Выполните только раздел для выбранного носителя. Он задаёт `$bios` и `$spi`
-для бэкапа и дальнейшей записи; для UFS набор `260120` скачивать не требуется.
+На плате хранится один Linux BIOS в SPI, общий для SD, NVMe и UFS.
+`260120` и `260916` — версии этой прошивки. При смене системного носителя
+BIOS не выбирается заново: например, переход с UFS на SD/NVMe сам по себе
+не требует отката установленного `260916` на `260120`.
 
-| Носитель Radxa OS | BIOS в проверенном маршруте |
+Версия выбирается только здесь. Для воспроизведения опубликованного результата:
+
+| Проверенная конфигурация | Версия Linux BIOS |
 | --- | --- |
-| SD или NVMe | `260120` |
-| Toshiba `THGJFCT2T84BAKCB rev 0100`, UFS | `260916` |
+| Самостоятельные загрузки Radxa OS R2 с SD и NVMe | `260120` |
+| Radxa OS R2 на Toshiba `THGJFCT2T84BAKCB rev 0100` с настройкой питания UFS | `260916` |
 
-Это закреплённые результаты проверок. BIOS `260916` опубликован для всей
-платформы QCS6490 и не ограничен UFS. Почему версии в руководствах различаются,
-и что сообщает официальный changelog, описано в
-[справочнике BIOS](../reference/boot-firmware.md#выбор-версии-linux-bios).
+Таблица описывает результаты испытаний; `260916` опубликован для всей платформы
+QCS6490. Полный прогон SD/NVMe с этой версией в опубликованных результатах
+не зафиксирован. При смене версии повторите проверки выбранного носителя.
+История выпусков и changelog приведены в
+[справочнике BIOS](../reference/boot-firmware.md#история-версий-linux-bios).
+
+Выполните один из двух блоков ниже. Он задаёт `$biosVersion`, `$bios` и `$spi`
+для проверки файлов, бэкапа и общей команды записи SPI. Файлы разных версий
+храните в разных каталогах. Для конфигурации Toshiba набор `260120` не нужен.
 
 Укажите проверенный edl-ng v2:
 
@@ -43,30 +52,32 @@ New-Item -ItemType Directory -Path $run | Out-Null
 $edl = 'D:\tools\edl-ng.exe'
 ```
 
-#### SD и NVMe: BIOS 260120
+#### Получить набор 260120
 
 Распакуйте [официальный Linux BIOS 260120](https://dl.radxa.com/dragon/q6a/images/dragon-q6a_flat_build_wp_260120.zip).
 Путь к программатору находится внутри `flat_build\spinor\dragon-q6a`.
 Укажите этот каталог:
 
 ```powershell
+$biosVersion = '260120'
 $bios = 'D:\firmware\flat_build\spinor\dragon-q6a'
 $spi = $bios
-python "$repo\tools\q6a.py" verify-linux-bios --version 260120 --directory $bios
+python "$repo\tools\q6a.py" verify-linux-bios --version $biosVersion --directory $bios
 if ($LASTEXITCODE -ne 0) { throw 'Linux BIOS file verification failed' }
 ```
 
 Проверка сверяет все 23 файла с [files.lock.json](../../firmware/linux-bios/files.lock.json).
 
-#### Toshiba UFS: BIOS 260916
+#### Получить набор 260916
 
 Получите закреплённые файлы официального репозитория Radxa в отдельный каталог:
 
 ```powershell
+$biosVersion = '260916'
 $bios = 'D:\firmware\linux-bios-260916'
 python "$repo\tools\q6a.py" fetch-linux-bios --directory $bios
 if ($LASTEXITCODE -ne 0) { throw 'BIOS download or verification failed' }
-python "$repo\tools\q6a.py" verify-linux-bios --version 260916 --directory $bios
+python "$repo\tools\q6a.py" verify-linux-bios --version $biosVersion --directory $bios
 if ($LASTEXITCODE -ne 0) { throw 'Linux BIOS file verification failed' }
 $spi = $bios
 ```

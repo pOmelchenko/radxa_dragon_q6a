@@ -1,49 +1,23 @@
 # Прямая прошивка BIOS для Linux
 
-Запишите BIOS для Linux в SPI через rawprogram. На Q6A 12 ГБ запись
-наборов `260120` и `260916` проверена обратным чтением 18 payload.
-Руководства по SD и NVMe используют `260120`: после его записи проверены
-самостоятельные загрузки с этих носителей без дополнительных оверлеев.
-BIOS `260916` опубликован для всей платформы QCS6490. Версии в руководствах
-закрепляют проверенные конфигурации; история выпусков и основание выбора
-для Toshiba приведены в [справочнике BIOS](../reference/boot-firmware.md#выбор-версии-linux-bios).
+Запишите выбранный Linux BIOS в SPI через rawprogram. Одна прошивка в SPI
+обслуживает Linux на SD, NVMe и UFS. Эта инструкция содержит общую команду
+записи и проверку обратного чтения для обоих закреплённых наборов.
 
 ## Подготовка
 
-Выполните [общую подготовку и бэкап SPI](prepare-edl.md). Для воспроизведения
-проверенной конфигурации выберите версию из руководства установки ОС.
-
-### Набор 260120 для SD и NVMe
-
-Нужны все файлы BIOS `260120` из [официального архива](https://dl.radxa.com/dragon/q6a/images/dragon-q6a_flat_build_wp_260120.zip).
-Источник и контрольная сумма архива указаны в [справочнике файлов](../reference/firmware-files.md).
-Используйте `$bios`, заданный для SD/NVMe в общей подготовке.
-Повторно проверьте выбранные файлы перед записью:
+Выполните [общую подготовку и бэкап SPI](prepare-edl.md).
+[Выбор версии и получение файлов](prepare-edl.md#linux) выполняются там один раз.
+Сохраните `$repo`, `$run`, `$edl`, `$biosVersion` и `$bios` в том же сеансе
+PowerShell. Повторно проверьте выбранный набор перед записью:
 
 ```powershell
-$linuxLock = Get-Content "$repo\firmware\linux-bios\files.lock.json" -Raw | ConvertFrom-Json
-foreach ($entry in $linuxLock.files) {
-    $path = Join-Path $bios $entry.path
-    if ((Get-Item -LiteralPath $path).Length -ne $entry.bytes -or (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant() -ne $entry.sha256) { throw "Linux BIOS file mismatch: $path" }
-}
-```
-
-Допустим также исходный каталог `flat_build\spinor\dragon-q6a` с теми же хешами.
-Файл `prog_firehose_ddr.elf` лежит именно в этом подкаталоге, не в корне flat_build.
-
-### Набор 260916
-
-Используйте `$bios` из раздела Toshiba UFS общей подготовки: файлы
-официального репозитория Radxa уже скачаны в отдельный каталог.
-Повторно проверьте их перед записью:
-
-```powershell
-python "$repo\tools\q6a.py" verify-linux-bios --version 260916 --directory $bios
+python "$repo\tools\q6a.py" verify-linux-bios --version $biosVersion --directory $bios
 if ($LASTEXITCODE -ne 0) { throw 'BIOS verification failed' }
 ```
 
-Команда сверяет размеры и SHA-256 26 файлов с закреплённого коммита.
-Запись SPI и сравнение payload выполняются командами ниже для выбранного `$bios`.
+Команда сверяет размеры и SHA-256 файлов выбранной версии. Запись SPI и
+сравнение payload выполняются командами ниже для того же `$bios`.
 
 ## Запись SPI
 
@@ -95,9 +69,9 @@ $sha.Dispose()
 
 ## Загрузка Linux
 
-Для чистой установки выполните запись Radxa OS R2 на [SD](linux-sd.md)
-или [NVMe](linux-nvme.md) с BIOS `260120`, либо на [Toshiba UFS](linux-ufs.md)
-с BIOS `260916` и постоянной настройкой питания модуля.
+После записи SPI установите Radxa OS R2 на [SD](linux-sd.md),
+[NVMe](linux-nvme.md) или [Toshiba UFS](linux-ufs.md).
+Для Toshiba дополнительно устанавливается постоянная настройка питания модуля.
 Если система уже записана, выключите питание, оставьте её носитель,
 отсоедините USB к ПК и включите плату без кнопки EDL.
 

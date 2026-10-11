@@ -9,9 +9,10 @@
 
 ## Подготовить BIOS и образ
 
-Выполните [подготовку EDL для Linux и бэкап SPI](prepare-edl.md), затем
-[запишите Linux BIOS 260120](linux-bios.md). Сохраните переменные
-`$repo`, `$edl`, `$bios` и `$run` в том же сеансе PowerShell.
+Выполните [общую подготовку EDL и бэкап SPI](prepare-edl.md).
+[Выбор версии и получение Linux BIOS](prepare-edl.md#linux) общие для всех
+носителей; затем [запишите выбранный BIOS в SPI](linux-bios.md).
+Сохраните `$repo`, `$edl`, `$bios` и `$run` в том же сеансе PowerShell.
 
 Скачайте
 [`radxa-dragon-q6a_noble_gnome_r2.output_512.img.xz`](https://github.com/radxa-build/radxa-dragon-q6a/releases/download/rsdk-r2/radxa-dragon-q6a_noble_gnome_r2.output_512.img.xz).

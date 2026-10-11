@@ -5,6 +5,7 @@
 | Задача | Инструкция |
 | --- | --- |
 | Подготовить файлы и сохранить SPI | [EDL на Windows](guides/prepare-edl.md) |
+| Выбрать версию Linux BIOS и получить её файлы | [Единая подготовка Linux BIOS](guides/prepare-edl.md#linux) |
 | Записать загрузочную прошивку для Linux | [Прошивка Linux BIOS](guides/linux-bios.md) |
 | Установить штатную Ubuntu на SD из Windows | [Radxa OS R2 на SD](guides/linux-sd.md) |
 | Установить Ubuntu на NVMe из Windows | [Radxa OS R2 на NVMe](guides/linux-nvme.md) |
@@ -18,7 +19,7 @@
 
 - [Аппаратные интерфейсы, UART и питание](reference/hardware.md).
 - [Накопители и расположение загрузочных компонентов](reference/storage.md).
-- [Выбор BIOS для Linux и Android](reference/boot-firmware.md).
+- [Загрузочная прошивка Linux/Android и история BIOS](reference/boot-firmware.md).
 - [Файлы прошивки, версии и контрольные суммы](reference/firmware-files.md).
 - [Исправление XBL для Toshiba UFS 3.0](reference/xbl-ufs30.md).
 - [Конфигурация и результаты проверки решений](reference/validation/README.md).

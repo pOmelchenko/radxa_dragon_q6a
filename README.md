@@ -10,6 +10,7 @@
 | Задача | Руководство |
 | --- | --- |
 | Подготовить Windows, файлы прошивки и EDL | [Подготовка к прошивке](docs/guides/prepare-edl.md) |
+| Выбрать версию Linux BIOS и получить её файлы | [Единая подготовка Linux BIOS](docs/guides/prepare-edl.md#linux) |
 | Записать BIOS для Linux | [Linux BIOS](docs/guides/linux-bios.md) |
 | Установить штатную Ubuntu на SD из Windows | [Radxa OS R2 на SD](docs/guides/linux-sd.md) |
 | Установить Ubuntu на NVMe из Windows | [Radxa OS R2 на NVMe](docs/guides/linux-nvme.md) |
@@ -18,7 +19,7 @@
 | Установить Android 15 на Toshiba UFS 512 ГБ | [Android на UFS](docs/guides/android-ufs.md) |
 | Создать /data на весь доступный объём UFS | [Полный объём Android /data](docs/guides/android-data-capacity.md) |
 | Подключить UART, определить разъёмы и питание | [Аппаратный справочник](docs/reference/hardware.md) |
-| Выбрать прошивку и проверить файлы | [BIOS](docs/reference/boot-firmware.md), [файлы прошивки](docs/reference/firmware-files.md) |
+| Найти историю BIOS, источники файлов и контрольные суммы | [История BIOS](docs/reference/boot-firmware.md), [файлы прошивки](docs/reference/firmware-files.md) |
 
 [Полный каталог документации](docs/README.md) включает оригиналы Radxa,
 описание исправления XBL и диагностику.

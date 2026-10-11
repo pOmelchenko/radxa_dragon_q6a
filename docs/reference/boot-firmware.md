@@ -1,21 +1,19 @@
 # BIOS для Linux и Android
 
-Для двух систем используются отдельные загрузочные прошивки SPI:
+В SPI платы хранится одна загрузочная прошивка. Для Linux она общая для
+SD, NVMe и UFS; при переходе между Linux и Android меняется комплект SPI:
 
 | Система | Состав SPI | Рабочая команда и результат |
 | --- | --- | --- |
-| Linux на SD/NVMe | Linux `flat_build` 260120: XBL с LBA 925, XBL_CONFIG, AOP, TZ, UEFI и другие компоненты | [Rawprogram Linux BIOS](../guides/linux-bios.md); 18 payload совпали с readback, Radxa OS R2 запустилась с обоих носителей |
-| Linux на Toshiba UFS | Официальный Linux BIOS 260916 | [Linux на UFS](../guides/linux-ufs.md); запись SPI проверена, в Linux устанавливается настройка питания модуля |
+| Linux на SD/NVMe/UFS | Один выбранный Linux BIOS: XBL с LBA 925, XBL_CONFIG, AOP, TZ, UEFI и другие компоненты | [Выбор версии и получение файлов](../guides/prepare-edl.md#linux), затем [единая запись SPI](../guides/linux-bios.md); результаты испытаний — в [разделе проверки](validation/README.md) |
 | Android на Toshiba UFS | Android SPI: GPT и исправленный XBL с LBA 6; следующие компоненты — на UFS | [Запись Android SPI](../guides/android-ufs.md#записать-исправленный-android-spi); полный SPI совпал с readback, Android завершил загрузку |
 
-## Выбор версии Linux BIOS
+## История версий Linux BIOS
 
-Версии в таблице закрепляют проверенные конфигурации. BIOS `260916`
-опубликован Radxa для платформы QCS6490; выбор этой версии для Toshiba UFS
-не означает, что на SD или NVMe требуется именно `260120`.
-Руководства SD/NVMe сохраняют `260120`, с которым опубликованы их проверки.
-При смене BIOS повторите проверки загрузки и чтения из руководства выбранного
-носителя и зафиксируйте новую конфигурацию.
+`260120` и `260916` — версии общего Linux BIOS для платформы QCS6490.
+Единственный выбор для установки находится в
+[общей подготовке](../guides/prepare-edl.md#linux). Здесь приведены происхождение
+версий и сведения производителя.
 
 Официальная история версий есть в
 [changelog пакета edk2-qualcomm](https://github.com/radxa-pkg/edk2-qualcomm/blob/48835fa3de36ea80597cf39e7a41a9ddf9648f52/debian/changelog).

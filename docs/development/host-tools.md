@@ -27,7 +27,7 @@
 ```sh
 python tools/q6a.py check-repo
 python tools/q6a.py verify-bundle --bundle /path/to/Q6A-Android15-UFS-Toshiba-512
-python tools/q6a.py verify-linux-bios --directory /path/to/linux-bios
+python tools/q6a.py verify-linux-bios --version 260120 --directory /path/to/linux-bios
 python tools/q6a.py fetch-linux-bios --directory /path/to/linux-bios-260916
 python tools/q6a.py verify-linux-bios --version 260916 --directory /path/to/linux-bios-260916
 python tools/q6a.py verify-linux-image --image /path/to/radxa-dragon-q6a_noble_gnome_r2.output_512.img.xz --target sd
@@ -57,7 +57,8 @@ manifest. Образцы путей замените своими. На macOS/Li
 недостающие. При отличающемся существующем файле команда останавливается,
 сохраняя его. Загрузка и проверка этой команды выполнены на Windows.
 Команда не обращается к SBC. `verify-linux-bios` без `--version` проверяет
-набор `260120`, используемый в проверенных руководствах SD и NVMe.
+набор `260120`; в инструкциях параметр задаётся явно. Версия для установки
+выбирается в [единой подготовке Linux BIOS](../guides/prepare-edl.md#linux).
 
 `verify-linux-image` принимает сжатый `.img.xz` и носитель `sd`, `nvme` или `ufs`.
 Команда сверяет размер, SHA-256 и SHA-512 с официальным Radxa OS R2:
