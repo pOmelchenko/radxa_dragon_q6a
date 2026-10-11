@@ -16,7 +16,8 @@ def main(argv=None):
     bundle.add_argument('--bundle', required=True)
     bios = sub.add_parser('verify-linux-bios', help='Check the Linux BIOS payload files')
     bios.add_argument('--directory', required=True)
-    bios.add_argument('--version', choices=['260120', '260916'], default='260120')
+    bios.add_argument('--version', choices=['260916', '260120'], default='260916',
+                      help='Pinned BIOS version (default: %(default)s)')
     fetch_bios = sub.add_parser('fetch-linux-bios', help='Download and verify pinned BIOS 260916 files')
     fetch_bios.add_argument('--directory', required=True)
     linux_image = sub.add_parser('verify-linux-image', help='Check the pinned Radxa OS image for SD, NVMe or UFS')

@@ -80,7 +80,7 @@ def linux_bios_lock(version):
     return load_json(ROOT / 'firmware' / folders[version] / 'files.lock.json')
 
 
-def verify_linux_bios(directory, version='260120'):
+def verify_linux_bios(directory, version='260916'):
     data = linux_bios_lock(version)
     return {'version': version, 'files_checked': check_entries(directory, data['files']),
             'device_contacted': False}

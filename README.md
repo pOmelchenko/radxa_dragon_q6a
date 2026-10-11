@@ -10,7 +10,7 @@
 | Задача | Руководство |
 | --- | --- |
 | Подготовить Windows, файлы прошивки и EDL | [Подготовка к прошивке](docs/guides/prepare-edl.md) |
-| Выбрать версию Linux BIOS и получить её файлы | [Единая подготовка Linux BIOS](docs/guides/prepare-edl.md#linux) |
+| Получить основной Linux BIOS для SD, NVMe и UFS | [Единая подготовка Linux BIOS](docs/guides/prepare-edl.md#linux) |
 | Записать BIOS для Linux | [Linux BIOS](docs/guides/linux-bios.md) |
 | Установить штатную Ubuntu на SD из Windows | [Radxa OS R2 на SD](docs/guides/linux-sd.md) |
 | Установить Ubuntu на NVMe из Windows | [Radxa OS R2 на NVMe](docs/guides/linux-nvme.md) |

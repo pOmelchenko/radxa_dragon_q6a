@@ -11,7 +11,7 @@
 
 Запись BIOS меняет SPI, а установка Android по `rawprogram` меняет UFS.
 Ubuntu на NVMe сохраняется при отдельной записи SPI.
-[Выбор Linux BIOS](../guides/prepare-edl.md#linux) общий для SD, NVMe и UFS;
+[Основной Linux BIOS](../guides/prepare-edl.md#linux) общий для SD, NVMe и UFS;
 образы ОС перечислены в [справочнике файлов](firmware-files.md).
 
 ## Linux

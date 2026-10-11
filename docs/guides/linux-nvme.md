@@ -10,8 +10,8 @@
 ## Подготовить BIOS и образ
 
 Выполните [общую подготовку EDL и бэкап SPI](prepare-edl.md).
-[Выбор версии и получение Linux BIOS](prepare-edl.md#linux) общие для всех
-носителей; затем [запишите выбранный BIOS в SPI](linux-bios.md).
+[Получение основного Linux BIOS](prepare-edl.md#linux) общее для всех
+носителей; затем [запишите BIOS в SPI](linux-bios.md).
 Сохраните `$repo`, `$edl`, `$bios` и `$run` в том же сеансе PowerShell.
 
 Скачайте

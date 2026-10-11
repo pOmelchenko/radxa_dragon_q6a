@@ -1,6 +1,8 @@
 """Firmware downloads must verify bytes and preserve existing artifacts."""
 import hashlib
 import io
+import json
+from contextlib import redirect_stdout
 from pathlib import Path
 import sys
 import tempfile
@@ -9,6 +11,56 @@ from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
 from common import files
+import q6a
+
+
+class BiosVerificationTests(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        root = Path(self.temp.name)
+        self.directories = {}
+        for version, folder in [('260916', 'linux-bios-260916'), ('260120', 'linux-bios')]:
+            content = f'BIOS {version}'.encode()
+            directory = root / version
+            directory.mkdir()
+            (directory / 'xbl.elf').write_bytes(content)
+            self.directories[version] = directory
+            manifest = root / 'firmware' / folder / 'files.lock.json'
+            manifest.parent.mkdir(parents=True)
+            manifest.write_text(json.dumps({'files': [{
+                'path': 'xbl.elf', 'bytes': len(content),
+                'sha256': hashlib.sha256(content).hexdigest(),
+            }]}), encoding='utf-8')
+        patch = mock.patch.object(files, 'ROOT', root)
+        patch.start()
+        self.addCleanup(patch.stop)
+
+    def verify_from_cli(self, directory, *options):
+        output = io.StringIO()
+        with redirect_stdout(output):
+            q6a.main(['verify-linux-bios', '--directory', str(directory), *options])
+        return json.loads(output.getvalue())
+
+    def test_default_accepts_primary_payload_and_rejects_previous_payload(self):
+        for verify in [files.verify_linux_bios, self.verify_from_cli]:
+            with self.subTest(verify=verify):
+                result = verify(self.directories['260916'])
+                self.assertEqual(result['version'], '260916')
+                self.assertEqual(result['files_checked'], 1)
+                self.assertFalse(result['device_contacted'])
+                with self.assertRaisesRegex(ValueError, 'SHA256 mismatch'):
+                    verify(self.directories['260120'])
+
+    def test_previous_payload_is_verified_only_with_explicit_version(self):
+        for verify in [lambda path: files.verify_linux_bios(path, '260120'),
+                       lambda path: self.verify_from_cli(path, '--version', '260120')]:
+            with self.subTest(verify=verify):
+                result = verify(self.directories['260120'])
+                self.assertEqual(result['version'], '260120')
+                self.assertEqual(result['files_checked'], 1)
+                with self.assertRaisesRegex(ValueError, 'SHA256 mismatch'):
+                    verify(self.directories['260916'])
 
 
 class BiosDownloadTests(unittest.TestCase):

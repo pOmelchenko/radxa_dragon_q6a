@@ -5,7 +5,7 @@
 | Задача | Инструкция |
 | --- | --- |
 | Подготовить файлы и сохранить SPI | [EDL на Windows](guides/prepare-edl.md) |
-| Выбрать версию Linux BIOS и получить её файлы | [Единая подготовка Linux BIOS](guides/prepare-edl.md#linux) |
+| Получить основной Linux BIOS для SD, NVMe и UFS | [Единая подготовка Linux BIOS](guides/prepare-edl.md#linux) |
 | Записать загрузочную прошивку для Linux | [Прошивка Linux BIOS](guides/linux-bios.md) |
 | Установить штатную Ubuntu на SD из Windows | [Radxa OS R2 на SD](guides/linux-sd.md) |
 | Установить Ubuntu на NVMe из Windows | [Radxa OS R2 на NVMe](guides/linux-nvme.md) |
