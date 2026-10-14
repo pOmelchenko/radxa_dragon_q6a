@@ -11,6 +11,7 @@
 | Установить Ubuntu на NVMe из Windows | [Radxa OS R2 на NVMe](guides/linux-nvme.md) |
 | Установить Ubuntu на Toshiba UFS из Windows | [Radxa OS R2 на UFS](guides/linux-ufs.md) |
 | Обновить Radxa OS на SD, NVMe или UFS | [Обновление Radxa OS](guides/linux-update.md) |
+| Включить изображение и касания BTT Pi TFT50 V2.1 | [TFT50 по DSI](guides/btt-pi-tft50-v2.1.md) |
 | Развернуть Android 15 на Toshiba UFS | [Установка Android](guides/android-ufs.md) |
 | Использовать весь раздел userdata в Android | [Полный объём /data](guides/android-data-capacity.md) |
 | Проверить подключение и этап загрузки | [Диагностика](guides/troubleshooting.md) |

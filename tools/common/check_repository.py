@@ -22,6 +22,16 @@ def main():
             raise ValueError(f'Pinned edl-ng artifact differs: {filename}')
     if not re.fullmatch('[0-9a-f]{40}', lock['base_commit']):
         raise ValueError('edl-ng source must be pinned to a complete commit hash')
+    tft50 = ROOT / 'tools/dependencies/linux-tft50'
+    tft50_lock = load_json(tft50 / 'source.lock.json')
+    for artifact in [*tft50_lock['patches'], tft50_lock['license']]:
+        if digest(tft50 / artifact['path']) != artifact['sha256']:
+            raise ValueError(f'Pinned TFT50 artifact differs: {artifact["path"]}')
+    power = ROOT / 'tools/target/linux/tft50/q6a-btt-tft50-power.dts'
+    if digest(power) != tft50_lock['power_source_sha256']:
+        raise ValueError('TFT50 power source differs from lock')
+    if not re.fullmatch('[0-9a-f]{40}', tft50_lock['raspberry_pi_reference']['commit']):
+        raise ValueError('Raspberry Pi reference must use a complete commit hash')
     links = 0
     documents = [ROOT / 'README.md']
     for directory in ['docs', 'firmware', 'tools']:
@@ -44,4 +54,4 @@ def main():
         if len(re.findall(r'^```', content, re.M)) % 2:
             raise ValueError(f'Unclosed code block: {doc.relative_to(ROOT)}')
     print(f'REPOSITORY CHECK PASSED: {len(documents)} documents, {links} local links, '
-          f'{len(originals)} vendor files and pinned edl-ng artifacts. No device contacted.')
+          f'{len(originals)} vendor files and pinned edl-ng/TFT50 artifacts. No device contacted.')

@@ -1,0 +1,32 @@
+/dts-v1/;
+/plugin/;
+
+/* SPDX-License-Identifier: GPL-2.0 */
+/*
+ * Radxa Dragon Q6A, BTT Pi TFT50 V2.1 with the reported Radxa 39-to-15-pin
+ * adapter for the Raspberry Pi 7-inch display; see the validation record.
+ * Companion to qcs6490-radxa-dragon-q6a-raspberry-pi-7-inch-touchscreen.
+ * The schematic (sheets 6 and 31) routes TLMM GPIO80 to LCD_VCC_EN,
+ * which enables U14 and the 3.3 V LCD supply. The stock RPi overlay
+ * does not enable this rail. Keep it on from GPIO-controller probe,
+ * before the ATtiny driver reads its ID over I2C13.
+ * Do not combine with another overlay owning GPIO80.
+ */
+/ {
+    metadata {
+        title = "Enable Q6A LCD power for BTT Pi TFT50 V2.1";
+        compatible = "radxa,dragon-q6a";
+        category = "display";
+        exclusive = "gpio80";
+        description = "Companion LCD power enable for the Raspberry Pi 7-inch display overlay.";
+    };
+};
+
+&tlmm {
+    btt-tft50-lcd-power-hog {
+        gpio-hog;
+        gpios = <80 0>;
+        output-high;
+        line-name = "btt-tft50-lcd-power";
+    };
+};

@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "retrieved_on": "2026-10-15",
+  "kernel_release": "7.0.11-7-qcom",
+  "driver": {
+    "version": "v7.0.11",
+    "url": "https://raw.githubusercontent.com/gregkh/linux/v7.0.11/drivers/input/touchscreen/edt-ft5x06.c",
+    "sha256": "4a1bb9669bd319f84faa42029df2a336c253b0bb84ffef4dd1bd4ad91de4ad55"
+  },
+  "patches": [
+    {
+      "path": "0001-input-polling.patch",
+      "strip": 4,
+      "sha256": "34b17b5a44c4c7df7ce38aa1d3869d9d9feabd96c93b4ea1b1b85e1d7f6256d0",
+      "author": "Marek Vasut",
+      "source": "https://lore.kernel.org/all/20260109035149.1341931-2-marex@nabladev.com/",
+      "retrieved_from": "https://marc.info/?l=devicetree&m=176793351400798&w=2",
+      "result_sha256": "35cb2a1b88cbf698b2bc4f87fad25c26558b1e9480baf6da5efa2113308e3edc"
+    },
+    {
+      "path": "0002-pi-touch-packets.patch",
+      "strip": 1,
+      "sha256": "7a797b0acbe3a83d8855b0513391d50a1739b9633cc935ede4bf6a898d84985d",
+      "source": "Local adaptation of Raspberry Pi packet handling to the input polling framework",
+      "result_sha256": "cdbc15e32674c8dd09d2d86743f114870b9db226e40331681db165116ccdd1f7"
+    }
+  ],
+  "raspberry_pi_reference": {
+    "commit": "d2afc067c8adfcd6563533ff30cadb41e169aa23",
+    "url": "https://raw.githubusercontent.com/raspberrypi/linux/d2afc067c8adfcd6563533ff30cadb41e169aa23/drivers/input/touchscreen/edt-ft5x06.c",
+    "sha256": "94042cfb5725a65afb55699eb32ffd24fb7aa194f7a36bd93d06e893b733d595",
+    "use": "Packet handling reference only; not a build input"
+  },
+  "license": {
+    "path": "GPL-2.0",
+    "url": "https://raw.githubusercontent.com/gregkh/linux/v7.0.11/LICENSES/preferred/GPL-2.0",
+    "sha256": "8780e78a1a737e127f25a65f6d95269bffd36158dc261114de7859b490bfc5aa"
+  },
+  "stock_overlay": {
+    "filename": "qcs6490-radxa-dragon-q6a-raspberry-pi-7-inch-touchscreen.dtbo",
+    "sha256": "10ed0dbc17fbc170a455fc30e6a5c07d1b666d90186fff6b421bc5a248cd8b68",
+    "source_commit": "https://github.com/radxa-pkg/radxa-overlays/commit/fbcee0ab93d04b07df0ed153b0ce68005c460e31",
+    "source_path": "arch/arm64/boot/dts/qcom/overlays/qcs6490-radxa-dragon-q6a-raspberry-pi-7-inch-touchscreen.dtso",
+    "provenance": "Installed Radxa OS overlay; input blob identity checked by SHA-256"
+  },
+  "power_source_sha256": "c6341b3e1f21dbd30932cb7c83f01a9611ea43e07dcfd9d1706327170ac66e15",
+  "display_overlay_sha256": "f0015e8bd11de17b5c9852eaf6ada3ed4263f406880999b635e14b63327663c7",
+  "power_overlay_sha256": "65521494b0efda73ccdcc5a790a40bc5c746efbe1f38cf35ce40fb0a8843b2a8"
+}
