@@ -16,6 +16,7 @@
 | Установить Ubuntu на NVMe из Windows | [Radxa OS R2 на NVMe](docs/guides/linux-nvme.md) |
 | Установить Ubuntu на Toshiba UFS из Windows | [Radxa OS R2 на UFS](docs/guides/linux-ufs.md) |
 | Обновить Radxa OS на SD, NVMe или UFS | [Обновление Radxa OS](docs/guides/linux-update.md) |
+| Подключить BTT Pi TFT50 V2.1 по DSI | [Изображение, подсветка и касания TFT50](docs/guides/btt-pi-tft50-v2.1.md) |
 | Установить Android 15 на Toshiba UFS 512 ГБ | [Android на UFS](docs/guides/android-ufs.md) |
 | Создать /data на весь доступный объём UFS | [Полный объём Android /data](docs/guides/android-data-capacity.md) |
 | Подключить UART, определить разъёмы и питание | [Аппаратный справочник](docs/reference/hardware.md) |
@@ -31,6 +32,7 @@
 | SBC | Dragon Q6A, 12 ГБ LPDDR5 |
 | Linux на SD | Radxa OS R2, SD 32 ГБ, ядро `6.18.2-3-qcom`, штатные параметры, рабочий стол и SSH |
 | Linux на NVMe | Radxa OS R2 с обновлением пакетов, SSD 256 ГБ, ядро `7.0.11-7-qcom`, SSH и холодная загрузка |
+| BTT Pi TFT50 V2.1 | DSI через переходник Radxa 39→15 pin, 800×480, подсветка и точные касания; ядро `7.0.11-7-qcom`. [Объём проверки](docs/guides/btt-pi-tft50-v2.1.md) |
 | Linux на UFS | Radxa OS R2, BIOS `260916`, ядро `6.18.2-3-qcom`, Toshiba с постоянной настройкой питания, рабочий стол и SSH |
 | UFS | TOSHIBA THGJFCT2T84BAKCB rev 0100, UFS 3.0, 512 ГБ |
 | Android | Android 15, воспроизводимые XBL/SPI и ext4 metadata; HDMI, ADB, обычная перезагрузка, два холодных включения и чтение UFS после простоя; `/data` 444,36 ГиБ после штатного сброса |
@@ -51,7 +53,7 @@ tools/
   linux/               точка входа Linux
   macos/               точка входа macOS
   target/              настройки, выполняемые в ОС самой Q6A
-  dependencies/edl-ng/  источник, версия, патч и лицензия зависимости
+  dependencies/        закреплённые исходники, патчи и лицензии edl-ng / TFT50
 tests/                 проверки инструментов без подключения SBC
 ```
 

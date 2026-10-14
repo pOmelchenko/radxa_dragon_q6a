@@ -1,0 +1,136 @@
+--- a/edt-ft5x06.c
++++ b/edt-ft5x06.c
+@@ -139,6 +139,8 @@
+ 	u8 tdata_cmd;
+ 	int tdata_len;
+ 	int tdata_offset;
++	unsigned long known_ids;
++	int init_td_status;
+ 
+ 	char name[EDT_NAME_LEN];
+ 	char fw_version[EDT_NAME_LEN];
+@@ -296,56 +298,90 @@
+ 	.write = edt_M06_i2c_write,
+ };
+ 
++/*
++ * The Pi-compatible controller retains unused point data and may omit
++ * TOUCH_UP. For polling, use TD_STATUS and release slots no longer present.
++ * Based on Raspberry Pi rpi-6.12.y edt-ft5x06.c (GPL-2.0).
++ */
+ static void edt_ft5x06_ts_process_events(struct edt_ft5x06_ts_data *tsdata,
+-					 bool poll)
++                                         bool poll)
+ {
+ 	struct device *dev = &tsdata->client->dev;
+-	u8 rdbuf[63];
+-	int i, type, x, y, id;
+-	int error;
+-
+-	memset(rdbuf, 0, sizeof(rdbuf));
+-	error = regmap_bulk_read(tsdata->regmap, tsdata->tdata_cmd, rdbuf,
+-				 tsdata->tdata_len);
+-	if (error) {
+-		if (!poll) {
+-			/* Polling may result in no data. */
+-			dev_err_ratelimited(dev,
+-					    "Unable to fetch data, error: %d\n",
+-					    error);
++	u8 rdbuf[63] = {};
++	unsigned long active_ids = 0, released_ids;
++	unsigned long known_ids = tsdata->known_ids;
++	bool track = poll && tsdata->version != EDT_M06;
++	int num_points = tsdata->max_support_points;
++	int i, type, x, y, id, error;
++	unsigned int read_len = track ? tsdata->tdata_offset : tsdata->tdata_len;
++
++	error = regmap_bulk_read(tsdata->regmap, tsdata->tdata_cmd,
++				rdbuf, read_len);
++	if (error)
++		goto read_error;
++
++	if (track) {
++		num_points = min_t(int, rdbuf[2] & 0xf,
++				   tsdata->max_support_points);
++		if (tsdata->init_td_status) {
++			if (tsdata->init_td_status < 0)
++				tsdata->init_td_status = rdbuf[2];
++			if (num_points && rdbuf[2] == tsdata->init_td_status)
++				return;
++			tsdata->init_td_status = 0;
+ 		}
+-		return;
+-	}
+-
+-	for (i = 0; i < tsdata->max_support_points; i++) {
++		if (num_points) {
++			error = regmap_bulk_read(tsdata->regmap,
++					tsdata->tdata_offset,
++					&rdbuf[tsdata->tdata_offset],
++					tsdata->point_len * num_points);
++			if (error)
++				goto read_error;
++		}
++	}
++
++	for (i = 0; i < num_points; i++) {
+ 		u8 *buf = &rdbuf[i * tsdata->point_len + tsdata->tdata_offset];
+ 
+ 		type = buf[0] >> 6;
+-		/* ignore Reserved events */
+ 		if (type == TOUCH_EVENT_RESERVED)
+ 			continue;
+-
+-		/* M06 sometimes sends bogus coordinates in TOUCH_DOWN */
+ 		if (tsdata->version == EDT_M06 && type == TOUCH_EVENT_DOWN)
+ 			continue;
+ 
+ 		x = get_unaligned_be16(buf) & 0x0fff;
+ 		y = get_unaligned_be16(buf + 2) & 0x0fff;
+-		/* The FT5x26 send the y coordinate first */
+ 		if (tsdata->version == EV_FT)
+ 			swap(x, y);
+-
+ 		id = (buf[2] >> 4) & 0x0f;
++		if (id >= tsdata->max_support_points)
++			continue;
+ 
+ 		input_mt_slot(tsdata->input, id);
+ 		if (input_mt_report_slot_state(tsdata->input, MT_TOOL_FINGER,
+-					       type != TOUCH_EVENT_UP))
++					       type != TOUCH_EVENT_UP)) {
+ 			touchscreen_report_pos(tsdata->input, &tsdata->prop,
+ 					       x, y, true);
+-	}
+-
++			active_ids |= BIT(id);
++		} else {
++			known_ids &= ~BIT(id);
++		}
++	}
++
++	if (track) {
++		released_ids = known_ids & ~active_ids;
++		for_each_set_bit(i, &released_ids, tsdata->max_support_points) {
++			input_mt_slot(tsdata->input, i);
++			input_mt_report_slot_inactive(tsdata->input);
++		}
++		tsdata->known_ids = active_ids;
++	}
+ 	input_mt_report_pointer_emulation(tsdata->input, true);
+ 	input_sync(tsdata->input);
++	return;
++
++read_error:
++	dev_err_ratelimited(dev, "Unable to fetch data, error: %d\n", error);
+ }
+ 
+ static irqreturn_t edt_ft5x06_ts_isr(int irq, void *dev_id)
+@@ -1368,6 +1404,7 @@
+ 			return error;
+ 		}
+ 	} else {
++		tsdata->init_td_status = -1;
+ 		error = input_setup_polling(input, edt_ft5x06_work_i2c_poll);
+ 		if (error)
+ 			return dev_err_probe(&client->dev, error, "Unable to set up polling.\n");

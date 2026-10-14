@@ -6,3 +6,8 @@
 *.ps1 text eol=crlf
 *.patch -text
 tools/dependencies/edl-ng/LICENSE text eol=lf
+
+# Preserve checksum-pinned TFT50 inputs and unified-diff context whitespace.
+tools/dependencies/linux-tft50/GPL-2.0 -text
+tools/dependencies/linux-tft50/*.patch whitespace=-blank-at-eol,-space-before-tab
+tools/target/linux/tft50/*.dts text eol=lf
