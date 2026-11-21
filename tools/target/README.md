@@ -26,4 +26,4 @@ initramfs и проверяет его копию на EFI. Имена `/dev/sd�
 
 ## Камера InnoMaker IMX296 Mono
 
-[`linux/imx296/install.py`](linux/imx296/install.py) собирает Device Tree для CAM2/J16 и добавляет отдельный пункт в меню загрузки Q6A. Команды переноса с компьютера по SSH и проверки первого кадра приведены в [инструкции для IMX296](../../docs/development/imx296-cam2.md).
+[`linux/imx296/install.py`](linux/imx296/install.py) собирает Device Tree для выбранного разъёма (CAM1/J14 по умолчанию) и добавляет отдельный пункт в меню загрузки Q6A. Команды переноса с компьютера по SSH и проверки первого кадра приведены в [инструкции для IMX296](../../docs/development/imx296.md).

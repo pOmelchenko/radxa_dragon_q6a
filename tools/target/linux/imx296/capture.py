@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
-"""Capture one free-running Y10P frame from the IMX296 on Q6A CAM2."""
+"""Capture one free-running Y10P frame from the IMX296 on the selected Q6A connector."""
+import argparse
 import os
 import re
 import subprocess
 import sys
 from pathlib import Path
 from tempfile import mkdtemp
+
+from ports import PORTS
 
 WIDTH, HEIGHT = 1456, 1088
 
@@ -14,15 +17,15 @@ def run(*args, **kwargs):
     return subprocess.run(args, check=True, **kwargs)
 
 
-def find_camera():
-    # Match the immutable sensor -> CSIPHY2 link, including its actual I2C bus.
+def find_camera(port, phy):
+    # Match this physical receiver even when another IMX296 uses the same I2C address.
     for media in sorted(Path("/dev").glob("media[0-9]*")):
         graph = subprocess.check_output(["media-ctl", "-d", media, "-p"], text=True)
         for entity in graph.split("- entity ")[1:]:
             sensor = re.match(r"\d+: (imx296 \d+-001a) \(", entity)
-            if sensor and re.search(r'-> "msm_csiphy2":0 \[ENABLED\b', entity):
+            if sensor and re.search(rf'-> "{phy}":0 \[ENABLED\b', entity):
                 return media, sensor[1]
-    raise ValueError("В media graph нет связи imx296 → msm_csiphy2. Проверьте probe и порт J16.")
+    raise ValueError(f"В media graph нет связи imx296 → {phy}. Проверьте probe и порт {port.upper()}.")
 
 
 def format_value(description, field, pattern):
@@ -32,14 +35,15 @@ def format_value(description, field, pattern):
     return match[1]
 
 
-def capture():
+def capture(port):
     os.environ["LC_ALL"] = "C"
-    media, sensor = find_camera()
+    phy = f"msm_csiphy{PORTS[port][1]}"
+    media, sensor = find_camera(port, phy)
     ctl = ["media-ctl", "-d", media]
-    print(f"{media}: {sensor} → msm_csiphy2 → msm_csid0 → msm_vfe0_rdi0", flush=True)
-    run(*ctl, "-l", '"msm_csiphy2":1 -> "msm_csid0":0 [1]')
+    print(f"{media}: {sensor} → {phy} → msm_csid0 → msm_vfe0_rdi0", flush=True)
+    run(*ctl, "-l", f'"{phy}":1 -> "msm_csid0":0 [1]')
     run(*ctl, "-l", '"msm_csid0":1 -> "msm_vfe0_rdi0":0 [1]')
-    for entity, pad in [(sensor, 0), ("msm_csiphy2", 0), ("msm_csid0", 0),
+    for entity, pad in [(sensor, 0), (phy, 0), ("msm_csid0", 0),
                         ("msm_csid0", 1), ("msm_vfe0_rdi0", 0)]:
         run(*ctl, "-V", f'"{entity}":{pad} [fmt:Y10_1X10/{WIDTH}x{HEIGHT} field:none]')
 
@@ -76,7 +80,11 @@ def capture():
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--port", type=str.lower, choices=PORTS, default="cam1",
+                        help="разъём Q6A (по умолчанию cam1/J14)")
+    args = parser.parse_args()
     try:
-        capture()
+        capture(args.port)
     except (OSError, ValueError, subprocess.SubprocessError) as error:
         sys.exit(str(error))

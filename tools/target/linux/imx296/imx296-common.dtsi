@@ -1,0 +1,119 @@
+// SPDX-License-Identifier: BSD-3-Clause
+// Based on the Q6A camera overlays, Copyright (c) 2025 Radxa Computer (Shenzhen) Co., Ltd.
+// Keep labels, node names and regulator names distinct for every connector.
+#define JOIN_IMPL(a, b) a ## b
+#define JOIN(a, b) JOIN_IMPL(a, b)
+#define STRING_IMPL(value) #value
+#define STRING(value) STRING_IMPL(value)
+#define PORT_LABEL(name) JOIN(JOIN(PORT, _imx296_), name)
+
+/ {
+	metadata {
+		title = PORT_TITLE;
+		compatible = "radxa,dragon-q6a";
+		category = "camera";
+		exclusive = STRING(CCI_BUS);
+		description = "Single-lane monochrome RAW10.";
+	};
+};
+
+&{/} {
+	/* Module oscillator, as described by the Pi imx296 overlay. No SoC MCLK. */
+	PORT_LABEL(clk): clock-imx296-PORT {
+		compatible = "fixed-clock";
+		#clock-cells = <0>;
+		clock-frequency = <54000000>;
+	};
+
+	/* The selected port drives CAM_IO0 (camera pin 11), which enables the module's local supplies. */
+	PORT_LABEL(power): regulator-imx296-PORT {
+		compatible = "regulator-fixed";
+		regulator-name = STRING(imx296-PORT-3v3);
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		gpio = <&tlmm ENABLE_GPIO 0>; /* GPIO_ACTIVE_HIGH */
+		enable-active-high;
+		startup-delay-us = <500000>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&PORT_LABEL(enable_pin)>;
+	};
+
+	PORT_LABEL(dvdd): regulator-imx296-PORT-dvdd {
+		compatible = "regulator-fixed";
+		regulator-name = STRING(imx296-PORT-1v2);
+		regulator-min-microvolt = <1200000>;
+		regulator-max-microvolt = <1200000>;
+		vin-supply = <&PORT_LABEL(power)>;
+	};
+
+	PORT_LABEL(ovdd): regulator-imx296-PORT-ovdd {
+		compatible = "regulator-fixed";
+		regulator-name = STRING(imx296-PORT-1v8);
+		regulator-min-microvolt = <1800000>;
+		regulator-max-microvolt = <1800000>;
+		vin-supply = <&PORT_LABEL(power)>;
+	};
+};
+
+&tlmm {
+	PORT_LABEL(enable_pin): imx296-PORT-enable-state {
+		pins = STRING(JOIN(gpio, ENABLE_GPIO));
+		function = "gpio";
+		drive-strength = <2>;
+		bias-pull-up;
+	};
+};
+
+&CCI_CONTROLLER {
+	status = "okay";
+};
+
+&CCI_BUS {
+	#address-cells = <1>;
+	#size-cells = <0>;
+	clock-frequency = <100000>;
+	status = "okay";
+
+	camera@1a {
+		compatible = "sony,imx296";
+		reg = <0x1a>;
+		clocks = <&PORT_LABEL(clk)>;
+		clock-names = "inck";
+		avdd-supply = <&PORT_LABEL(power)>;
+		dvdd-supply = <&PORT_LABEL(dvdd)>;
+		ovdd-supply = <&PORT_LABEL(ovdd)>;
+
+		port {
+			PORT_LABEL(out): endpoint {
+				clock-lanes = <0>;
+				data-lanes = <1>;
+				clock-noncontinuous;
+				link-frequencies = /bits/ 64 <594000000>;
+				remote-endpoint = <&PORT_LABEL(input)>;
+			};
+		};
+	};
+};
+
+&camss {
+	vdda-phy-supply = <&vreg_l10c_0p88>;
+	vdda-pll-supply = <&vreg_l6b_1p2>;
+	status = "okay";
+
+	ports {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		port@PHY {
+			reg = <PHY>;
+
+			PORT_LABEL(input): endpoint {
+				/* Qualcomm D-PHY clock and first data lane. */
+				clock-lanes = <7>;
+				data-lanes = <0>;
+				clock-noncontinuous;
+				remote-endpoint = <&PORT_LABEL(out)>;
+			};
+		};
+	};
+};
