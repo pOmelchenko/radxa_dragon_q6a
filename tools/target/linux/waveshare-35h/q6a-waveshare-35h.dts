@@ -1,0 +1,94 @@
+// SPDX-License-Identifier: GPL-2.0-only
+/dts-v1/;
+/plugin/;
+
+/ {
+	metadata {
+		title = "Enable Waveshare 3.5inch DSI LCD (H)";
+		compatible = "radxa,dragon-q6a";
+		category = "display";
+		exclusive = "mdss_dsi", "gpio80";
+		description = "480x800 DSI display and Goodix touch on the J10 display adapter.";
+	};
+};
+
+&{/} {
+	ws35h_vcc: regulator-waveshare-35h {
+		compatible = "regulator-fixed";
+		regulator-name = "waveshare-35h-3v3";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		vin-supply = <&vcc_3v3>;
+		gpio = <&tlmm 80 0>;	/* LCD_VCC_EN, active high */
+		enable-active-high;
+		/* Allow the module to boot before the first I2C transfer. */
+		startup-delay-us = <100000>;
+	};
+};
+
+&mdss {
+	status = "okay";
+};
+
+&mdss_dsi_phy {
+	vdds-supply = <&vreg_l10c_0p88>;
+	status = "okay";
+};
+
+&mdss_dsi {
+	#address-cells = <1>;
+	#size-cells = <0>;
+	vdda-supply = <&vreg_l6b_1p2>;
+	status = "okay";
+
+	panel@0 {
+		compatible = "waveshare,35h-dsi";
+		reg = <0>;
+		power-supply = <&ws35h_vcc>;
+		width-mm = <45>;
+		height-mm = <76>;
+
+		panel-timing {
+			clock-frequency = <33600000>;
+			hactive = <480>;
+			hfront-porch = <48>;
+			hsync-len = <32>;
+			hback-porch = <80>;
+			vactive = <800>;
+			vfront-porch = <3>;
+			vsync-len = <10>;
+			vback-porch = <62>;
+		};
+
+		port {
+			ws35h_in: endpoint {
+				remote-endpoint = <&mdss_dsi0_out>;
+				data-lanes = <0>;
+			};
+		};
+	};
+};
+
+&mdss_dsi0_out {
+	remote-endpoint = <&ws35h_in>;
+	data-lanes = <0>;
+};
+
+&qupv3_id_1 {
+	status = "okay";
+};
+
+&i2c13 {
+	#address-cells = <1>;
+	#size-cells = <0>;
+	clock-frequency = <100000>;
+	status = "okay";
+
+	/* The 15-pin display connector carries neither INT nor RESET. */
+	touchscreen@14 {
+		compatible = "goodix,gt911";
+		reg = <0x14>;
+		AVDD28-supply = <&ws35h_vcc>;
+		VDDIO-supply = <&ws35h_vcc>;
+	};
+};

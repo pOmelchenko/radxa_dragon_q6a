@@ -1,0 +1,1 @@
+obj-m := panel-waveshare-35h.o

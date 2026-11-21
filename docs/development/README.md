@@ -5,6 +5,7 @@
 - [Инструменты Windows, macOS и Linux](host-tools.md).
 - [Windows-автоматизация: интерфейсы и проверки](windows-automation.md).
 - [Камерные работы AR0234 и IMX296](cameras.md).
+- [Дисплей Waveshare 3.5inch DSI LCD (H)](waveshare-35h.md).
 
 Готовое решение переносится в `docs/guides` после проверки команд на SBC.
 Руководство должно содержать цель, применимую конфигурацию, версии входных
