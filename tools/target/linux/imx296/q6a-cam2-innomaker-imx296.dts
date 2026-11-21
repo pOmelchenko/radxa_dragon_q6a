@@ -1,0 +1,116 @@
+// SPDX-License-Identifier: BSD-3-Clause
+// CAM2 routing from Radxa's qcs6490-radxa-dragon-q6a-cam2-radxa-camera-8m-219.dtso.
+// Copyright (c) 2025 Radxa Computer (Shenzhen) Co., Ltd.
+/dts-v1/;
+/plugin/;
+
+/ {
+	metadata {
+		title = "Enable InnoMaker IMX296 Mono on CAM2";
+		compatible = "radxa,dragon-q6a";
+		category = "camera";
+		exclusive = "cci1_i2c0";
+		description = "Single-lane monochrome RAW10 on J16 (CAM2).";
+	};
+};
+
+&{/} {
+	/* Module oscillator, as described by the Pi imx296 overlay. No SoC MCLK. */
+	imx296_clk: clock-imx296-cam2 {
+		compatible = "fixed-clock";
+		#clock-cells = <0>;
+		clock-frequency = <54000000>;
+	};
+
+	/* CAM_IO0 (J16 pin 11) enables the module's local supplies. */
+	imx296_power: regulator-imx296-cam2 {
+		compatible = "regulator-fixed";
+		regulator-name = "imx296-cam2-3v3";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		gpio = <&tlmm 77 0>; /* GPIO_ACTIVE_HIGH */
+		enable-active-high;
+		startup-delay-us = <500000>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&imx296_enable_pin>;
+	};
+
+	imx296_dvdd: regulator-imx296-cam2-dvdd {
+		compatible = "regulator-fixed";
+		regulator-name = "imx296-cam2-1v2";
+		regulator-min-microvolt = <1200000>;
+		regulator-max-microvolt = <1200000>;
+		vin-supply = <&imx296_power>;
+	};
+
+	imx296_ovdd: regulator-imx296-cam2-ovdd {
+		compatible = "regulator-fixed";
+		regulator-name = "imx296-cam2-1v8";
+		regulator-min-microvolt = <1800000>;
+		regulator-max-microvolt = <1800000>;
+		vin-supply = <&imx296_power>;
+	};
+};
+
+&tlmm {
+	imx296_enable_pin: imx296-cam2-enable-state {
+		pins = "gpio77";
+		function = "gpio";
+		drive-strength = <2>;
+		bias-pull-up;
+	};
+};
+
+&cci1 {
+	status = "okay";
+};
+
+&cci1_i2c0 {
+	#address-cells = <1>;
+	#size-cells = <0>;
+	clock-frequency = <100000>;
+	status = "okay";
+
+	camera@1a {
+		compatible = "sony,imx296";
+		reg = <0x1a>;
+		clocks = <&imx296_clk>;
+		clock-names = "inck";
+		avdd-supply = <&imx296_power>;
+		dvdd-supply = <&imx296_dvdd>;
+		ovdd-supply = <&imx296_ovdd>;
+
+		port {
+			imx296_out: endpoint {
+				clock-lanes = <0>;
+				data-lanes = <1>;
+				clock-noncontinuous;
+				link-frequencies = /bits/ 64 <594000000>;
+				remote-endpoint = <&imx296_csiphy2_in>;
+			};
+		};
+	};
+};
+
+&camss {
+	vdda-phy-supply = <&vreg_l10c_0p88>;
+	vdda-pll-supply = <&vreg_l6b_1p2>;
+	status = "okay";
+
+	ports {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		port@2 {
+			reg = <2>;
+
+			imx296_csiphy2_in: endpoint {
+				/* Qualcomm PHY lane numbering from the Radxa CAM2 overlay. */
+				clock-lanes = <7>;
+				data-lanes = <0>;
+				clock-noncontinuous;
+				remote-endpoint = <&imx296_out>;
+			};
+		};
+	};
+};
