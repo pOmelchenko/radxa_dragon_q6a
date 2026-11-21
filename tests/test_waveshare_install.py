@@ -26,7 +26,7 @@ class BootEntryTests(unittest.TestCase):
         self.assertEqual(len(removed), 2)
         self.assertNotIn("btt-tft50", text)
         self.assertIn("options root=UUID=test rw\n", text)
-        self.assertIn(f"title {installer.TITLE}\n", text)
+        self.assertIn("title Waveshare 35H (auto)\n", text)
         self.assertTrue(text.endswith("devicetree-overlay " + " ".join([*kept, new]) + "\n"))
 
     def test_stock_entry_without_overlays_and_without_trailing_newline(self):
@@ -44,22 +44,36 @@ class BootEntryTests(unittest.TestCase):
 
     def test_pulse_trial_preserves_options_and_uses_same_overlay(self):
         original = BASE.replace("rw", 'rw label="two words" -- rescue') + f"devicetree-overlay {DIR}/imx519.dtbo\n"
-        pulse, _, overlay, kept, _ = installer.trial_entry(original, KERNEL, sync_pulse=True)
+        pulse, _, overlay, kept, _ = installer.trial_entry(original, KERNEL, profile="pulse")
         event, _, baseline, baseline_kept, _ = installer.trial_entry(original, KERNEL)
         self.assertEqual((overlay, kept), (baseline, baseline_kept))
-        self.assertIn(f"title {installer.PULSE_TITLE}\n", pulse)
-        self.assertIn(f'options {installer.PULSE_ARG} root=UUID=test rw label="two words" -- rescue\n', pulse)
+        self.assertIn("title Waveshare 35H (sync-pulse)\n", pulse)
+        self.assertIn('options panel_waveshare_35h.sync_pulse=1 root=UUID=test rw label="two words" -- rescue\n', pulse)
         self.assertNotIn("sync_pulse", event)
         with self.assertRaisesRegex(ValueError, "original"):
             installer.trial_entry(pulse, KERNEL)
 
     def test_pulse_trial_without_options_or_with_a_conflicting_setting(self):
         original = BASE.split("options")[0].rstrip()
-        pulse, *_ = installer.trial_entry(original, KERNEL, sync_pulse=True)
-        self.assertIn(f"\noptions {installer.PULSE_ARG}\n", pulse)
+        pulse, *_ = installer.trial_entry(original, KERNEL, profile="pulse")
+        self.assertIn("\noptions panel_waveshare_35h.sync_pulse=1\n", pulse)
         with self.assertRaisesRegex(ValueError, "Ambiguous"):
             installer.trial_entry(BASE.replace("rw", "rw panel-waveshare-35h.sync_pulse=0"),
-                                  KERNEL, sync_pulse=True)
+                                  KERNEL, profile="pulse")
+
+    def test_burst_trial_keeps_pulse_and_baseline_distinct(self):
+        original = BASE.replace("rw", "rw -- rescue")
+        for profile, expected in (("burst", "burst=1"), ("pulse", "sync_pulse=1")):
+            with self.subTest(profile=profile):
+                text, _, overlay, _, _ = installer.trial_entry(original, KERNEL, profile)
+                self.assertIn(f"options panel_waveshare_35h.{expected} root=UUID=test rw -- rescue\n", text)
+                self.assertEqual(overlay, f"{DIR}/dtbo/q6a-waveshare-35h.dtbo")
+        text, *_ = installer.trial_entry(original, KERNEL, "burst")
+        self.assertIn("title Waveshare 35H (burst)\n", text)
+        self.assertNotIn("sync_pulse=", text)
+        with self.assertRaisesRegex(ValueError, "Ambiguous"):
+            installer.trial_entry(BASE.replace("rw", "rw panel-waveshare-35h.sync_pulse=1"),
+                                  KERNEL, "burst")
 
 
 class PublishTests(unittest.TestCase):

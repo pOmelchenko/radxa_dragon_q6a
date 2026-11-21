@@ -105,6 +105,27 @@ sha256sum -c SHA256SUMS && sudo python3 ./install.py --prebuilt "$PWD/artifacts/
 Кадр стабилен в точке измерения DPU. Остаётся проверить передачу DSI,
 переходник, шлейф, питание и сам дисплей.
 
+На этой же Q6A BTT Pi TFT50 V2.1 устойчиво работает через тот же AC005.
+Его проверенный оверлей использует профиль Raspberry Pi 7-inch и драйвер
+моста TC358762. В ядре Radxa `7.0.11-7-qcom` мост задаёт burst-видео с HSE
+на одной линии RGB888 и передаёт команды в low-power mode. Тайминги BTT
+рассчитаны на 800×480 при pixel clock 30 МГц. Для проверки самого способа
+передачи установите отдельный профиль Waveshare:
+
+```sh
+sudo python3 ~/waveshare-35h/install.py --burst
+```
+
+При следующей загрузке выберите **Waveshare 35H (burst)** в embloader.
+Проверьте результат командой
+`sudo journalctl -b -k --no-pager | grep 'DSI video:'`: ожидается
+`burst + HSE, 1 lane, RGB888`. Для Waveshare по-прежнему используются 480×800,
+33,6 МГц и питание из её оверлея. Проверьте, пропал ли цикл «изображение —
+полосы — чёрный экран». Устойчивость в burst-режиме на физической 35H пока
+не проверена.
+[Протокол испытания BTT на Q6A](https://github.com/pOmelchenko/radxa_dragon_q6a/blob/e689ce4222bd143b1624c522351b59ef53d59a39/docs/reference/validation/btt-pi-tft50-v2.1-2026-10-15.json),
+[драйвер TC358762 в проверенном ядре Radxa](https://github.com/radxa/kernel/blob/a50eb5b71984bd82b49cd5d31b1e2eb5505c6512/drivers/gpu/drm/bridge/tc358762.c#L279-L282).
+
 Чтобы повторить сравнение на другой связке, установите пробный профиль и
 выберите **Waveshare 35H (sync-pulse)** в меню embloader при следующей загрузке.
 
