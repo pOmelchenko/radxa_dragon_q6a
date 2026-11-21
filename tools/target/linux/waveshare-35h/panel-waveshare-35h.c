@@ -9,6 +9,10 @@
 #include <drm/drm_panel.h>
 #include <drm/drm_probe_helper.h>
 
+static bool sync_pulse;
+module_param(sync_pulse, bool, 0444);
+MODULE_PARM_DESC(sync_pulse, "Use non-burst sync pulses with HSync end packets");
+
 struct ws35h_panel {
 	struct drm_panel panel;
 	struct drm_display_mode mode;
@@ -47,6 +51,8 @@ static int ws35h_probe(struct mipi_dsi_device *dsi)
 	dsi->lanes = 1;
 	dsi->format = MIPI_DSI_FMT_RGB888;
 	dsi->mode_flags = MIPI_DSI_MODE_VIDEO;
+	if (sync_pulse)
+		dsi->mode_flags |= MIPI_DSI_MODE_VIDEO_SYNC_PULSE | MIPI_DSI_MODE_VIDEO_HSE;
 
 	ret = devm_regulator_get_enable(dev, "power");
 	if (ret)
@@ -60,6 +66,8 @@ static int ws35h_probe(struct mipi_dsi_device *dsi)
 		return dev_err_probe(dev, ret, "failed to attach DSI panel\n");
 	}
 
+	dev_info(dev, "DSI video: %s, 1 lane, RGB888\n",
+		 sync_pulse ? "sync-pulse + HSE" : "sync-event");
 	return 0;
 }
 

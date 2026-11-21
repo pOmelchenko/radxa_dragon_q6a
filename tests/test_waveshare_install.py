@@ -42,6 +42,25 @@ class BootEntryTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             installer.efi_file(Path("esp"), "/RadxaOS/../../outside")
 
+    def test_pulse_trial_preserves_options_and_uses_same_overlay(self):
+        original = BASE.replace("rw", 'rw label="two words" -- rescue') + f"devicetree-overlay {DIR}/imx519.dtbo\n"
+        pulse, _, overlay, kept, _ = installer.trial_entry(original, KERNEL, sync_pulse=True)
+        event, _, baseline, baseline_kept, _ = installer.trial_entry(original, KERNEL)
+        self.assertEqual((overlay, kept), (baseline, baseline_kept))
+        self.assertIn(f"title {installer.PULSE_TITLE}\n", pulse)
+        self.assertIn(f'options {installer.PULSE_ARG} root=UUID=test rw label="two words" -- rescue\n', pulse)
+        self.assertNotIn("sync_pulse", event)
+        with self.assertRaisesRegex(ValueError, "original"):
+            installer.trial_entry(pulse, KERNEL)
+
+    def test_pulse_trial_without_options_or_with_a_conflicting_setting(self):
+        original = BASE.split("options")[0].rstrip()
+        pulse, *_ = installer.trial_entry(original, KERNEL, sync_pulse=True)
+        self.assertIn(f"\noptions {installer.PULSE_ARG}\n", pulse)
+        with self.assertRaisesRegex(ValueError, "Ambiguous"):
+            installer.trial_entry(BASE.replace("rw", "rw panel-waveshare-35h.sync_pulse=0"),
+                                  KERNEL, sync_pulse=True)
+
 
 class PublishTests(unittest.TestCase):
     def setUp(self):

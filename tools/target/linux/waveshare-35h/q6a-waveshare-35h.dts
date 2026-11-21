@@ -85,9 +85,9 @@
 	status = "okay";
 
 	/* The 15-pin display connector carries neither INT nor RESET. */
-	touchscreen@14 {
+	touchscreen@5d {
 		compatible = "goodix,gt911";
-		reg = <0x14>;
+		reg = <0x5d>;
 		AVDD28-supply = <&ws35h_vcc>;
 		VDDIO-supply = <&ws35h_vcc>;
 	};
