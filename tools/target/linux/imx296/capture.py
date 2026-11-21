@@ -19,12 +19,20 @@ def run(*args, **kwargs):
 
 def find_camera(port, phy):
     # Match this physical receiver even when another IMX296 uses the same I2C address.
+    detected = []
     for media in sorted(Path("/dev").glob("media[0-9]*")):
         graph = subprocess.check_output(["media-ctl", "-d", media, "-p"], text=True)
         for entity in graph.split("- entity ")[1:]:
             sensor = re.match(r"\d+: (imx296 \d+-001a) \(", entity)
-            if sensor and re.search(rf'-> "{phy}":0 \[ENABLED\b', entity):
-                return media, sensor[1]
+            if sensor:
+                if re.search(rf'-> "{phy}":0 \[ENABLED\b', entity):
+                    return media, sensor[1]
+                detected.append(f"{media}: {entity.splitlines()[0]}")
+    if detected:
+        raise ValueError(f"Для {port.upper()} нет связи IMX296 → {phy}. Обнаруженные сенсоры:\n"
+                         + "\n".join(detected)
+                         + "\nЕсли у сенсоров 0 link, проверьте probe всех камер, включённых в DT. "
+                           "CAMSS создаёт связи после регистрации всех ожидаемых сенсоров.")
     raise ValueError(f"В media graph нет связи imx296 → {phy}. Проверьте probe и порт {port.upper()}.")
 
 

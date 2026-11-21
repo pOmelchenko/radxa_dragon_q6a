@@ -23,6 +23,37 @@ def load_script(name):
 
 
 class CameraPortsTest(unittest.TestCase):
+    def test_detected_but_unlinked_sensor(self):
+        capture = load_script("capture")
+        graph = "- entity 422: imx296 16-001a (1 pad, 0 link, 0 routes)\n  pad0: Source\n"
+        with patch.object(Path, "glob", return_value=[Path("/dev/media0")]), \
+                patch.object(subprocess, "check_output", return_value=graph), \
+                self.assertRaisesRegex(ValueError, r"imx296 16-001a \(1 pad, 0 link"):
+            capture.find_camera("cam1", "msm_csiphy0")
+
+    @unittest.skipUnless(all(shutil.which(c) for c in ("cpp", "dtc", "fdtget")),
+                         "Device Tree command-line tools required")
+    def test_rsetup_offers_all_ports_and_preserves_selection(self):
+        installer = load_script("install")
+        with tempfile.TemporaryDirectory() as directory:
+            work = Path(directory)
+            catalog = work / "dtbo"
+            catalog.mkdir()
+            display = catalog / "btt-tft50.dtbo"
+            display.write_bytes(b"display")
+            installer.register_overlays(catalog, work)
+            for port, bus, _, _ in ROUTES:
+                path = catalog / f"q6a-{port}-innomaker-imx296.dtbo.disabled"
+                self.assertEqual(installer.output("fdtget", path, "/metadata", "title"),
+                                 f"Enable InnoMaker IMX296 Mono on {port.upper()}")
+                self.assertEqual(installer.output("fdtget", path, "/metadata", "compatible"), "radxa,dragon-q6a")
+                self.assertEqual(installer.output("fdtget", path, "/metadata", "exclusive"), bus)
+            active = catalog / "q6a-cam1-innomaker-imx296.dtbo"
+            active.with_suffix(".dtbo.disabled").rename(active)
+            before = {p.name: p.read_bytes() for p in catalog.iterdir()}
+            installer.register_overlays(catalog, work)
+            self.assertEqual({p.name: p.read_bytes() for p in catalog.iterdir()}, before)
+
     def test_capture_routes_only_selected_sensor(self):
         capture = load_script("capture")
         graph = ""

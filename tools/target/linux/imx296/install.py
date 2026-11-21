@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Install a separate Radxa OS boot entry for an InnoMaker IMX296 on a selected CSI connector."""
+"""Install InnoMaker IMX296 overlays for rsetup or a separate Q6A boot entry."""
 import argparse
 import hashlib
 import os
@@ -68,6 +68,35 @@ def atomic_write(path, data):
         tmp.unlink(missing_ok=True)
 
 
+def build_overlay(work, port):
+    source = HERE / f"q6a-{port}-innomaker-imx296.dts"
+    expanded = work / source.name
+    overlay = expanded.with_suffix(".dtbo")
+    subprocess.run(["cpp", "-nostdinc", "-undef", "-P", "-x", "assembler-with-cpp",
+                    source, "-o", expanded], check=True)
+    # The CAM1 fragment contains only port@0. Its parent has more ports in the base DTB.
+    subprocess.run(["dtc", "-@", "-Wno-graph_child_address", "-I", "dts", "-O", "dtb",
+                    "-o", overlay, expanded], check=True)
+    return overlay
+
+
+def register_overlays(catalog, work):
+    if not catalog.is_dir():
+        raise ValueError(f"Каталог оверлеев rsetup для текущего ядра не найден: {catalog}")
+    files = {}
+    for port in PORTS:
+        overlay = build_overlay(work, port)
+        enabled = catalog / overlay.name
+        disabled = catalog / (overlay.name + ".disabled")
+        if enabled.exists() and disabled.exists():
+            raise ValueError(f"В каталоге есть обе версии {overlay.name}: включённая и отключённая.")
+        target = enabled if enabled.exists() else disabled
+        files[target] = overlay.read_bytes()
+    for target, blob in files.items():
+        if not target.exists() or target.read_bytes() != blob:
+            atomic_write(target, blob)
+
+
 def install(esp, entry, kernel, work, port):
     bus_symbol, phy_index = PORTS[port]
     entries = esp / "loader/entries"
@@ -98,14 +127,7 @@ def install(esp, entry, kernel, work, port):
     if any(s.endswith("@1a") for s in sensors) or any(n.split("@")[0] == "endpoint" for n in endpoints):
         raise ValueError(f"В исходной записи порт {port.upper()} уже занят камерой.")
 
-    overlay = work / "camera.dtbo"
-    source = HERE / f"q6a-{port}-innomaker-imx296.dts"
-    expanded = work / "camera.dts"
-    subprocess.run(["cpp", "-nostdinc", "-undef", "-P", "-x", "assembler-with-cpp",
-                    source, "-o", expanded], check=True)
-    # The CAM1 fragment contains only port@0. Its parent has more ports in the base DTB.
-    subprocess.run(["dtc", "-@", "-Wno-graph_child_address", "-I", "dts", "-O", "dtb",
-                    "-o", overlay, expanded], check=True)
+    overlay = build_overlay(work, port)
     merged = work / "camera.dtb"
     subprocess.run(["fdtoverlay", "-i", current, "-o", merged, overlay], check=True)
     sensor = bus + "/camera@1a"
@@ -146,10 +168,15 @@ def install(esp, entry, kernel, work, port):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--port", type=str.lower, choices=PORTS, default="cam1",
-                        help="разъём Q6A (по умолчанию cam1/J14)")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--register-rsetup", action="store_true",
+                      help="добавить все три разъёма в список оверлеев rsetup")
+    mode.add_argument("--port", type=str.lower, choices=PORTS, default="cam1",
+                      help="разъём для отдельной записи embloader (по умолчанию cam1/J14)")
     parser.add_argument("--entry", type=Path, help="исходная запись из /boot/efi/loader/entries")
     args = parser.parse_args()
+    if args.register_rsetup and args.entry:
+        parser.error("--entry задаёт основу отдельной записи и несовместим с --register-rsetup")
     if sys.platform != "linux" or os.geteuid() != 0:
         parser.exit(1, "Запустите на Q6A: sudo python3 install.py\n")
     if b"radxa,dragon-q6a" not in Path("/proc/device-tree/compatible").read_bytes().split(b"\0"):
@@ -158,7 +185,7 @@ def main():
         raise ValueError("Сначала смонтируйте EFI System Partition в /boot/efi.")
     kernel = os.uname().release
     entry = args.entry or ESP / f"loader/entries/RadxaOS-{kernel}.conf"
-    if not entry.is_file():
+    if not args.register_rsetup and not entry.is_file():
         raise ValueError(f"Нет {entry}. Укажите исходную запись текущего ядра через --entry.")
     dependencies()
     for module in ("imx296", "qcom_camss", "i2c-qcom-cci"):
@@ -166,8 +193,17 @@ def main():
 
     import fcntl  # Linux target only.
 
-    with open(f"/run/lock/q6a-imx296-{args.port}.lock", "a") as lock, tempfile.TemporaryDirectory() as work:
+    with open("/run/lock/q6a-imx296.lock", "a") as lock, tempfile.TemporaryDirectory() as work:
         fcntl.flock(lock, fcntl.LOCK_EX)
+        if args.register_rsetup:
+            token = Path("/etc/kernel/entry-token").read_text().strip()
+            if not token or Path(token).name != token or token == "..":
+                raise ValueError("Некорректный идентификатор в /etc/kernel/entry-token.")
+            catalog = efi_file(ESP, f"/{token}/{kernel}/dtbo")
+            register_overlays(catalog, Path(work))
+            print(f"Оверлеи CAM1, CAM2 и CAM3 доступны в {catalog}.\n"
+                  "Откройте sudo rsetup → Overlays → Manage overlays и отметьте нужный разъём.")
+            return
         target = install(ESP, entry, kernel, Path(work), args.port)
     print(f"Установлено: {target}\nВыберите в embloader: {TITLE} {args.port.upper()} ({entry.stem})")
     print(f"Исходная запись для возврата: {entry.name}")
