@@ -31,90 +31,207 @@ class CameraPortsTest(unittest.TestCase):
                 self.assertRaisesRegex(ValueError, r"imx296 16-001a \(1 pad, 0 link"):
             capture.find_camera("cam1", "msm_csiphy0")
 
-    @unittest.skipUnless(all(shutil.which(c) for c in ("cpp", "dtc", "fdtget")),
-                         "Device Tree command-line tools required")
-    def test_rsetup_offers_all_ports_and_preserves_selection(self):
-        installer = load_script("install")
-        with tempfile.TemporaryDirectory() as directory:
-            work = Path(directory)
-            catalog = work / "dtbo"
-            catalog.mkdir()
-            display = catalog / "btt-tft50.dtbo"
-            display.write_bytes(b"display")
-            installer.register_overlays(catalog, work)
-            for port, bus, _, _ in ROUTES:
-                path = catalog / f"q6a-{port}-innomaker-imx296.dtbo.disabled"
-                self.assertEqual(installer.output("fdtget", path, "/metadata", "title"),
-                                 f"Enable InnoMaker IMX296 Mono on {port.upper()}")
-                self.assertEqual(installer.output("fdtget", path, "/metadata", "compatible"), "radxa,dragon-q6a")
-                self.assertEqual(installer.output("fdtget", path, "/metadata", "exclusive"), bus)
-            active = catalog / "q6a-cam1-innomaker-imx296.dtbo"
-            active.with_suffix(".dtbo.disabled").rename(active)
-            before = {p.name: p.read_bytes() for p in catalog.iterdir()}
-            installer.register_overlays(catalog, work)
-            self.assertEqual({p.name: p.read_bytes() for p in catalog.iterdir()}, before)
-
-    def test_capture_routes_only_selected_sensor(self):
+    def test_find_same_model_by_physical_port(self):
         capture = load_script("capture")
-        graph = ""
-        for num, (_, _, phy, _) in enumerate(ROUTES):
-            graph += (f'- entity {num}: imx296 {num}-001a (1 pad, 1 link)\n'
-                      f'  pad0: Source\n   -> "msm_csiphy{phy}":0 [ENABLED,IMMUTABLE]\n')
-        for num, (port, _, phy, _) in enumerate(ROUTES):
-            with self.subTest(port=port), patch.object(Path, "glob", return_value=[Path("/dev/media4")]), \
-                    patch.object(subprocess, "check_output", return_value=graph), \
-                    patch.object(capture, "run", side_effect=StopIteration) as route, \
-                    patch("builtins.print") as message, patch.dict("os.environ"):
-                with self.assertRaises(StopIteration):
-                    capture.capture(port)
-                route.assert_called_once_with("media-ctl", "-d", Path("/dev/media4"), "-l",
-                                              f'"msm_csiphy{phy}":1 -> "msm_csid0":0 [1]')
-                self.assertIn(f"imx296 {num}-001a → msm_csiphy{phy}", message.call_args.args[0])
+        graph = "".join(f'- entity {n}: imx296 {n}-001a (1 pad, 1 link)\n'
+                        f'  pad0: Source\n   -> "msm_csiphy{phy}":0 [ENABLED,IMMUTABLE]\n'
+                        for n, (_, _, phy, _) in enumerate(ROUTES))
+        media = Path("/dev/media7")
+        with patch.object(Path, "glob", return_value=[media]), patch.object(subprocess, "check_output", return_value=graph):
+            for n, (port, _, phy, _) in enumerate(ROUTES):
+                self.assertEqual(capture.find_camera(port, f"msm_csiphy{phy}"), (media, f"imx296 {n}-001a"))
 
-    @unittest.skipUnless(all(shutil.which(c) for c in ("cpp", "dtc", "fdtget", "fdtoverlay")),
-                         "Device Tree command-line tools required")
-    def test_installer_keeps_separate_entries_with_the_right_bus_phy_and_gpio(self):
-        installer = load_script("install")
-        with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory)
-            esp = root / "efi"
-            images = esp / "RadxaOS/test-kernel"
-            entries = esp / "loader/entries"
-            entries.mkdir(parents=True)
-            images.mkdir(parents=True)
-            base = images / "board.dtb"
-            dts = root / "board.dts"
-            dts.write_text("""/dts-v1/;
-                / {
-                    compatible = "radxa,dragon-q6a";
-                    tlmm: gpio { gpio-controller; #gpio-cells = <2>; };
-                    vreg_l10c_0p88: supply1 {};
-                    vreg_l6b_1p2: supply2 {};
-                    cci0: cci0 { cci0_i2c0: bus0 {}; };
-                    cci1: cci1 { cci1_i2c0: bus0 {}; cci1_i2c1: bus1 {}; };
-                    camss: isp { ports { #address-cells = <1>; #size-cells = <0>;
-                        port@0 { reg = <0>; }; port@2 { reg = <2>; }; port@3 { reg = <3>; };
-                    }; };
-                };""")
-            subprocess.run(["dtc", "-@", "-o", base, dts], check=True)
-            (images / "linux").touch()
-            entry = entries / "RadxaOS-test-kernel.conf"
-            original = "title Ubuntu\nlinux /RadxaOS/test-kernel/linux\ndevicetree /RadxaOS/test-kernel/board.dtb\n"
-            entry.write_text(original)
-            for port, bus_symbol, phy, gpio in ROUTES:
-                with self.subTest(port=port):
-                    trial = installer.install(esp, entry, "test-kernel", root, port)
-                    self.assertEqual(trial.name, f"imx296-{port}-{entry.name}")
-                    dtb = esp / installer.single_path(trial.read_text().splitlines(), "devicetree").lstrip("/")
-                    bus = installer.output("fdtget", dtb, "/__symbols__", bus_symbol)
-                    sensor = bus + "/camera@1a"
-                    rx = f"/isp/ports/port@{phy}/endpoint"
-                    self.assertEqual(installer.output("fdtget", dtb, sensor, "compatible"), "sony,imx296")
-                    self.assertEqual(installer.output("fdtget", dtb, rx, "data-lanes"), "0")
-                    regulator = f"/regulator-imx296-{port}"
-                    self.assertEqual(installer.output("fdtget", "-t", "u", dtb, regulator, "gpio").split()[1:],
-                                     [str(gpio), "0"])
-                    self.assertEqual(installer.output("fdtget", dtb, sensor, "avdd-supply"),
-                                     installer.output("fdtget", dtb, regulator, "phandle"))
-            self.assertEqual(entry.read_text(), original)
-            self.assertEqual(len(list(entries.glob("imx296-*.conf"))), 3)
+    def test_route_preserves_other_sensor(self):
+        capture = load_script("capture")
+        graph = """- entity 1: imx296 16-001a (1 pad, 1 link, 0 routes)
+          pad0: Source
+            -> "msm_csiphy0":0 [ENABLED,IMMUTABLE]
+        - entity 2: msm_csiphy0 (2 pads)
+          pad1: Source
+            -> "msm_csid0":0 []
+            -> "msm_csid1":0 []
+        - entity 3: msm_csiphy2 (2 pads)
+          pad1: Source
+            -> "msm_csid0":0 [ENABLED]
+            -> "msm_csid1":0 []
+        - entity 4: msm_csid0 (5 pads)
+          pad1: Source
+            -> "msm_vfe0_rdi0":0 [ENABLED]
+            -> "msm_vfe1_rdi0":0 []
+        - entity 5: msm_csid1 (5 pads)
+          pad1: Source
+            -> "msm_vfe0_rdi0":0 []
+            -> "msm_vfe1_rdi0":0 []
+        - entity 6: msm_vfe0_rdi0 (2 pads)
+          pad1: Source
+            -> "msm_vfe0_video0":0 [ENABLED,IMMUTABLE]
+        - entity 7: msm_vfe1_rdi0 (2 pads)
+          pad1: Source
+            -> "msm_vfe1_video0":0 [ENABLED,IMMUTABLE]"""
+        def route(g):
+            return capture.select_route(g, "imx296 16-001a", "msm_csiphy0")
+        self.assertEqual(route(graph)[2], "msm_vfe1_video0")
+        self.assertEqual(route(graph.replace("[ENABLED]", "[]"))[2], "msm_vfe0_video0")
+        busy = graph.replace('-> "msm_vfe1_rdi0":0 []', '-> "msm_vfe1_rdi0":0 [ENABLED]', 1)
+        with self.assertRaisesRegex(ValueError, "Нет свободного маршрута"):
+            route(busy)
+
+    @unittest.skipIf(sys.platform == "win32", "flock is used on the Linux target")
+    def test_capture_releases_only_its_new_links_on_success_and_failure(self):
+        capture = load_script("capture")
+        graph = """- entity 1: imx296 16-001a (1 pad)
+          pad0: Source
+            -> "msm_csiphy0":0 [ENABLED,IMMUTABLE]
+        - entity 2: msm_csiphy0 (2 pads)
+          pad1: Source
+            -> "msm_csid0":0 [ENABLED]
+        - entity 3: msm_csid0 (5 pads)
+          pad1: Source
+            -> "msm_vfe0_rdi0":0 []
+        - entity 4: msm_vfe0_rdi0 (2 pads)
+          pad1: Source
+            -> "msm_vfe0_video0":0 [ENABLED,IMMUTABLE]"""
+        with tempfile.TemporaryDirectory() as tmp:
+            media = Path(tmp) / "media0"
+            media.touch()
+            for error in (None, OSError("stream failed")):
+                with patch.object(capture, "find_camera", return_value=(media, "imx296 16-001a")), \
+                        patch.object(subprocess, "check_output", return_value=graph), \
+                        patch.object(subprocess, "run") as update, \
+                        patch.object(capture, "capture_frame", side_effect=error), patch.dict("os.environ"):
+                    update.return_value.returncode = 0
+                    if error:
+                        with self.assertRaises(OSError):
+                            capture.capture("cam1")
+                    else:
+                        capture.capture("cam1")
+                    route = '"msm_csid0":1 -> "msm_vfe0_rdi0":0'
+                    self.assertEqual([call.args[0][-1] for call in update.call_args_list],
+                                     [route + " [1]", route + " [0]"])
+
+
+@unittest.skipUnless(all(shutil.which(c) for c in ("cpp", "dtc", "fdtget", "fdtoverlay")),
+                     "Device Tree command-line tools required")
+class InstallerTest(unittest.TestCase):
+    def setUp(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        self.root = Path(tmp.name)
+        self.installer = load_script("install")
+        self.esp = self.root / "efi"
+        self.images = self.esp / "RadxaOS/test-kernel"
+        self.catalog = self.images / "dtbo"
+        self.catalog.mkdir(parents=True)
+        entries = self.esp / "loader/entries"
+        entries.mkdir(parents=True)
+        self.stock = entries / "RadxaOS-test-kernel.conf"
+        self.original = ("title Ubuntu\nlinux /RadxaOS/test-kernel/linux\ninitrd /RadxaOS/test-kernel/initrd\n"
+                         "options quiet root=UUID=test\ndevicetree /RadxaOS/test-kernel/board.dtb\n")
+        self.stock.write_text(self.original)
+        self.loader = self.esp / "loader/loader.conf"
+        self.loader.write_text("# keep\ntimeout 3\ndefault RadxaOS-test-kernel.conf\n")
+        binary = self.esp / "EFI/BOOT/BOOTAA64.EFI"
+        binary.parent.mkdir(parents=True)
+        binary.write_bytes(b"#### LoaderInfo: systemd 999.0.7 (embloader 0.7.r1.f3a03df) ####")
+        (self.images / "linux").touch()
+        self.modules = self.root / "q6a-imx296.conf"
+        self.compile(self.images / "board.dtb", """/dts-v1/;
+            / { compatible = "radxa,dragon-q6a";
+                tlmm: gpio { gpio-controller; #gpio-cells = <2>; };
+                vreg_l10c_0p88: supply1 {}; vreg_l6b_1p2: supply2 {};
+                cci0: cci0 { cci0_i2c0: bus0 {}; };
+                cci1: cci1 { cci1_i2c0: bus0 {}; cci1_i2c1: bus1 {}; };
+                camss: isp { ports { #address-cells = <1>; #size-cells = <0>;
+                    port@0 { reg = <0>; }; port@2 { reg = <2>; }; port@3 { reg = <3>; };
+                }; };
+            };""")
+
+    def compile(self, target, source):
+        src = self.root / "test.dts"
+        src.write_text(source)
+        subprocess.run(["dtc", "-q", "-@", "-o", target, src], check=True)
+
+    def install(self, port="cam1", devices=None):
+        return self.installer.install(self.esp, "RadxaOS", "test-kernel", self.root, port,
+                                      self.modules, devices or {})
+
+    def overlay(self, name, fragment):
+        target = self.catalog / (name + ".dtbo")
+        self.compile(target, "/dts-v1/; /plugin/;\n" + fragment)
+        return "/" + target.relative_to(self.esp).as_posix()
+
+    def test_fresh_install_all_ports_on_one_existing_entry(self):
+        get = self.installer.output
+        for port, bus, phy, gpio in ROUTES:
+            entry, changed = self.install(port)
+            self.assertEqual((entry, changed), (self.stock, True))
+            paths = self.installer.fields(entry.read_text().splitlines(), "devicetree-overlay")[0]
+            merged = self.root / "boot.dtb"
+            subprocess.run(["fdtoverlay", "-i", self.images / "board.dtb", "-o", merged,
+                            *(self.esp / p[1:] for p in paths)], check=True)
+            node = get("fdtget", merged, "/__symbols__", bus) + "/camera@1a"
+            rx = f"/isp/ports/port@{phy}/endpoint"
+            self.assertEqual(get("fdtget", merged, rx, "remote-endpoint"),
+                             get("fdtget", merged, node + "/port/endpoint", "phandle"))
+            self.assertEqual(get("fdtget", "-t", "u", merged, f"/regulator-imx296-{port}", "gpio").split()[1],
+                             str(gpio))
+            self.assertEqual(sorted(entry.parent.glob("*.conf")), [entry])
+            self.assertEqual(self.install(port)[1], False)
+        self.assertEqual(self.loader.read_text(), "# keep\ntimeout 3\ndefault RadxaOS-test-kernel\n")
+        self.assertEqual(self.stock.with_suffix(".conf.before-imx296").read_text(), self.original)
+
+    def test_already_working_board_and_previous_rsetup_files(self):
+        self.loader.write_text("timeout 3\ndefault RadxaOS-test-kernel\n")
+        camera = self.installer.build_overlay(self.root, "cam1")
+        shutil.copyfile(camera, self.catalog / camera.name)
+        self.stock.write_text(self.original + f"devicetree-overlay /RadxaOS/test-kernel/dtbo/{camera.name}\n")
+        other = self.catalog / "q6a-cam2-innomaker-imx296.dtbo.disabled"
+        other.write_bytes(b"existing custom profile")
+        before = {p: p.read_bytes() for p in (self.stock, self.loader, other)}
+        self.assertFalse(self.install()[1])
+        self.assertEqual({p: p.read_bytes() for p in before}, before)
+        self.assertFalse(self.stock.with_suffix(".conf.before-imx296").exists())
+        self.assertIn("qcom_camss", self.modules.read_text().splitlines())
+
+    def test_absent_default_keeps_factory_selection_policy(self):
+        self.loader.unlink()
+        self.install()
+        self.assertFalse(self.loader.exists())
+        self.stock.with_name("Q6A-other.conf").write_text(self.original)
+        with self.assertRaisesRegex(ValueError, "несколько записей"):
+            self.install()
+
+    def test_user_entry_and_other_peripherals_survive_migration(self):
+        btt = self.overlay("display", '&{/} { panel { compatible = "btt,panel"; }; };')
+        lcd = self.overlay("lcd-power", '&{/} { power { compatible = "regulator-fixed"; }; };')
+        ar2 = self.overlay("ar0234-cam2", '&cci1_i2c0 { ar0234@10 { compatible = "onnn,ar0234"; }; };')
+        ar3 = self.overlay("ar0234-cam3", '&cci1_i2c1 { ar0234@10 { compatible = "onnn,ar0234"; }; };')
+        custom = self.stock.with_name("Q6A-display.conf")
+        original = self.original + f"devicetree-overlay {btt} {ar2} {ar3} {lcd}\n"
+        custom.write_text(original)
+        old_trial = custom.with_name("imx296-cam1-Q6A-display.conf")
+        old_trial.write_text("# Generated by q6a imx296/install.py\n" + original)
+        self.loader.write_text(f"default {custom.name}\n")
+        self.modules.write_text("another_module\n")
+        before = {f: f.read_bytes() for f in (self.stock, old_trial, *self.catalog.iterdir())}
+        entry, changed = self.install(devices={"/panel": ["btt,panel"],
+                                                                "/cci1/bus0/ar0234@10": ["onnn,ar0234"]})
+        self.assertEqual((entry, changed), (custom, True))
+        self.assertTrue(entry.read_text().startswith(self.original))
+        paths = self.installer.fields(entry.read_text().splitlines(), "devicetree-overlay")[0]
+        self.assertEqual(paths[:-1], [btt, ar2, ar3, lcd])
+        self.assertEqual({p: p.read_bytes() for p in before}, before)
+        self.assertEqual(self.loader.read_text(), "default Q6A-display\n")
+        self.assertTrue(self.modules.read_text().startswith("another_module\n"))
+        self.assertFalse(self.install()[1])
+
+    def test_conflicting_camera_or_missing_peripheral_aborts_before_writes(self):
+        camera = self.overlay("occupied", '&camss { ports { port@0 { endpoint {}; }; }; };')
+        self.stock.write_text(self.original + f"devicetree-overlay {camera}\n")
+        before = {p: p.read_bytes() for p in self.esp.rglob("*") if p.is_file()}
+        with self.assertRaisesRegex(ValueError, "занят"):
+            self.install()
+        with self.assertRaisesRegex(ValueError, "работающее устройство"):
+            self.install("cam2", devices={"/old-touch": ["vendor,touch"]})
+        self.assertEqual({p: p.read_bytes() for p in self.esp.rglob("*") if p.is_file()}, before)
+        self.assertFalse(self.modules.exists())

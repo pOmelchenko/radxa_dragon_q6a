@@ -19,7 +19,7 @@
 | Установить Android 15 на Toshiba UFS 512 ГБ | [Android на UFS](docs/guides/android-ufs.md) |
 | Создать /data на весь доступный объём UFS | [Полный объём Android /data](docs/guides/android-data-capacity.md) |
 | Подключить UART, определить разъёмы и питание | [Аппаратный справочник](docs/reference/hardware.md) |
-| Установить InnoMaker IMX296 Mono на CAM1, CAM2 или CAM3 и проверить первый кадр | [Эксперимент с камерой](docs/development/imx296.md) |
+| Установить InnoMaker IMX296 Mono на CAM1, CAM2 или CAM3 и проверить первый кадр | [Установка камеры по SSH](docs/development/imx296.md) |
 | Найти историю BIOS, источники файлов и контрольные суммы | [История BIOS](docs/reference/boot-firmware.md), [файлы прошивки](docs/reference/firmware-files.md) |
 
 [Полный каталог документации](docs/README.md) включает оригиналы Radxa,
