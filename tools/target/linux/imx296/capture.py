@@ -31,8 +31,8 @@ def find_camera(port, phy):
     if detected:
         raise ValueError(f"Для {port.upper()} нет связи IMX296 → {phy}. Обнаруженные сенсоры:\n"
                          + "\n".join(detected)
-                         + "\nЕсли у сенсоров 0 link, проверьте probe всех камер, включённых в DT. "
-                           "CAMSS создаёт связи после регистрации всех ожидаемых сенсоров.")
+                         + "\nПри 0 link посмотрите, какой сенсор ожидает qcom-camss в текущей загрузке:\n"
+                           "sudo cat /sys/kernel/debug/v4l2-async/pending_async_subdevices")
     raise ValueError(f"В media graph нет связи imx296 → {phy}. Проверьте probe и порт {port.upper()}.")
 
 
