@@ -26,4 +26,4 @@ initramfs и проверяет его копию на EFI. Имена `/dev/sd�
 
 ## Камера InnoMaker IMX296 Mono
 
-С компьютера запустите `sh tools/target/linux/imx296/deploy.sh "$Q6A"` из корня репозитория. Комплект устанавливается по SSH в существующую конфигурацию Radxa OS. По умолчанию используется CAM1/J14. [Установка и первый кадр](../../docs/development/imx296.md)
+Скопируйте каталог `tools/target/linux/imx296` на Q6A и выполните в нём `sudo python3 install.py --port cam1`. На занятом порту установщик запросит подтверждение замены камеры. Доступны также CAM2 и CAM3. [Установка и первый кадр](../../docs/development/imx296.md)

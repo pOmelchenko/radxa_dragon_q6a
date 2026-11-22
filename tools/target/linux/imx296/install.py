@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Установить IMX296 в существующую конфигурацию Radxa Dragon Q6A."""
 import argparse
+import hashlib
+import json
 import os
 from pathlib import Path, PurePosixPath
 import re
@@ -10,6 +12,8 @@ import sys
 import tempfile
 
 from ports import PORTS
+from replacement import (check_removal, endpoints, exists, get, listing, overlay_paths,
+                         preserve_cma, routes, sensor_on_port)
 
 HERE = Path(__file__).resolve().parent
 ESP = Path("/boot/efi")
@@ -168,10 +172,8 @@ def bound_peripherals(dt_root, buses):
 def verify_peripherals(tree, devices):
     checked = set()
     for node, compatible in devices.items():
-        try:
-            same = output("fdtget", tree, node, "compatible").split() == compatible
-        except subprocess.CalledProcessError:
-            same = False
+        found = get(tree, node, "compatible")
+        same = found and found.split() == compatible
         if not same:
             raise ValueError(f"В итоговом DTB отсутствует работающее устройство {node} ({compatible[0]}).")
         path = PurePosixPath(node)
@@ -183,7 +185,54 @@ def verify_peripherals(tree, devices):
                 checked.add(parent)
 
 
-def install(esp, token, kernel, work, port, modules_file, devices):
+def retire_catalog_profile(esp, catalog, entry, profile, digest):
+    """Plan how to disable a catalog item without invalidating other BLS entries."""
+    old = efi_file(esp, profile)
+    if old.parent != catalog or old.suffix != ".dtbo" or not old.exists():
+        return None
+    data = old.read_bytes()
+    if hashlib.sha256(data).hexdigest() != digest:
+        raise ValueError(f"Содержимое {old.name} изменилось. Нельзя автоматически отключить профиль.")
+    inactive = old.with_suffix(".dtbo.disabled")
+    if inactive.exists() and inactive.read_bytes() != data:
+        raise ValueError(f"В {inactive.name} уже сохранён другой оверлей.")
+    archive = catalog.parent / "imx296-saved-overlays" / (digest + ".dtbo")
+    archived = "/" + archive.relative_to(esp).as_posix()
+    updates = {}
+    for other in entry.parent.glob("*.conf"):
+        if other == entry:
+            continue
+        lines = other.read_bytes().decode().splitlines(keepends=True)
+        # EFI paths are case insensitive. Preserve surrounding whitespace and fields.
+        def relocate(match):
+            value = match.group()
+            return archived if str(PurePosixPath(value)).casefold() == profile.casefold() else value
+
+        updated = [re.sub(r"\S+", relocate, line) if line.split()[:1] == ["devicetree-overlay"]
+                   else line for line in lines]
+        if updated != lines:
+            updates[other] = "".join(updated).encode()
+    if updates and archive.exists() and archive.read_bytes() != data:
+        raise ValueError(f"Архивная копия {archive} отличается от прежнего профиля.")
+    return old, inactive, archive, updates, data
+
+
+def confirm_replacement(port, compatible, profile, replace):
+    detail = f"{port.upper()}: {' '.join(compatible)} ({PurePosixPath(profile).name}) → InnoMaker IMX296."
+    print(detail)
+    if replace:
+        return
+    if not sys.stdin.isatty():
+        raise ValueError("Для подтверждения откройте терминал или укажите --replace.")
+    try:
+        answer = input("Заменить камеру на этом порту? [д/Н] ").strip().casefold()
+    except (EOFError, KeyboardInterrupt):
+        answer = ""
+    if answer not in ("д", "да", "y", "yes"):
+        raise ValueError("Замена отменена. Конфигурация камеры сохранена.")
+
+
+def install(esp, token, kernel, work, port, modules_file, devices, replace=False, boot_id=None):
     if not token or Path(token).name != token or token == "..":
         raise ValueError("Некорректный идентификатор в /etc/kernel/entry-token.")
     images = efi_file(esp, f"/{token}/{kernel}")
@@ -207,49 +256,125 @@ def install(esp, token, kernel, work, port, modules_file, devices):
     selected = next((p for p in (enabled_camera, inactive_camera) if p.is_file()), built[port])
     camera = "/" + enabled_camera.relative_to(esp).as_posix()
     old = [p for row in fields(lines, "devicetree-overlay") for p in row]
-    # Overlays following the IMX296 may reference symbols it introduces.
-    before = old[:old.index(camera)] if camera in old else old
-    current = base
-    if before:
-        current = work / "before-camera.dtb"
-        subprocess.run(["fdtoverlay", "-i", base, "-o", current,
-                        *(efi_file(esp, p) for p in before)], check=True)
+    material = {camera: selected}
+
+    def assemble(name, order):
+        if not order:
+            return base
+        result = work / name
+        subprocess.run(["fdtoverlay", "-i", base, "-o", result,
+                        *(material[p] if p in material else efi_file(esp, p) for p in order)], check=True)
+        return result
+
+    current = assemble("current.dtb", old)
     bus_symbol, phy_index = PORTS[port]
     bus = output("fdtget", current, "/__symbols__", bus_symbol)
-    phy = output("fdtget", current, "/__symbols__", "camss") + f"/ports/port@{phy_index}"
+    camss = output("fdtget", current, "/__symbols__", "camss")
+    phy = camss + f"/ports/port@{phy_index}"
     sensor = bus + "/camera@1a"
     tx, rx = sensor + "/port/endpoint", phy + "/endpoint"
 
     def linked(tree):
-        return (output("fdtget", tree, sensor, "compatible") == "sony,imx296"
-                and output("fdtget", tree, rx, "remote-endpoint") == output("fdtget", tree, tx, "phandle")
-                and output("fdtget", tree, tx, "remote-endpoint") == output("fdtget", tree, rx, "phandle"))
+        out_handle = get(tree, tx, "phandle", "x")
+        in_handle = get(tree, rx, "phandle", "x")
+        return (get(tree, sensor, "compatible") == "sony,imx296" and out_handle and in_handle
+                and get(tree, rx, "remote-endpoint", "x") == out_handle
+                and get(tree, tx, "remote-endpoint", "x") == in_handle)
 
-    occupied = (any(n.endswith("@1a") for n in output("fdtget", "-l", current, bus).split())
-                or any(n.split("@")[0] == "endpoint" for n in output("fdtget", "-l", current, phy).split()))
+    def occupied(tree):
+        return (any(n.endswith("@1a") for n in listing(tree, bus))
+                or any(n.split("@")[0] == "endpoint" for n in listing(tree, phy))
+                or any(endpoints(tree, bus)))
+
     wanted = list(old)
-    if occupied:
-        try:
-            existing = linked(current)
-        except subprocess.CalledProcessError:
-            existing = False
-        if not existing:
-            raise ValueError(f"{port.upper()} занят другой конфигурацией камеры. Установка остановлена до записи.")
-        # A custom base or another overlay already provides the complete route.
-    elif camera not in wanted:
-        wanted.append(camera)
+    previous = None
+    replaced = None
+    retirement = None
+    extra_files = {}
     merged = current
-    if camera in wanted:
-        merged = work / "camera.dtb"
-        subprocess.run(["fdtoverlay", "-i", base, "-o", merged,
-                        *(selected if p == camera else efi_file(esp, p) for p in wanted)], check=True)
-        if not linked(merged):
-            raise ValueError(f"Проверка связи {port.upper()} с CSIPHY{phy_index} не прошла.")
+    # A repeated installation before reboot can still see the driver we retired.
+    marker = f"# q6a-imx296 replaced {port} "
+    configured = linked(current)
+    protected = dict(devices)
+    for line in lines:
+        if not line.startswith("# q6a-imx296 replaced "):
+            continue
+        _, _, _, saved_port, payload = line.split(maxsplit=4)
+        if saved_port not in PORTS:
+            continue
+        node, compatible, profile, digest, saved_boot = json.loads(payload)
+        saved_camera = "/" + (catalog / built[saved_port].name).relative_to(esp).as_posix()
+        saved_bus = get(current, "/__symbols__", PORTS[saved_port][0])
+        if saved_camera not in old or str(PurePosixPath(node).parent) != saved_bus:
+            continue
+        if saved_boot == boot_id and protected.get(node) == compatible:
+            del protected[node]
+        if saved_port == port and configured and profile not in old:
+            retirement = retire_catalog_profile(esp, catalog, entry, profile, digest)
+    if not configured and occupied(current):
+        old_node, compatible, old_rx = sensor_on_port(current, bus, phy, port)
+        if camera in old:
+            raise ValueError(f"{port.upper()} занят конфликтующими профилями, включая IMX296.")
+        owners = []
+        for index, profile in enumerate(old):
+            blob = efi_file(esp, profile)
+            paths = overlay_paths(blob, current)
+            if old_node in paths or old_rx in paths:
+                owners.append((index, blob, paths))
+        if len(owners) != 1 or old_node not in owners[0][2] or old_rx not in owners[0][2]:
+            raise ValueError(f"{port.upper()} занят. Прежний маршрут не принадлежит одному отдельному оверлею.")
+        index, blob, paths = owners[0]
+        prior = assemble("prior.dtb", old[:index])
+        remaining = assemble("without-camera.dtb", old[:index] + old[index + 1:])
+        if exists(remaining, old_node) or occupied(remaining):
+            raise ValueError(f"{port.upper()} занят также в базовом DTB или другом оверлее.")
+        replaced = wanted[index]
+        wanted[index] = camera
+        merged = assemble("camera.dtb", wanted)
+        # A single-camera Radxa overlay can be the last provider of the global DMA pool.
+        cma = "/reserved-memory/linux,cma"
+        if cma in paths and get(current, cma, "size", "x") != get(merged, cma, "size", "x"):
+            cma_blob = preserve_cma(current, cma, work)
+            destination = catalog / cma_blob.name
+            if destination.exists() and destination.read_bytes() != cma_blob.read_bytes():
+                raise ValueError(f"Уже существует другой профиль {destination.name}.")
+            cma_profile = "/" + destination.relative_to(esp).as_posix()
+            material[cma_profile] = cma_blob
+            extra_files[destination] = cma_blob.read_bytes()
+            wanted.insert(index, cma_profile)
+            merged = assemble("camera.dtb", wanted)
+        check_removal(blob, paths, current, merged, prior, old_node, old_rx, port)
+        digest = hashlib.sha256(blob.read_bytes()).hexdigest()
+        retirement = retire_catalog_profile(esp, catalog, entry, replaced, digest)
+        previous = (old_node, compatible)
+    elif not configured:
+        if camera in old:
+            raise ValueError(f"Профиль IMX296 уже указан, но маршрут {port.upper()} отсутствует.")
+        wanted.append(camera)
+        merged = assemble("camera.dtb", wanted)
 
-    verify_peripherals(merged, devices)
+    if not linked(merged) or [n for n in listing(merged, phy) if n.split("@")[0] == "endpoint"] != ["endpoint"]:
+        raise ValueError(f"Проверка связи {port.upper()} с CSIPHY{phy_index} не прошла.")
+    if merged != current:
+        for other, (symbol, index) in PORTS.items():
+            if other == port:
+                continue
+            other_bus = output("fdtget", current, "/__symbols__", symbol)
+            other_phy = camss + f"/ports/port@{index}"
+            if routes(current, other_bus, other_phy) != routes(merged, other_bus, other_phy):
+                raise ValueError(f"Итоговая конфигурация меняет маршрут соседнего {other.upper()}.")
+    if previous and protected.get(previous[0]) == previous[1]:
+        del protected[previous[0]]
+    verify_peripherals(merged, protected)
+    verify_peripherals(merged, {sensor: ["sony,imx296"]})
+    if replaced:
+        confirm_replacement(port, previous[1], replaced, replace)
+        lines = [line for line in lines if not line.startswith(marker)]
     next_entry = (replace_field(lines, "devicetree-overlay", " ".join(wanted))
                   if wanted != old else "".join(lines).encode())
-    files = {}
+    if replaced:
+        next_entry = next_entry.rstrip(b"\n") + b"\n" + (marker + json.dumps([*previous, replaced, digest, boot_id]) + "\n").encode()
+    files = extra_files
     for p, blob in built.items():
         enabled = catalog / blob.name
         inactive = enabled.with_suffix(".dtbo.disabled")
@@ -269,10 +394,19 @@ def install(esp, token, kernel, work, port, modules_file, devices):
     if missing:
         separator = b"\n" if config and not config.endswith(b"\n") else b""
         write_if_changed(modules_file, config + separator + ("\n".join(missing) + "\n").encode(), backup=True)
+    if retirement:
+        old_file, inactive, archive, updates, data = retirement
+        if updates:
+            archive.parent.mkdir(exist_ok=True)
+            write_if_changed(archive, data)
+            for other, new_config in updates.items():
+                write_if_changed(other, new_config, backup=True)
     if write_if_changed(entry, next_entry, backup=True):
         changed = True
     if (next_loader or loader.exists()) and write_if_changed(loader, next_loader, backup=True):
         changed = True
+    if retirement:
+        os.replace(old_file, inactive)
     if enabled_camera in files and inactive_camera.exists() and inactive_camera.read_bytes() == files[enabled_camera]:
         inactive_camera.unlink()
     return entry, changed
@@ -282,6 +416,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", type=str.lower, choices=PORTS, default="cam1",
                         help="разъём IMX296 (по умолчанию cam1/J14)")
+    parser.add_argument("--replace", action="store_true",
+                        help="подтвердить замену камеры на выбранном порту без диалога")
     args = parser.parse_args()
     if sys.platform != "linux" or os.geteuid() != 0:
         parser.exit(1, "Запустите на Q6A: sudo python3 install.py\n")
@@ -300,7 +436,8 @@ def main():
             subprocess.run(["modprobe", module], check=True)
         entry, changed = install(ESP, token, kernel, Path(work), args.port,
                                  Path("/etc/modules-load.d/q6a-imx296.conf"),
-                                 bound_peripherals(dt_root, Path("/sys/bus")))
+                                 bound_peripherals(dt_root, Path("/sys/bus")), replace=args.replace,
+                                 boot_id=Path("/proc/sys/kernel/random/boot_id").read_text().strip())
     print(f"IMX296 {args.port.upper()}: {entry.name}")
     if not changed:
         from capture import find_camera

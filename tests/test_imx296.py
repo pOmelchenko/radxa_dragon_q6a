@@ -137,6 +137,7 @@ class InstallerTest(unittest.TestCase):
         self.modules = self.root / "q6a-imx296.conf"
         self.compile(self.images / "board.dtb", """/dts-v1/;
             / { compatible = "radxa,dragon-q6a";
+                reserved-memory { #address-cells = <2>; #size-cells = <2>; ranges; };
                 tlmm: gpio { gpio-controller; #gpio-cells = <2>; };
                 vreg_l10c_0p88: supply1 {}; vreg_l6b_1p2: supply2 {};
                 cci0: cci0 { cci0_i2c0: bus0 {}; };
@@ -151,9 +152,9 @@ class InstallerTest(unittest.TestCase):
         src.write_text(source)
         subprocess.run(["dtc", "-q", "-@", "-o", target, src], check=True)
 
-    def install(self, port="cam1", devices=None):
+    def install(self, port="cam1", devices=None, replace=False):
         return self.installer.install(self.esp, "RadxaOS", "test-kernel", self.root, port,
-                                      self.modules, devices or {})
+                                      self.modules, devices or {}, replace=replace)
 
     def overlay(self, name, fragment):
         target = self.catalog / (name + ".dtbo")
@@ -235,3 +236,132 @@ class InstallerTest(unittest.TestCase):
             self.install("cam2", devices={"/old-touch": ["vendor,touch"]})
         self.assertEqual({p: p.read_bytes() for p in self.esp.rglob("*") if p.is_file()}, before)
         self.assertFalse(self.modules.exists())
+
+    def old_camera(self, port="cam1", address="10", extra=""):
+        bus, phy = self.installer.PORTS[port]
+        return self.overlay("previous-" + port, f"""
+            &{bus} {{ previous@{address} {{ compatible = "onnn,ar0234"; reg = <0x{address}>;
+                port {{ old_tx: endpoint {{ remote-endpoint = <&old_rx>; }}; }};
+            }}; }};
+            &camss {{ ports {{ port@{phy} {{ old_rx: endpoint {{ remote-endpoint = <&old_tx>; }}; }}; }}; }};
+            {extra}""")
+
+    def snapshot(self):
+        return {p: p.read_bytes() for p in self.esp.rglob("*") if p.is_file()}
+
+    def test_replace_on_selected_port_with_live_driver_and_shared_boot_profile(self):
+        old = self.old_camera()
+        btt = self.overlay("display", '&{/} { panel { compatible = "btt,panel"; }; };')
+        neighbor = self.overlay("ar0234-cam2", """
+            &cci1_i2c0 { ar0234@10 { compatible = "onnn,ar0234";
+                port { next_tx: endpoint { remote-endpoint = <&next_rx>; }; }; }; };
+            &camss { ports { port@2 { next_rx: endpoint { remote-endpoint = <&next_tx>; }; }; }; };""")
+        initial = self.original + f"devicetree-overlay {btt} {old} {neighbor}\n"
+        self.stock.write_text(initial)
+        recovery = self.stock.with_name("recovery.conf")
+        recovery.write_text(initial)
+        old_bytes = (self.esp / old[1:]).read_bytes()
+        devices = {"/cci0/bus0/previous@10": ["onnn,ar0234"], "/panel": ["btt,panel"],
+                   "/cci1/bus0/ar0234@10": ["onnn,ar0234"]}
+        with patch.object(sys.stdin, "isatty", return_value=True), patch("builtins.input", return_value="Да") as ask:
+            self.assertTrue(self.install(devices=devices)[1])
+            self.assertFalse(self.install(devices=devices)[1])
+            ask.assert_called_once()
+        new = self.installer.fields(self.stock.read_text().splitlines(), "devicetree-overlay")[0]
+        self.assertEqual(new, [btt, "/RadxaOS/test-kernel/dtbo/q6a-cam1-innomaker-imx296.dtbo", neighbor])
+        merged = self.root / "camera.dtb"
+        get = self.installer.get
+        self.assertEqual(get(merged, "/isp/ports/port@2/endpoint", "remote-endpoint", "x"),
+                         get(merged, "/cci1/bus0/ar0234@10/port/endpoint", "phandle", "x"))
+        self.assertFalse(self.installer.exists(merged, "/cci0/bus0/previous@10"))
+        self.assertFalse((self.esp / old[1:]).exists())
+        self.assertEqual((self.esp / (old[1:] + ".disabled")).read_bytes(), old_bytes)
+        saved = self.installer.fields(recovery.read_text().splitlines(), "devicetree-overlay")[0][1]
+        self.assertEqual((self.esp / saved[1:]).read_bytes(), old_bytes)
+        self.assertEqual(recovery.read_text().replace(saved, old), initial)
+        self.assertEqual(self.stock.with_suffix(".conf.before-imx296").read_text(), initial)
+
+    def test_empty_negative_eof_and_no_tty_preserve_configuration(self):
+        old = self.old_camera()
+        self.stock.write_text(self.original + f"devicetree-overlay {old}\n")
+        before = self.snapshot()
+        for answer in ("", "нет", EOFError(), KeyboardInterrupt()):
+            with self.subTest(answer=answer), patch.object(sys.stdin, "isatty", return_value=True), \
+                    patch("builtins.input", side_effect=[answer]), self.assertRaisesRegex(ValueError, "отменена"):
+                self.install()
+        with patch.object(sys.stdin, "isatty", return_value=False), patch("builtins.input") as ask, \
+                self.assertRaisesRegex(ValueError, "--replace"):
+            self.install()
+        ask.assert_not_called()
+        self.assertEqual(before, self.snapshot())
+        self.assertFalse(self.modules.exists())
+
+    def test_unattended_replacement_on_cam3_same_i2c_address(self):
+        old = self.old_camera("cam3", "1a")
+        self.stock.write_text(self.original + f"devicetree-overlay {old}\n")
+        with patch("builtins.input", side_effect=AssertionError), patch.object(sys.stdin, "isatty", return_value=False):
+            self.assertTrue(self.install("cam3", replace=True)[1])
+        merged = self.root / "camera.dtb"
+        self.assertEqual(self.installer.get(merged, "/cci1/bus1/camera@1a", "compatible"), "sony,imx296")
+        self.assertFalse(self.installer.exists(merged, "/cci1/bus1/previous@1a"))
+
+    def test_replace_cannot_remove_shared_peripheral_or_built_in_camera(self):
+        extra = '&{/} { touch { compatible = "vendor,touch"; }; };'
+        old = self.old_camera(extra=extra)
+        self.stock.write_text(self.original + f"devicetree-overlay {old}\n")
+        before = self.snapshot()
+        with patch("builtins.input", side_effect=AssertionError), self.assertRaisesRegex(ValueError, "/touch"):
+            self.install(replace=True)
+        self.assertEqual(before, self.snapshot())
+        merged = self.root / "embedded.dtb"
+        subprocess.run(["fdtoverlay", "-i", self.images / "board.dtb", "-o", merged, self.esp / old[1:]], check=True)
+        shutil.copyfile(merged, self.images / "board.dtb")
+        self.stock.write_text(self.original)
+        before = self.snapshot()
+        with self.assertRaisesRegex(ValueError, "отдельному оверлею"):
+            self.install(replace=True)
+        self.assertEqual(before, self.snapshot())
+
+    def test_retires_catalog_after_interruption_on_retry(self):
+        old = self.old_camera()
+        self.stock.write_text(self.original + f"devicetree-overlay {old}\n")
+        rename = self.installer.os.replace
+        def interrupted(src, dst):
+            if Path(src) == self.esp / old[1:]:
+                raise OSError("power loss")
+            return rename(src, dst)
+        with patch.object(self.installer.os, "replace", side_effect=interrupted), self.assertRaises(OSError):
+            self.install(replace=True)
+        self.assertTrue((self.esp / old[1:]).exists())
+        with patch("builtins.input", side_effect=AssertionError):
+            self.install()
+        self.assertFalse((self.esp / old[1:]).exists())
+        self.assertTrue((self.esp / (old[1:] + ".disabled")).is_file())
+
+    def test_standalone_camera_cma_and_power_enable_survive_replacement(self):
+        extra = """
+            &{/reserved-memory} { linux,cma { compatible = "shared-dma-pool";
+                size = <0 0x20000000>; reusable; linux,cma-default; }; };
+            &{/} { old-power { compatible = "regulator-fixed"; regulator-always-on;
+                gpios = <&tlmm 77 0>; pinctrl-0 = <&old_pin>; }; };
+            &tlmm { old_pin: old-pin-state { pins = "gpio77"; function = "gpio"; }; };"""
+        old = self.old_camera("cam2", extra=extra)
+        self.stock.write_text(self.original + f"devicetree-overlay {old}\n")
+        self.assertTrue(self.install("cam2", replace=True)[1])
+        merged = self.root / "camera.dtb"
+        self.assertEqual(self.installer.get(merged, "/reserved-memory/linux,cma", "size", "x"), "0 20000000")
+        self.assertFalse(self.installer.exists(merged, "/old-power"))
+        self.assertEqual(self.installer.get(merged, "/regulator-imx296-cam2", "gpio", "u").split()[1], "77")
+        self.assertFalse(self.install("cam2")[1])
+
+    def test_rejects_new_profile_that_overwrites_neighbor_lane_configuration(self):
+        other = self.old_camera("cam2")
+        self.stock.write_text(self.original + f"devicetree-overlay {other}\n")
+        profile = self.installer.build_overlay(self.root, "cam1")
+        expanded = profile.with_suffix(".dts").read_text()
+        self.compile(self.catalog / (profile.name + ".disabled"), expanded + """
+            &camss { ports { port@2 { endpoint { data-lanes = <1 2 3 4>; }; }; }; };""")
+        before = self.snapshot()
+        with self.assertRaisesRegex(ValueError, "соседнего CAM2"):
+            self.install(replace=True)
+        self.assertEqual(before, self.snapshot())

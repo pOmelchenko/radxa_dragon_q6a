@@ -15,6 +15,9 @@ jobs:
         with:
           python-version: '3.12'
       - run: python tools/q6a.py check-repo
+      - name: Install device tree tools for camera tests
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y device-tree-compiler
       - run: python -m unittest discover -s tests -v
       - name: Unix entry point
         if: runner.os != 'Windows'
