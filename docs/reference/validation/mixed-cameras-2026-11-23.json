@@ -1,0 +1,183 @@
+{
+  "board": "Radxa Dragon Q6A",
+  "os": "Ubuntu 24.04.5 LTS",
+  "kernel": "7.0.11-7-qcom",
+  "camss": "stock packaged module",
+  "camera_kit_commits": {
+    "ar0234": "93fa9e596da82ae860873ff920a61fc91c549295",
+    "imx296": "cb2112b14fe043c181e56304c04ee75bd5c1a969",
+    "imx519": "f621d23aa460c6cc35faa56ed9e4c6cc9dc29787"
+  },
+  "cam3_i2c_hz": 100000,
+  "concurrent_raw10": [
+    {
+      "started_at_utc": "2026-11-23T11:44:06+00:00",
+      "overlap_s": 19.959363,
+      "enabled_media_links_restored": true,
+      "streams": {
+        "imx296": {
+          "route": [
+            "msm_csiphy0",
+            "msm_csid1",
+            "msm_vfe1_rdi0"
+          ],
+          "width": 1456,
+          "height": 1088,
+          "fourcc": "Y10P",
+          "frames": 1750,
+          "fps": 60.37653208039199,
+          "sequence_discontinuities": 0,
+          "buffer_errors": 0
+        },
+        "imx519": {
+          "route": [
+            "msm_csiphy3",
+            "msm_csid2",
+            "msm_vfe2_rdi0"
+          ],
+          "width": 4656,
+          "height": 3496,
+          "fourcc": "pRAA",
+          "frames": 261,
+          "fps": 9.00301199228899,
+          "sequence_discontinuities": 0,
+          "buffer_errors": 0
+        },
+        "ar0234": {
+          "route": [
+            "msm_csiphy2",
+            "msm_csid0",
+            "msm_vfe0_rdi0"
+          ],
+          "width": 1920,
+          "height": 1200,
+          "fourcc": "pgAA",
+          "frames": 1203,
+          "fps": 60.22236280787117,
+          "sequence_discontinuities": 0,
+          "buffer_errors": 0
+        }
+      }
+    },
+    {
+      "started_at_utc": "2026-11-23T11:48:18+00:00",
+      "overlap_s": 19.960694,
+      "enabled_media_links_restored": true,
+      "streams": {
+        "imx296": {
+          "route": [
+            "msm_csiphy0",
+            "msm_csid0",
+            "msm_vfe0_rdi0"
+          ],
+          "width": 1456,
+          "height": 1088,
+          "fourcc": "Y10P",
+          "frames": 1750,
+          "fps": 60.3732975221991,
+          "sequence_discontinuities": 0,
+          "buffer_errors": 0
+        },
+        "imx519": {
+          "route": [
+            "msm_csiphy3",
+            "msm_csid1",
+            "msm_vfe1_rdi0"
+          ],
+          "width": 4656,
+          "height": 3496,
+          "fourcc": "pRAA",
+          "frames": 261,
+          "fps": 9.002344591400027,
+          "sequence_discontinuities": 0,
+          "buffer_errors": 0
+        },
+        "ar0234": {
+          "route": [
+            "msm_csiphy2",
+            "msm_csid2",
+            "msm_vfe2_rdi0"
+          ],
+          "width": 1920,
+          "height": 1200,
+          "fourcc": "pgAA",
+          "frames": 1203,
+          "fps": 60.2183471175902,
+          "sequence_discontinuities": 0,
+          "buffer_errors": 0
+        }
+      }
+    }
+  ],
+  "imx519_cdaf_with_two_raw_streams": {
+    "started_at_utc": "2026-11-23T14:58:02+00:00",
+    "libcamera_base": "de1e9bc095e23085e77533357d2582176de0a582",
+    "libcamera_patch_recipe": "d8e0258fc0d557f7da85dc606529c9321a048ec5",
+    "phase_link_rollback_sha256": "930e7d592a94ec421b20f67a1b5f4bca7de75d167180513df28d3d4c9de9924d",
+    "rgb_stream": {
+      "route": [
+        "msm_csiphy3",
+        "msm_csid0",
+        "msm_vfe0_rdi0"
+      ],
+      "width": 1920,
+      "height": 1080,
+      "libcamera_pixelformat": "XRGB8888",
+      "frames": 780,
+      "fps": 60.075576,
+      "sequence_discontinuities": 0,
+      "log_sha256": "92d1065aae1bec4bfe36779726c801589e99651d775c5589b6daba9bcf58dca1"
+    },
+    "trigger_request": 300,
+    "first_scanning_capture_sequence": 297,
+    "first_focused_capture_sequence": 492,
+    "capture_sequence_to_focus_s": 3.246112,
+    "contrast_af_state": "Focused",
+    "contrast_af_ak7375_code": 2174,
+    "contrast_af_score": 0.0228147,
+    "trigger_and_focus_with_both_raw_streams_active": true,
+    "overlap_s": 11.950631,
+    "raw_timestamp_clock": "V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC",
+    "raw_streams": {
+      "imx296": {
+        "sensor": "imx296 16-001a",
+        "route": [
+          "msm_csiphy0",
+          "msm_csid1",
+          "msm_vfe1_rdi0"
+        ],
+        "width": 1456,
+        "height": 1088,
+        "fourcc": "Y10P",
+        "sizeimage": 1984512,
+        "frames": 1086,
+        "duration_s": 17.97066,
+        "fps": 60.376191,
+        "sequence_discontinuities": 0,
+        "buffer_error_flags": 0,
+        "timestamp_csv_sha256": "6eb6ee2fc3a595987c6015a6e4da177ef9aaf1eeb0cb051988efc6ba2f2dbf10"
+      },
+      "ar0234": {
+        "sensor": "ar0234 18-0010",
+        "route": [
+          "msm_csiphy2",
+          "msm_csid2",
+          "msm_vfe2_rdi0"
+        ],
+        "width": 1920,
+        "height": 1200,
+        "fourcc": "pgAA",
+        "sizeimage": 2880000,
+        "frames": 1083,
+        "duration_s": 17.967348,
+        "fps": 60.220351,
+        "sequence_discontinuities": 0,
+        "buffer_error_flags": 0,
+        "timestamp_csv_sha256": "06dc91e7bc004cb4bd48ffa4d2d22cd9992f19aabb3400010ac8051651d5afc2"
+      }
+    },
+    "enabled_media_links_restored": true,
+    "imx519_exposure_and_gains_restored": true,
+    "phase_autofocus_tested": false
+  }
+}
